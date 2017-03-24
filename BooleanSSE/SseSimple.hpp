@@ -2,6 +2,9 @@
 //  SSE_simple.hpp
 //  BooleanSSE
 //
+//  A simple SSE scheme, with all required functionality. Includes both client and server functionality
+//  in one class, for simplification. Inline comments differentiate respective parts of the code.
+//
 //  Created by Bernardo Ferreira on 20/03/17.
 //  Copyright © 2017 Bernardo Ferreira. All rights reserved.
 //

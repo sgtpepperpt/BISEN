@@ -9,8 +9,8 @@
 //  Copyright © 2017 Bernardo Ferreira. All rights reserved.
 //
 
-#ifndef SseSimple_hpp
-#define SseSimple_hpp
+#ifndef SseClient_hpp
+#define SseClient_hpp
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,7 +24,7 @@
 using namespace std;
 
 
-class SseSimple {
+class SseClient {
     
 protected:
 
@@ -34,12 +34,14 @@ protected:
     map<vector<unsigned char>,vector<unsigned char> >* encTextIndex;
     map<string,int>* textDcount;
     
+    void listTxtFiles (std::string path, std::vector<std::string>& docs);
+    
 public:
-    SseSimple();
-    ~SseSimple();
+    SseClient();
+    ~SseClient();
     
     void addDocs(string textDataset, int first, int last, int prefix);
     vector<int> search(string textPath);
 };
     
-#endif /* SseSimple_hpp */
+#endif /* SseClient_hpp */

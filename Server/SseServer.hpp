@@ -6,8 +6,8 @@
 //  Copyright © 2016 Bernardo Ferreira. All rights reserved.
 //
 
-#ifndef MainUEE_hpp
-#define MainUEE_hpp
+#ifndef SseServer_hpp
+#define SseServer_hpp
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,25 +24,25 @@
 
 using namespace std;
 
-class MainUEE {
+class SseServer {
     
 private:
     static const char* pipeDir;
-    
-    int readTeePipe;
-    int writeTeePipe;
+
+    int readIeePipe;
+    int writeIeePipe;
     map<vector<unsigned char>,vector<unsigned char> >* I;
     map<vector<unsigned char>,vector<unsigned char> >* W;
     
     
-    static void* bridgeClientTeeThread(void* threadData);
+    static void* bridgeClientIeeThread(void* threadData);
     void addKeyword (int newsockfd);
     void search (int newsockfd);
     void remove (int newsockfd);
     
 public:
-    MainUEE();
-    ~MainUEE();
+    SseServer();
+    ~SseServer();
     
 };
 

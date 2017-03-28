@@ -240,6 +240,9 @@ int denormalize(float val, int size) {
     return round(val * size);
 }
 
+
+
+
 //std::set<QueryResult,cmp_QueryResult> sort (std::map<int,double>* queryResults) {
 //    std::set<QueryResult,cmp_QueryResult> orderedResults;
 //    for (std::map<int,double>::iterator it=queryResults->begin(); it!=queryResults->end(); ++it) {

@@ -6,37 +6,39 @@
 //  Copyright © 2017 Bernardo Ferreira. All rights reserved.
 //
 
-#include "SseSimple.hpp"
+#include "SseClient.hpp"
 
 using namespace std;
 
-SseSimple::SseSimple() {
+SseClient::SseClient() {
     encTextIndex = new map<vector<unsigned char>,vector<unsigned char> >;
     analyzer = new EnglishAnalyzer;
     crypto = new SseCrypt;
 }
 
-SseSimple::~SseSimple() {
+SseClient::~SseClient() {
     free(encTextIndex);
 }
 
-void SseSimple::addDocs(string textDataset, int first, int last, int prefix) {
-    map<int,string> tags;
-    extractFileNames(textDataset, first, last, tags);
-    map<int,string>::iterator tags_it=tags.begin();
+void SseClient::addDocs(string textDataset, int first, int last, int prefix) {
+    vector<string> tags;
+    listTxtFiles(textDataset, tags);
+    vector<string>::iterator tags_it=tags.begin();
+    //for each txt file in the dataset
     while (tags_it != tags.end()) {
-        //extract text features
-        vector<string> keywords = analyzer->extractFile(tags_it->second.c_str());
+        //extract text features (keywords)
+        vector<string> keywords = analyzer->extractFile(tags_it->c_str());
         map<string,int> textTfs;
         for (int j = 0; j < keywords.size(); j++) {
             string keyword = keywords[j];
             map<string,int>::iterator it = textTfs.find(keyword);
+            //counts occurence frequency of keyword in document; only used for ranked searching
             if (it == textTfs.end())
                 textTfs[keyword] = 1;
             else
                 it->second++;
         }
-        //index text features
+        //index text features (keywords)
         for (map<string,int>::iterator it=textTfs.begin(); it!=textTfs.end(); ++it) {
             int c = 0;
             map<string,int>::iterator counterIt = textDcount->find(it->first);
@@ -56,7 +58,7 @@ void SseSimple::addDocs(string textDataset, int first, int last, int prefix) {
     }
 }
 
-void SseSimple::encryptAndIndex(void* keyword, int keywordSize, int counter, int docId,
+void SseClient::encryptAndIndex(void* keyword, int keywordSize, int counter, int docId,
                                  map<vector<unsigned char>, vector<unsigned char> >* index) {
     unsigned char k1[SseCrypt::Ksize];
     int append = 1;
@@ -76,3 +78,30 @@ void SseSimple::encryptAndIndex(void* keyword, int keywordSize, int counter, int
     (*index)[encCounter] = encData;
     pthread_mutex_unlock (lock);
 }
+
+void SseClient::listTxtFiles (std::string path, std::vector<std::string>& docs) {
+    DIR* dir = opendir (path.c_str());
+    if (dir) {
+        struct dirent* hFile;
+        while ((hFile = readdir (dir)) != NULL ) {
+            if ( !strcmp( hFile->d_name, "."  ) || !strcmp( hFile->d_name, ".." ) || hFile->d_name[0] == '.' ) continue;
+            std::string fname = hFile->d_name;
+            const size_t pos = fname.find(".txt");
+            if (pos != std::string::npos) {
+//                std::string idString = fname.substr(4,pos-4);
+//                const int id = atoi(idString.c_str());
+                std::string fullPath = path;
+                path += fname;
+                docs.push_back(fname);
+            }
+        }
+        closedir (dir);
+    } else
+        pee ("SseSimple::listTxtFiles couldn't open dir");
+}
+
+
+
+}
+
+

@@ -1,14 +1,26 @@
 //
-//  MainTEE.c
+//  MainTEE.cpp
 //  BooleanSSE
 //
 //  Created by Bernardo Ferreira on 15/11/16.
 //  Copyright © 2016 Bernardo Ferreira. All rights reserved.
 //
 
-//opensgx framework includes
+#include "SseIee.hpp"
 
-#include "test.h"
+using namespace std;
+
+
+SseIee::SseIee() {
+    
+}
+
+
+SseIee::~SseIee() {
+    
+}
+
+
 
 void enclave_main()
 {

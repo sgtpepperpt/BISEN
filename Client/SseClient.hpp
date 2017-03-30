@@ -12,14 +12,9 @@
 #ifndef SseClient_hpp
 #define SseClient_hpp
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <vector>
-#include <map>
-#include <string>
 #include "EnglishAnalyzer.h"
-#include "SSECrypt.hpp"
-#include "Utils.h"
+#include "ClientCrypt.hpp"
+#include "ClientUtils.h"
 
 using namespace std;
 
@@ -29,10 +24,7 @@ class SseClient {
 protected:
 
     EnglishAnalyzer* analyzer;
-    SseCrypt* crypto;
-    
-    map<vector<unsigned char>,vector<unsigned char> >* encTextIndex;
-    map<string,int>* textDcount;
+    ClientCrypt* crypto;
     
     void listTxtFiles (std::string path, std::vector<std::string>& docs);
     
@@ -40,8 +32,9 @@ public:
     SseClient();
     ~SseClient();
     
-    void addDocs(string textDataset, int first, int last, int prefix);
-    vector<int> search(string textPath);
+    void setup();
+    void addDocs(string textDataset);
+    vector<int> search(string query);
 };
     
 #endif /* SseClient_hpp */

@@ -20,6 +20,9 @@
 #include <assert.h>
 #include <vector>
 #include <map>
+#include <string.h>
+#include "IeeUtils.h"
+#include "IeeCrypt.hpp"
 
 using namespace std;
 
@@ -29,10 +32,13 @@ class SseIee {
 private:
     static const char* pipeDir;
     
+    IeeCrypt* crypto;
+    
     int readServerPipe;
     int writeServerPipe;
     int clientBridgePipe;
     
+    void initIee();
     
 public:
     SseIee();

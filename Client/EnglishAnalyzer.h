@@ -1,20 +1,20 @@
 //
 //  EnglishAnalyzer.h
-//  MIE
+//  BooleanSSE
 //
 //  Created by Bernardo Ferreira on 13/03/15.
 //  Copyright (c) 2015 NovaSYS. All rights reserved.
 //
 
-#ifndef __MIE__EnglishAnalyzer__
-#define __MIE__EnglishAnalyzer__
+#ifndef __BooleanSSE__EnglishAnalyzer__
+#define __BooleanSSE__EnglishAnalyzer__
 
 #include <vector>
 #include <set>
 #include <string>
 #include <stdlib.h>
 #include <ctype.h>
-#include "Utils.h"
+#include "ClientUtils.h"
 #include "PorterStemmer.c"
 
 using namespace std;
@@ -36,4 +36,4 @@ public:
     bool isStopWord(string word);
     
 };
-#endif /* defined(__MIE__EnglishAnalyzer__) */
+#endif /* defined(__BooleanSSE__EnglishAnalyzer__) */

@@ -7,9 +7,10 @@
 //
 
 #include <iostream>
+#include "SseServer.hpp"
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+    SseServer server;
+    
     return 0;
 }

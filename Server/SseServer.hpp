@@ -15,11 +15,15 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #include <errno.h>
 #include <err.h>
 #include <assert.h>
 #include <vector>
 #include <map>
+#include <pthread.h>
+#include "ServerUtils.hpp"
 
 
 using namespace std;
@@ -27,6 +31,7 @@ using namespace std;
 class SseServer {
     
 private:
+    static const int serverPort = 9978;
     static const char* pipeDir;
 
     int readIeePipe;

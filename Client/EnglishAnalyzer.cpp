@@ -1,6 +1,6 @@
 //
 //  EnglishAnalyzer.cpp
-//  MIE
+//  BooleanSSE
 //
 //  Created by Bernardo Ferreira on 13/03/15.
 //  Copyright (c) 2015 NovaSYS. All rights reserved.

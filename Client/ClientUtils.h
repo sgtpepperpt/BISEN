@@ -2,30 +2,27 @@
 //  Utils.h
 //  BooleanSSE
 //
-//  Created by Bernardo Ferreira on 16/11/16.
-//  Copyright © 2016 Bernardo Ferreira. All rights reserved.
+//  Created by Bernardo Ferreira on 04/05/15.
+//  Copyright (c) 2015 NovaSYS. All rights reserved.
 //
+#ifndef __BooleanSSE__ClientUtils__
+#define __BooleanSSE__ClientUtils__
 
-#ifndef Utils_h
-#define Utils_h
-
-#include <stdlib.h>
-#include <stdbool.h>
 #include <pthread.h>
-//#include <iostream>
-//#include <fstream>
+#include <iostream>
+#include <fstream>
 #include <dirent.h>
-//#include <set>
-//#include <map>
-//#include <vector>
+#include <set>
+#include <map>
+#include <vector>
 #include <stdint.h>
 #include <math.h>
-//#include <openssl/rand.h>
+#include <openssl/rand.h>
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
-//#include <sstream>
-//#include <iomanip>
+#include <sstream>
+#include <iomanip>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -43,7 +40,8 @@
 //desktop
 //static const char* homePath = "/localssd/a28300/";
 static const char* homePath = "/Users/bernardo/";
-//static const char* serverIP = "127.0.0.1";//"54.194.253.119";
+static const char* serverIP = "127.0.0.1";//"54.194.253.119";
+static const int serverPort = 9978;
 #define  LOGI(...)  fprintf(stdout,__VA_ARGS__)
 
 
@@ -51,13 +49,13 @@ static const char* homePath = "/Users/bernardo/";
 //    int docId;
 //    double score;
 //};
-
+//
 //struct cmp_QueryResult {
 //    bool operator() (const QueryResult& lhs, const QueryResult& rhs) const {
 //        return lhs.docId != rhs.docId && lhs.score >= rhs.score;
 //    }
 //};
-
+//
 //struct Rank {
 //    int textRank;
 //    int imgRank;
@@ -72,7 +70,7 @@ uint64_t pack754(long double f, unsigned bits, unsigned expbits);
 
 long double unpack754(uint64_t i, unsigned bits, unsigned expbits);
 
-int denormalize(float val, int size);
+//int denormalize(float val, int size);
 
 struct timespec getTime();
 
@@ -80,33 +78,27 @@ struct timespec diff(struct timespec start, struct timespec end);
 
 double diffSec(struct timespec start, struct timespec end);
 
-unsigned char *spc_rand(unsigned char *buf, int l);
+//unsigned char *spc_rand(unsigned char *buf, int l);
+//
+//unsigned int spc_rand_uint();
+//
+//float spc_rand_real(void);
+//
+//float spc_rand_real_range(float min, float max);
 
-unsigned int spc_rand_uint();
-
-float spc_rand_real(void);
-
-float spc_rand_real_range(float min, float max);
-
-//std::string getHexRepresentation(const unsigned char * Bytes, size_t Length);
+std::string getHexRepresentation(const unsigned char * Bytes, size_t Length);
 
 void pee(const char *msg);
 
-void peeThread(const char *msg);
-
-int initServer(int sockType, int port);
-
 int sendall(int s, char *buf, long len);
 
-int socketConnect (int socketType, const char* serverIP, int port);
-
-int connectAndSend (char* buff, long size, int socketType, const char* serverIP, int port);
+int connectAndSend (char* buff, long size);
 
 void socketSend (int sockfd, char* buff, long size);
 
 void socketReceive(int sockfd, char* buff, long size);
 
-void socketReceiveAck(int sockfd);
+//void socketReceiveAck(int sockfd);
 
 int receiveAll (int s, char* buff, long len);
 
@@ -124,40 +116,39 @@ float readFloatFromArr (char* arr, int* pos);
 
 double readDoubleFromArr (char* arr, int* pos);
 
-bool wangIsRelevant(int queryID, int resultID);
-
-double scaledTfIdf (double qtf, double tf, double idf);
-
-double getTfIdf (double tf, double idf);
-
-double getIdf (double nDocs, double df);
-
+//bool wangIsRelevant(int queryID, int resultID);
+//
+//double scaledTfIdf (double qtf, double tf, double idf);
+//
+//double getTfIdf (double tf, double idf);
+//
+//double getIdf (double nDocs, double df);
+//
 //std::set<QueryResult,cmp_QueryResult> sort (std::map<int,double>* queryResults);
-
+//
 //std::set<QueryResult,cmp_QueryResult> mergeSearchResults(std::set<QueryResult,cmp_QueryResult>* imgResults,
 //                                                         std::set<QueryResult,cmp_QueryResult>* textResults);
-
+//
 //std::vector<QueryResult> receiveQueryResults(int sockfd);
-
+//
 //std::string exec(const char* cmd);
-
-void zipAndSend(int sockfd, char* buff, long size);
-
-long receiveAndUnzip(int sockfd, char* data);
-
+//
+//void zipAndSend(int sockfd, char* buff, long size);
+//
+//long receiveAndUnzip(int sockfd, char* data);
+//
 //std::vector<std::string>& split(const std::string& s, char delim, std::vector<std::string>& elems);
-
+//
 //void extractFileNames (const char* imgDataset, const char* textDataset, int first, int last, std::map<int,std::string>& imgs, std::map<int,std::string>& docs);
-
+//
 //void extractHolidayFileNames (int nImgs, std::map<int,std::string>& imgs);
-
+//
 //void extractFlickrImgsFileNames (int nImgs, std::map<int,std::string>& imgs);
-
+//
 //void extractFlickrTagsFileNames (int nImgs, std::map<int,std::string>& docs);
-
+//
 //void printHolidayResults (std::string fPath, std::map<int,std::vector<QueryResult> > results);
-
+//
 //float lmDistance (std::vector<float> array1, std::vector<float> array2, float m);
 
-
-#endif /* Utils_h */
+#endif /* defined(__BooleanSSE__ClientUtils__) */

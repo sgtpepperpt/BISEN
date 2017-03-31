@@ -52,10 +52,10 @@ SseServer::SseServer() {
             //setup
             case '1': {
                 I = new map<vector<unsigned char>,vector<unsigned char> >;
-                W = new map<vector<unsigned char>,vector<unsigned char> >;
                 break;
             }
-            //read from W
+/**TODO: Fix and remove W references in following protocols*/
+            //read from W 
             case '2': {
                 //read token from pipe
                 int tokenSize;
@@ -202,6 +202,5 @@ void* SseServer::bridgeClientIeeThread(void* threadData) {
 }
 
 SseServer::~SseServer() {
-    delete I;
-    delete W;
+    delete[] I;
 }

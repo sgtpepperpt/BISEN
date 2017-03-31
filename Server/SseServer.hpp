@@ -37,8 +37,7 @@ private:
     int readIeePipe;
     int writeIeePipe;
     map<vector<unsigned char>,vector<unsigned char> >* I;
-    map<vector<unsigned char>,vector<unsigned char> >* W;
-    
+
     
     static void* bridgeClientIeeThread(void* threadData);
     void addKeyword (int newsockfd);

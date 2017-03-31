@@ -29,13 +29,13 @@ SseIee::SseIee() {
         if (receiveAll(clientBridgePipe, bufAll, len) < 0)
             pee("SseIee::SseIee - ERROR reading data from pipe");
         
-        
-        if (!crypto->hasStoredKcom()) { //setup operation
+        //if kCom is NULL, can only accept setup operation
+        if (!crypto->hasStoredKcom()) {
             vector<unsigned char> data = crypto->decryptPublic((unsigned char*)bufAll, len);
             crypto->storeKcom(data);
             crypto->initKeys();
-            //tell server to init I and W
-            char op = 's';
+            //tell server to init I
+            char op = '1';
             sendall(writeServerPipe, &op, sizeof(char));
         }
         

@@ -11,19 +11,21 @@
 using namespace std;
 
 SseClient::SseClient() {
-    setup();
+    //setup operation does initializations
 }
 
 SseClient::~SseClient() {
     delete analyzer;
     delete crypto;
+    delete[] W;
 }
 
 void SseClient::setup() {
     analyzer = new EnglishAnalyzer;
-    crypto = new ClientCrypt;
-    vector<unsigned char> kCom = crypto->getEncryptedKcom();
+    crypto = new ClientCrypt;   //inits kCom
+    W = new map<vector<unsigned char>,vector<unsigned char> >;
     
+    vector<unsigned char> kCom = crypto->getEncryptedKcom();
     char* buff = new char[kCom.size()];
     for (int i = 0; i < kCom.size(); i++)
         buff[i] = kCom[i];

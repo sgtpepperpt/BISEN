@@ -24,8 +24,7 @@ IeeCrypt::~IeeCrypt() {
     delete IeePrivK;
     delete[] kCom;
     delete[] kEnc;
-    delete[] kW;
-    delete[] kI;
+    delete[] kF;
 }
 
 void IeeCrypt::storeKcom(vector<unsigned char> key) {
@@ -54,11 +53,8 @@ void IeeCrypt::initKeys() {
     kEnc = new unsigned char[symKsize];
     spc_rand(kEnc, symKsize);
     
-    kW = new unsigned char[fKsize];
-    spc_rand(kW, fKsize);
-    
-    kI = new unsigned char[fKsize];
-    spc_rand(kI, fKsize);
+    kF = new unsigned char[fKsize];
+    spc_rand(kF, fKsize);
 }
 
 void IeeCrypt::spc_rand(unsigned char *buf, int l) {

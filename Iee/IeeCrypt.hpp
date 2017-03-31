@@ -27,8 +27,7 @@ private:
     RSA* IeePrivK;
     unsigned char* kCom;
     unsigned char* kEnc;
-    unsigned char* kW;
-    unsigned char* kI;
+    unsigned char* kF;
     
     void spc_rand(unsigned char *buf, int l);
     

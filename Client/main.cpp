@@ -11,6 +11,7 @@
 
 int main(int argc, const char * argv[]) {
     SseClient client;
+    client.setup();
     client.addDocs("/Users/bernardo/Datasets/flickr_tags");
 //    client.addDocs("/Users/bernardo/Datasets/enron");
     

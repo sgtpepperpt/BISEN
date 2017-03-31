@@ -25,6 +25,7 @@ protected:
 
     EnglishAnalyzer* analyzer;
     ClientCrypt* crypto;
+    map<vector<unsigned char>,vector<unsigned char> >* W;
     
     void listTxtFiles (std::string path, std::vector<std::string>& docs);
     

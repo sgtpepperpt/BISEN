@@ -32,7 +32,7 @@ public:
     
     EnglishAnalyzer();
     ~EnglishAnalyzer();
-    vector<string> extractFile(string fname);
+    set<string> extractUniqueKeywords(string fname);
     bool isStopWord(string word);
     
 };

@@ -25,17 +25,20 @@ protected:
 
     EnglishAnalyzer* analyzer;
     ClientCrypt* crypto;
-    map<vector<unsigned char>,vector<unsigned char> >* W;
+    map<string,int >* W;
+    int nDocs;
     
-    void listTxtFiles (std::string path, std::vector<std::string>& docs);
+    void listTxtFiles (string path, vector<string>& docs);
     
 public:
     SseClient();
     ~SseClient();
     
     void setup();
-    void addDocs(string textDataset);
+    void add(int d, string w);
     vector<int> search(string query);
+    
+    void addDocs(string textDataset);
 };
     
 #endif /* SseClient_hpp */

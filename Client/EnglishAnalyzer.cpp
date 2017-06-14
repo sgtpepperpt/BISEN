@@ -24,9 +24,9 @@ void EnglishAnalyzer::increase_s() {
     s = new_s;
 }
 
-vector<string> EnglishAnalyzer::extractFile(string fname) {
+set<string> EnglishAnalyzer::extractUniqueKeywords(string fname) {
     FILE* f = fopen(fname.c_str(),"r");
-    vector<string> words;
+    set<string> words;
     while(true) {
         int ch = getc(f);
         if (ch == EOF) {
@@ -47,7 +47,7 @@ vector<string> EnglishAnalyzer::extractFile(string fname) {
             }
             if (!isStopWord(s)) {
                 s[stem(s,0,i-1)+1] = 0;/* calls the stemmer and uses its result to zero-terminate the string in s */
-                words.push_back(/*crypto.encode(*/ s);
+                words.insert(s);
             }
             memset(s,0,i);
         }

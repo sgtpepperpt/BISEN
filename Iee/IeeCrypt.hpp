@@ -14,6 +14,7 @@
 #include <openssl/rsa.h>
 #include <openssl/pem.h>
 #include <openssl/rand.h>
+#include <openssl/hmac.h>
 #include "IeeUtils.h"
 
 using namespace std;
@@ -21,9 +22,6 @@ using namespace std;
 class IeeCrypt {
     
 private:
-    static const int symKsize = 16;
-    static const int fKsize = 20;
-    
     RSA* IeePrivK;
     unsigned char* kCom;
     unsigned char* kEnc;
@@ -32,12 +30,19 @@ private:
     void spc_rand(unsigned char *buf, int l);
     
 public:
+    static const int symKsize = 16;
+    static const int fKsize = 20;
+    
     IeeCrypt();
     ~IeeCrypt();
+    void initKeys();
     void storeKcom(vector<unsigned char> key);
     bool hasStoredKcom();
     vector<unsigned char> decryptPublic (unsigned char* data, int size);
-    void initKeys();
+    int encryptSymmetric (unsigned char* data, int size, unsigned char* ciphertext);
+    int decryptSymmetric (unsigned char* plaintext, unsigned char* ciphertext, int ciphertextSize);
+    void f (unsigned char* key, unsigned char* data, int dataSize, unsigned char* md);
+    unsigned char* get_kF();
 };
 
 

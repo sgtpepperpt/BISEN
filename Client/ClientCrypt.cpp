@@ -60,12 +60,12 @@ vector<unsigned char> ClientCrypt::encryptPublic (unsigned char* data, int size)
     return v;
 }
 
-vector<unsigned char> ClientCrypt::encryptSymmetric (unsigned char* data, int size) {
+int ClientCrypt::encryptSymmetric (unsigned char* data, int size, unsigned char* ciphertext) {
     EVP_CIPHER_CTX *ctx;
     int len;
     int ciphertext_len;
     unsigned char iv[16] = {0};
-    unsigned char* ciphertext = (unsigned char*)malloc(size+16);
+//    unsigned char* ciphertext = (unsigned char*)malloc(size+16);
     
     if(!(ctx = EVP_CIPHER_CTX_new()))
         pee("CashCrypt::encrypt - could not create ctx\n");
@@ -82,12 +82,14 @@ vector<unsigned char> ClientCrypt::encryptSymmetric (unsigned char* data, int si
     ciphertext_len += len;
     EVP_CIPHER_CTX_free(ctx);
 
-    vector<unsigned char> v;
-    v.resize(ciphertext_len);
-    for (int i = 0; i < ciphertext_len; i++)
-        v[i] = ciphertext[i];
-    free(ciphertext);
-    return v;
+    return ciphertext_len;
+    
+//    vector<unsigned char> v;
+//    v.resize(ciphertext_len);
+//    for (int i = 0; i < ciphertext_len; i++)
+//        v[i] = ciphertext[i];
+//    free(ciphertext);
+//    return v;
 }
 
 
@@ -121,6 +123,8 @@ int ClientCrypt::decryptSymmetric (unsigned char* ciphertext, int ciphertextSize
  
     return plaintext_len;
 }
+
+
 
 unsigned char* ClientCrypt::spc_rand(unsigned char *buf, int l) {
     if (!RAND_bytes(buf, l)) {

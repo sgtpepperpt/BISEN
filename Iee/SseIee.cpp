@@ -31,12 +31,22 @@ SseIee::SseIee() {
         
         //if kCom is NULL, can only accept setup operation
         if (!crypto->hasStoredKcom()) {
-            vector<unsigned char> data = crypto->decryptPublic((unsigned char*)bufAll, len);
-            crypto->storeKcom(data);
-            crypto->initKeys();
-            //tell server to init I
-            char op = '1';
-            sendall(writeServerPipe, &op, sizeof(char));
+            setup(bufAll, len);
+            
+        //already has kCom, decrypt with it and perform update or search
+        } else {
+            char* data = new char[len];
+            int data_len = crypto->decryptSymmetric((unsigned char*)data, (unsigned char*)bufAll, len);
+            delete[] bufAll;
+            
+            //add / update operation
+            if (data[0] == 'a') {
+                add(data, data_len);
+                
+            //search operation
+            } else if (data[0] == 's') {
+                search();
+            }
         }
         
 //        switch (cmd) {
@@ -108,6 +118,62 @@ void SseIee::initIee() {
 }
 
 
+void SseIee::setup(char* bufAll, int len) {
+    vector<unsigned char> data = crypto->decryptPublic((unsigned char*)bufAll, len);
+    delete[] bufAll;
+    crypto->storeKcom(data);
+    crypto->initKeys();
+    //tell server to init I
+    char op = '1';
+    sendall(writeServerPipe, &op, sizeof(char));
+}
+
+
+void SseIee::add(char* data, int data_len) {
+    //get d,c,w from array
+    int pos = 1;
+    const int d = readIntFromArr(data, &pos);
+    const int c = readIntFromArr(data, &pos);
+    const int w_size = data_len - pos;
+    unsigned char* w = new unsigned char [w_size];
+    readFromArr(w, w_size, data, &pos);
+    delete[] data;
+    
+    //calculate key kW
+    unsigned char* kW = new unsigned char[crypto->fKsize];
+    crypto->f(crypto->get_kF(), w, w_size, kW);
+    delete[] w;
+    
+    //calculate index position l
+    unsigned char* l = new unsigned char[crypto->fKsize];
+    crypto->f(kW, (unsigned char*)&c, sizeof(int), l);
+    delete[] kW;
+    
+    //calculate index value enc_d
+    const int enc_d_size = sizeof(int)+16;
+    unsigned char* enc_d = new unsigned char[enc_d_size];
+    crypto->encryptSymmetric((unsigned char*)&d, enc_d_size, enc_d);
+    
+    //send l and enc_d to server
+    char op = '2';
+    sendall(writeServerPipe, &op, sizeof(char));
+    sendall(writeServerPipe, (char*)l, crypto->fKsize);
+    sendall(writeServerPipe, (char*)enc_d, enc_d_size);
+    
+    delete[] l;
+    delete[] enc_d;
+}
+
+
+void SseIee::search() {
+    
+    
+    char op = '3';
+    sendall(writeServerPipe, &op, sizeof(char));
+}
+
+
+
 
 
 //void initServer (int newsockfd) {
@@ -116,9 +182,9 @@ void SseIee::initIee() {
 //    int clnt_fd;
 //    char buf[1];
 //    struct sockaddr_in addr;
-//    
+//
 //    srvr_fd = socket(PF_INET, SOCK_STREAM, 0);
-//    
+//
 //    if (srvr_fd == -1) {
 //        sgx_exit(NULL);
 //    }

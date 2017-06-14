@@ -46,7 +46,80 @@ vector<unsigned char> IeeCrypt::decryptPublic (unsigned char* data, int size) {
     result.resize(decSize);
     for (int i = 0; i < decSize; i++)
         result[i] = decrypt[i];
+    delete[] decrypt;
     return result;
+}
+
+int IeeCrypt::encryptSymmetric (unsigned char* data, int size, unsigned char* ciphertext) {
+    EVP_CIPHER_CTX *ctx;
+    int len;
+    int ciphertext_len;
+    unsigned char iv[16] = {0};
+//    unsigned char* ciphertext = new char[size+16];
+    
+    if(!(ctx = EVP_CIPHER_CTX_new()))
+        pee("CashCrypt::encrypt - could not create ctx\n");
+    
+    if(1 != EVP_EncryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, kCom, iv))
+        pee("CashCrypt::encrypt - could not init encrypt\n");
+    
+    if(1 != EVP_EncryptUpdate(ctx, ciphertext, &len, data, size))
+        pee("CashCrypt::encrypt - could not encrypt update\n");
+    ciphertext_len = len;
+    
+    if(1 != EVP_EncryptFinal_ex(ctx, ciphertext + len, &len))
+        pee("CashCrypt::encrypt - could not encrypt final\n");
+    ciphertext_len += len;
+    EVP_CIPHER_CTX_free(ctx);
+
+    return ciphertext_len;
+    
+//    vector<unsigned char> v;
+//    v.resize(ciphertext_len);
+//    for (int i = 0; i < ciphertext_len; i++)
+//        v[i] = ciphertext[i];
+//    delete[] ciphertext;
+//    return v;
+}
+
+int IeeCrypt::decryptSymmetric (unsigned char* plaintext, unsigned char* ciphertext, int ciphertextSize) {
+    EVP_CIPHER_CTX *ctx;
+    int len;
+    int plaintext_len;
+//    unsigned char* plaintext = new unsigned char[ciphertextSize];
+    unsigned char iv[16] = {0}; //for testing; should be replaced with random iv
+    
+    if (!(ctx = EVP_CIPHER_CTX_new()))
+        pee("IeeCrypt::decryptSymmetric - could not create ctx\n");
+    
+    if(1 != EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, kCom, iv))
+        pee("IeeCrypt::decryptSymmetric - could not init decrypt\n");
+    
+    if(1 != EVP_DecryptUpdate(ctx, plaintext, &len, ciphertext, ciphertextSize))
+        pee("IeeCrypt::decryptSymmetric - could not decrypt update\n");
+    plaintext_len = len;
+    
+    if(1 != EVP_DecryptFinal_ex(ctx, plaintext + len, &len))
+        pee("ServerUtil::decrypt - could not decrypt final\n");
+    plaintext_len += len;
+    EVP_CIPHER_CTX_free(ctx);
+    
+    return plaintext_len;
+    
+//    vector<unsigned char> v;
+//    v.resize(plaintext_len);
+//    for (int i = 0; i < plaintext_len; i++)
+//        v[i] = plaintext[i];
+//    delete[] plaintext;
+//    return v;
+    
+}
+
+void IeeCrypt::f(unsigned char* key, unsigned char* data, int dataSize, unsigned char* md) {
+    unsigned int mdSize;
+    HMAC(EVP_sha1(), key, fKsize, data, dataSize, md, &mdSize);
+    if (mdSize != fKsize)
+        pee("CashCrypt::hmac - md size of different from expected\n");
 }
 
 void IeeCrypt::initKeys() {
@@ -60,4 +133,8 @@ void IeeCrypt::initKeys() {
 void IeeCrypt::spc_rand(unsigned char *buf, int l) {
     if (!RAND_bytes(buf, l))
         pee("The PRNG is not seeded!\n");
+}
+
+unsigned char* IeeCrypt::get_kF() {
+    return kF;
 }

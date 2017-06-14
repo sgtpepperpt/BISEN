@@ -23,7 +23,7 @@ SseClient::~SseClient() {
 void SseClient::setup() {
     analyzer = new EnglishAnalyzer;
     crypto = new ClientCrypt;   //inits kCom
-    W = new map<vector<unsigned char>,vector<unsigned char> >;
+    W = new map<string,int>;
     
     vector<unsigned char> kCom = crypto->getEncryptedKcom();
     char* buff = new char[kCom.size()];
@@ -38,45 +38,64 @@ void SseClient::setup() {
     socketSend (sockfd, buff, kCom.size());
     delete[] buff;
     close(sockfd);
+    
+    nDocs = 0;
+}
+
+void SseClient::add(int d, string w) {
+    int c = 0;
+    map<string,int>::iterator it = W->find(w);
+    if (it != W->end())
+        c = it->second + 1;
+    
+    const int data_size = 2*sizeof(int) + (int)w.size();
+    unsigned char* data = new unsigned char[data_size];
+    int pos = 0;
+    addToArr(&d, sizeof(int), (char*)data, &pos);
+    addToArr(&c, sizeof(int), (char*)data, &pos);
+    for (int i = 0; i < w.size(); i++)
+        addToArr(&w[i], sizeof(char), (char*)data, &pos);
+    
+    int ciphertext_size = data_size+16;
+    unsigned char* ciphertext = new unsigned char[ciphertext_size];
+    ciphertext_size = crypto->encryptSymmetric(data, data_size, ciphertext);
+    delete[] data;
+    
+    char buff[sizeof(int)];
+    pos = 0;
+    addIntToArr(ciphertext_size, buff, &pos);
+    int sockfd = connectAndSend(buff, sizeof(int));
+    
+    socketSend(sockfd, (char*)ciphertext, ciphertext_size);
+    close(sockfd);
+    delete[] ciphertext;
+    
+    (*W)[w] = c;
 }
 
 void SseClient::addDocs(string textDataset) {
     vector<string> tags;
     listTxtFiles(textDataset, tags);
     vector<string>::iterator tags_it=tags.begin();
-    //for each txt file in the dataset
-    while (tags_it != tags.end()) {
+    
+    while (tags_it != tags.end()) {     //for each txt file in the dataset
         //extract text features (keywords)
-        vector<string> keywords = analyzer->extractFile(tags_it->c_str());
-        set<string> uniqueKeywords;
-        for (int j = 0; j < keywords.size(); j++) {
-            uniqueKeywords.insert(keywords[j]); //filters keyword repetitions; no ranking
-//  counts occurence frequency of keyword in document; only used for ranked searching
-//            string keyword = keywords[j];
-//            set<string>::iterator it = uniqueKeywords.find(keyword);
-//            if (it == uniqueKeywords.end())
-//                uniqueKeywords[keyword] = 1;
-//            else
-//                it->second++;
+        set<string> keywords = analyzer->extractUniqueKeywords(tags_it->c_str());
+        
+        //get and inc counters
+        for (set<string>::iterator it=keywords.begin(); it!=keywords.end(); ++it) {
+            int c = 0;
+            map<string,int>::iterator counterIt = W->find(*it);
+            if (counterIt != textDcount->end())
+                c = counterIt->second;
+            encryptAndIndex((void*)it->first.c_str(), (int)it->first.size(), c, it->second, &encTextIndex);
+            (*textDcount)[it->first] = ++c;
         }
+        for (int i = 0; i < numCPU; i++)
+            if (pthread_join (encThreads[i], NULL)) pee("Error:unable to join thread");
+        cryptoTime += diffSec(start, getTime()); //end benchmark
         
-        
-        
-        
-        //index text features (keywords)
-//        for (map<string,int>::iterator it=textTfs.begin(); it!=textTfs.end(); ++it) {
-//            int c = 0;
-//            map<string,int>::iterator counterIt = textDcount->find(it->first);
-//            if (counterIt != textDcount->end())
-//                c = counterIt->second;
-//            encryptAndIndex((void*)it->first.c_str(), (int)it->first.size(), c, it->second, &encTextIndex);
-//            (*textDcount)[it->first] = ++c;
-//        }
-//        for (int i = 0; i < numCPU; i++)
-//            if (pthread_join (encThreads[i], NULL)) pee("Error:unable to join thread");
-//        cryptoTime += diffSec(start, getTime()); //end benchmark
-//        
-//        ++tags_it;
+        ++tags_it;
 
         
 

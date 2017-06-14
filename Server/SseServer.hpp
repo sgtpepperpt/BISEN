@@ -40,9 +40,7 @@ private:
 
     
     static void* bridgeClientIeeThread(void* threadData);
-    void addKeyword (int newsockfd);
-    void search (int newsockfd);
-    void remove (int newsockfd);
+    vector<unsigned char> fillVector(unsigned char* array, int len);
     
 public:
     SseServer();

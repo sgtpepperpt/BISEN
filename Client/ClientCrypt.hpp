@@ -42,7 +42,7 @@ public:
     ~ClientCrypt();
     
     vector<unsigned char> encryptPublic (unsigned char* data, int size);
-    vector<unsigned char> encryptSymmetric (unsigned char* data, int size);
+    int encryptSymmetric (unsigned char* data, int size, unsigned char* ciphertext);
     int decryptSymmetric (unsigned char* ciphertext, int ciphertextSize, unsigned char* plaintext);
     vector<unsigned char> getEncryptedKcom();
     

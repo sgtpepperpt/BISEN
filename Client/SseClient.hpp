@@ -26,9 +26,10 @@ protected:
     EnglishAnalyzer* analyzer;
     ClientCrypt* crypto;
     map<string,int>* W;
- //   int nDocs;
+    int querySocket;
     
-    int getQueryResponseSocket();
+    void openQueryResponseSocket();
+    int acceptQueryResponseSocket();
     void listTxtFiles (string path, vector<string>& docs);
     
 public:

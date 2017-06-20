@@ -11,7 +11,7 @@
 using namespace std;
 
 const char* SseServer::pipeDir = "/tmp/BooleanSSE/";
-
+int SseServer::clientSock;
 
 SseServer::SseServer() {
     //init pipe directory
@@ -52,6 +52,7 @@ SseServer::SseServer() {
             //setup
             case '1': {
                 I = new map<vector<unsigned char>,vector<unsigned char> >;
+                printf("Finished Setup!\n");
                 break;
             }
             // add
@@ -62,13 +63,14 @@ SseServer::SseServer() {
                 vector<unsigned char> l_vector = fillVector(l, l_size);
                 delete[] l;
                 
-                const int d_size = sizeof(int)+16;
+                const int d_size = 16;
                 unsigned char* d = new unsigned char[d_size];
                 socketReceive(readIeePipe, (char*)d, d_size);
                 vector<unsigned char> d_vector = fillVector(d, d_size);
                 delete[] d;
                 
                 (*I)[l_vector] = d_vector;
+                printf("Finished Add!\n");
                 break;
             }
             // search - get index positions
@@ -85,6 +87,7 @@ SseServer::SseServer() {
                     for (int j = 0; j < enc_d.size(); j++)
                         socketSend(writeIeePipe, (char*)&enc_d[j], sizeof(unsigned char));
                 }
+                printf("Finished Search 1st part!\n");
                 break;
             }
             // search - send response to client
@@ -105,94 +108,9 @@ SseServer::SseServer() {
                 
                 close(sockfd);
                 delete[] data;
+                printf("Finished Search 2nd part!\n");
                 break;
             }
-                
-                
-                
-                
-                
-                
-
-//            //read from W 
-//            case '2': {
-//                //read token from pipe
-//                int tokenSize;
-//                read(readIeePipe,&tokenSize,sizeof(int));
-//                vector<unsigned char> token;
-//                for (int i = 0; i < tokenSize; i++)
-//                    read(readIeePipe,&token[i],1);
-//                
-//                //access W
-//                map<vector<unsigned char>,vector<unsigned char>>::iterator it = W->find(token);
-//                if (it == W->end()) {
-//                    puts("requested W key not found");
-//                    break;
-//                }
-//                
-//                //write value to pipe
-//                for (int i = 0; i < it->second.size(); i++)
-//                    write(writeIeePipe,&(it->second[i]),1);
-//                break;
-//            }
-//            //write to W
-//            case '3': {
-//                //read token from pipe
-//                int tokenSize;
-//                read(readIeePipe,&tokenSize,sizeof(int));
-//                vector<unsigned char> token;
-//                for (int i = 0; i < tokenSize; i++)
-//                    read(readIeePipe,&token[i],1);
-//                
-//                //read value from pipe
-//                read(readIeePipe,&tokenSize,sizeof(int));
-//                vector<unsigned char> value;
-//                for (int i = 0; i < tokenSize; i++)
-//                    read(readIeePipe,&value[i],1);
-//                
-//                //write to W
-//                (*W)[token] = value;
-//                break;
-//            }
-//            case '4': { //read from I
-//                //read token from pipe
-//                int tokenSize;
-//                read(readIeePipe,&tokenSize,sizeof(int));
-//                vector<unsigned char> token;
-//                for (int i = 0; i < tokenSize; i++)
-//                    read(readIeePipe,&token[i],1);
-//                
-//                //access W
-//                map<vector<unsigned char>,vector<unsigned char>>::iterator it = I->find(token);
-//                if (it == I->end()) {
-//                    puts("requested W key not found");
-//                    break;
-//                }
-//                
-//                //write value to pipe
-//                for (int i = 0; i < it->second.size(); i++)
-//                    write(writeIeePipe,&(it->second[i]),1);
-//                break;
-//            }
-//            case '5': { //write to I
-//                //read token from pipe
-//                int tokenSize;
-//                read(readIeePipe,&tokenSize,sizeof(int));
-//                vector<unsigned char> token;
-//                for (int i = 0; i < tokenSize; i++)
-//                    read(readIeePipe,&token[i],1);
-//                
-//                //read value from pipe
-//                read(readIeePipe,&tokenSize,sizeof(int));
-//                vector<unsigned char> value;
-//                for (int i = 0; i < tokenSize; i++)
-//                    read(readIeePipe,&value[i],1);
-//                
-//                //write to W
-//                (*I)[token] = value;
-//                break;
-//            }
-
             default:
                 printf("SseServer unkonwn command!\n");
         }
@@ -203,7 +121,7 @@ SseServer::SseServer() {
 void* SseServer::bridgeClientIeeThread(void* threadData) {
     //start listening socket
     struct sockaddr_in serv_addr;
-    int clientSock = socket(AF_INET, SOCK_STREAM, 0);
+    clientSock = socket(AF_INET, SOCK_STREAM, 0);
     if (clientSock < 0)
         pee("ERROR opening socket");
     bzero((char *) &serv_addr, sizeof(serv_addr));
@@ -262,6 +180,7 @@ void* SseServer::bridgeClientIeeThread(void* threadData) {
 
 SseServer::~SseServer() {
     delete[] I;
+    close(clientSock);
 }
 
 vector<unsigned char> SseServer::fillVector(unsigned char* array, int len){

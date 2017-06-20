@@ -35,6 +35,7 @@ private:
 
     int readIeePipe;
     int writeIeePipe;
+    static int clientSock;
     map<vector<unsigned char>,vector<unsigned char> >* I;
 
     

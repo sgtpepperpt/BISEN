@@ -81,7 +81,7 @@ int sendall(int s, char *buf, long len)
     long n = 0;
     
     while(total < len) {
-        n = send(s, buf+total, bytesleft, 0);
+        n = write(s, buf+total, bytesleft);
         if (n == -1) { break; }
         total += n;
         bytesleft -= n;

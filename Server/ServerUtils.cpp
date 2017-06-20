@@ -81,7 +81,7 @@ int sendall(int s, char *buf, long len)
     long n = 0;
     
     while(total < len) {
-        n = send(s, buf+total, bytesleft, 0);
+        n = write(s, buf+total, bytesleft);
         if (n == -1) { break; }
         total += n;
         bytesleft -= n;
@@ -113,7 +113,7 @@ int connectAndSend (char* buff, long size) {
     serv_addr.sin_family = AF_INET;
     bcopy((char *)server->h_addr,(char*)&serv_addr.sin_addr.s_addr,server->h_length);
     serv_addr.sin_port = htons(clientPort);
-    if (connect(sockfd,(struct sockaddr*) &serv_addr,sizeof(serv_addr)) < 0)
+    while (connect(sockfd,(struct sockaddr*) &serv_addr,sizeof(serv_addr)) < 0)
         pee("ERROR connecting");
     socketSend (sockfd, buff, size);
     return sockfd;

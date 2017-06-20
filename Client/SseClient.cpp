@@ -18,13 +18,16 @@ SseClient::~SseClient() {
     delete analyzer;
     delete crypto;
     delete W;
+    close(querySocket);
 }
 
 void SseClient::setup() {
     //init data structures
+    openQueryResponseSocket();
     analyzer = new EnglishAnalyzer;
     crypto = new ClientCrypt;   //inits kCom
-    W = new map<string,int>;
+    W = new map<string,int>;    /**TODO persist W*/
+    
     
     //get encrypted kCom and init buffers
     vector<unsigned char> kCom = crypto->getEncryptedKcom();
@@ -98,14 +101,15 @@ vector<int> SseClient::search(string query) {
     int pos = 0;
     
     addToArr(&op, sizeof(char), (char*)data, &pos);
+    addIntToArr(counter, (char*)data, &pos);
     for (int i = 0; i < query.size(); i++)
         addToArr(&query[i], sizeof(char), (char*)data, &pos);
-    addIntToArr(counter, (char*)data, &pos);
+    
     
     //encrypt query
     int ciphertext_size = data_size + 16;
     unsigned char* ciphertext = new unsigned char[ciphertext_size];
-    ciphertext_size = crypto->encryptSymmetric(data, ciphertext_size, ciphertext);
+    ciphertext_size = crypto->encryptSymmetric(data, data_size, ciphertext);
     delete[] data;
     
     //send query
@@ -119,7 +123,8 @@ vector<int> SseClient::search(string query) {
     close(sockfd);
     
     //open socket and receive results
-    int response_sockfd = getQueryResponseSocket();
+    /**TODO Cliente abrir socket não é muito bom; Implementar solução melhor*/
+    int response_sockfd = acceptQueryResponseSocket();
     bzero(buff, sizeof(int));
     socketReceive(response_sockfd, buff, sizeof(int));
     pos = 0;
@@ -138,31 +143,37 @@ vector<int> SseClient::search(string query) {
     const int nDocs = result_size / sizeof(int);
     vector<int> results(nDocs);
     pos = 0;
-    for (int i = 0; i < nDocs; i++)
-        results[i] = readIntFromArr((char*)result_buff, &pos);
+    for (int i = 0; i < nDocs; i++) {
+//        results[i] = readIntFromArr((char*)result_buff, &pos);
+        memcpy(&results[i], result_buff+pos, sizeof(int));
+        pos += sizeof(int);
+    }
     
     delete[] result_buff;
     return results;
 }
 
 
-int SseClient::getQueryResponseSocket() {
+void SseClient::openQueryResponseSocket() {
     struct sockaddr_in serv_addr;
-    int clientSock = socket(AF_INET, SOCK_STREAM, 0);
-    if (clientSock < 0)
+    querySocket = socket(AF_INET, SOCK_STREAM, 0);
+    if (querySocket < 0)
         pee("SseClient::getQueryResponseSocket ERROR opening socket");
     bzero((char *) &serv_addr, sizeof(serv_addr));
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_addr.s_addr = INADDR_ANY;
     serv_addr.sin_port = htons(clientPort);
-    if (bind(clientSock, (const struct sockaddr *) &serv_addr,(socklen_t)sizeof(serv_addr)) < 0)
+    if (bind(querySocket, (const struct sockaddr *) &serv_addr,(socklen_t)sizeof(serv_addr)) < 0)
         pee("SseClient::getQueryResponseSocket ERROR on binding");
-    listen(clientSock,5);
+    listen(querySocket,5);
+}
+
+int SseClient::acceptQueryResponseSocket() {
     int newsockfd = -1;
     while (newsockfd < 0) {
         struct sockaddr_in cli_addr;
         socklen_t clilen = sizeof(cli_addr);
-        newsockfd = accept(clientSock, (struct sockaddr *) &cli_addr, &clilen);
+        newsockfd = accept(querySocket, (struct sockaddr *) &cli_addr, &clilen);
     }
     return newsockfd;
 }

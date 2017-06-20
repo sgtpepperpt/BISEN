@@ -46,33 +46,6 @@ SseIee::SseIee() {
             delete[] data;
         }
         delete[] enc_data;
-        
-            
-            
-            
-//        switch (cmd) {
-//                //read from W
-//            case '1':
-//                //read token from pipe
-//                int tokenSize;
-//                read(readIeePipe,&tokenSize,sizeof(int));
-//                vector<unsigned char> token;
-//                for (int i = 0; i < tokenSize; i++)
-//                    read(readIeePipe,&token[i],1);
-//                
-//                //access W
-//                map<vector<unsigned char>,vector<unsigned char>>::iterator it = W->find(token);
-//                if (it == W->end()) {
-//                    puts("requested W key not found");
-//                    break;
-//                }
-//                
-//                //write value to pipe
-//                for (int i = 0; i < it->second.size(); i++)
-//                    write(writeIeePipe,&(it->second[i]),1);
-//                break;
-//        }
-        
     }
 }
 
@@ -132,6 +105,7 @@ void SseIee::setup(unsigned char* enc_data, int enc_data_size) {
     //tell server to init index I
     char op = '1';
     socketSend(writeServerPipe, &op, sizeof(char));
+    printf("Finished Setup!\n");
 }
 
 
@@ -167,6 +141,7 @@ void SseIee::add(char* data, int data_len) {
     
     delete[] label;
     delete[] enc_data;
+    printf("Finished Add!\n");
 }
 
 
@@ -226,6 +201,12 @@ void SseIee::search(char* query, int query_size) {
         socketReceive(readServerPipe, (char*)enc_data, crypto->symBlocksize);
         crypto->decryptSymmetric(data, enc_data, crypto->symBlocksize, crypto->get_kEnc());
         addToArr((char*)data, sizeof(int), buff, &pos);
+
+/** Another way of doing it
+        int d = -1;
+        memcpy(&d, data, sizeof(int));
+        addIntToArr(d, buff, &pos); 
+ **/
         bzero(enc_data, crypto->symBlocksize);
         bzero(data, crypto->symBlocksize);
     }
@@ -251,6 +232,7 @@ void SseIee::search(char* query, int query_size) {
     delete[] buff;
     
     socketSend(writeServerPipe, (char*)enc_results, enc_results_size);
+    printf("Finished Search!\n");
 }
 
 

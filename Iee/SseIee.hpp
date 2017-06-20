@@ -39,9 +39,9 @@ private:
     int clientBridgePipe;
     
     void initIee();
-    void setup(char* bufAll, int len);
-    void add(char* data, int data_len);
-    void search();
+    void setup(unsigned char* enc_data, int enc_data_size);
+    void add(char* data, int data_size);
+    void search(char* data, int data_size);
     
 public:
     SseIee();

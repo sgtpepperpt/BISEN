@@ -105,6 +105,20 @@ int receiveAll (int socket, char* buff, long len) {
     return r;
 }
 
+int connectAndSend (char* buff, long size) {
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    struct hostent *server = gethostbyname(clientIP);
+    struct sockaddr_in serv_addr;
+    bzero((char *) &serv_addr, sizeof(serv_addr));
+    serv_addr.sin_family = AF_INET;
+    bcopy((char *)server->h_addr,(char*)&serv_addr.sin_addr.s_addr,server->h_length);
+    serv_addr.sin_port = htons(clientPort);
+    if (connect(sockfd,(struct sockaddr*) &serv_addr,sizeof(serv_addr)) < 0)
+        pee("ERROR connecting");
+    socketSend (sockfd, buff, size);
+    return sockfd;
+}
+
 void addToArr (void* val, int size, char* arr, int* pos) {
     memcpy(&arr[*pos], val, size);
     *pos += size;

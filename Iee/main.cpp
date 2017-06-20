@@ -10,6 +10,7 @@
 #include "SseIee.hpp"
 
 int main(int argc, const char * argv[]) {
+    setvbuf(stdout, NULL, _IONBF, 0);
     SseIee iee;
     
     return 0;

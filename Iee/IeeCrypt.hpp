@@ -30,8 +30,8 @@ private:
     void spc_rand(unsigned char *buf, int l);
     
 public:
-    static const int symKsize = 16;
-    static const int fKsize = 20;
+    static const int symBlocksize = 16;
+    static const int fBlocksize = 20;
     
     IeeCrypt();
     ~IeeCrypt();
@@ -39,10 +39,12 @@ public:
     void storeKcom(vector<unsigned char> key);
     bool hasStoredKcom();
     vector<unsigned char> decryptPublic (unsigned char* data, int size);
-    int encryptSymmetric (unsigned char* data, int size, unsigned char* ciphertext);
-    int decryptSymmetric (unsigned char* plaintext, unsigned char* ciphertext, int ciphertextSize);
+    int encryptSymmetric (unsigned char* data, int size, unsigned char* ciphertext, unsigned char* key);
+    int decryptSymmetric (unsigned char* plaintext, unsigned char* ciphertext, int ciphertextSize, unsigned char* key);
     void f (unsigned char* key, unsigned char* data, int dataSize, unsigned char* md);
     unsigned char* get_kF();
+    unsigned char* get_kCom();
+    unsigned char* get_kEnc();
 };
 
 

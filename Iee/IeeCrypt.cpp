@@ -50,7 +50,7 @@ vector<unsigned char> IeeCrypt::decryptPublic (unsigned char* data, int size) {
     return result;
 }
 
-int IeeCrypt::encryptSymmetric (unsigned char* data, int size, unsigned char* ciphertext) {
+int IeeCrypt::encryptSymmetric (unsigned char* data, int size, unsigned char* ciphertext, unsigned char* key) {
     EVP_CIPHER_CTX *ctx;
     int len;
     int ciphertext_len;
@@ -60,7 +60,7 @@ int IeeCrypt::encryptSymmetric (unsigned char* data, int size, unsigned char* ci
     if(!(ctx = EVP_CIPHER_CTX_new()))
         pee("CashCrypt::encrypt - could not create ctx\n");
     
-    if(1 != EVP_EncryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, kCom, iv))
+    if(1 != EVP_EncryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv))
         pee("CashCrypt::encrypt - could not init encrypt\n");
     
     if(1 != EVP_EncryptUpdate(ctx, ciphertext, &len, data, size))
@@ -82,17 +82,17 @@ int IeeCrypt::encryptSymmetric (unsigned char* data, int size, unsigned char* ci
 //    return v;
 }
 
-int IeeCrypt::decryptSymmetric (unsigned char* plaintext, unsigned char* ciphertext, int ciphertextSize) {
+int IeeCrypt::decryptSymmetric (unsigned char* plaintext, unsigned char* ciphertext, int ciphertextSize, unsigned char* key) {
     EVP_CIPHER_CTX *ctx;
     int len;
     int plaintext_len;
 //    unsigned char* plaintext = new unsigned char[ciphertextSize];
-    unsigned char iv[16] = {0}; //for testing; should be replaced with random iv
+    unsigned char iv[symBlocksize] = {0}; //for testing; should be replaced with random iv
     
     if (!(ctx = EVP_CIPHER_CTX_new()))
         pee("IeeCrypt::decryptSymmetric - could not create ctx\n");
     
-    if(1 != EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, kCom, iv))
+    if(1 != EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv))
         pee("IeeCrypt::decryptSymmetric - could not init decrypt\n");
     
     if(1 != EVP_DecryptUpdate(ctx, plaintext, &len, ciphertext, ciphertextSize))
@@ -117,17 +117,17 @@ int IeeCrypt::decryptSymmetric (unsigned char* plaintext, unsigned char* ciphert
 
 void IeeCrypt::f(unsigned char* key, unsigned char* data, int dataSize, unsigned char* md) {
     unsigned int mdSize;
-    HMAC(EVP_sha1(), key, fKsize, data, dataSize, md, &mdSize);
-    if (mdSize != fKsize)
+    HMAC(EVP_sha1(), key, fBlocksize, data, dataSize, md, &mdSize);
+    if (mdSize != fBlocksize)
         pee("CashCrypt::hmac - md size of different from expected\n");
 }
 
 void IeeCrypt::initKeys() {
-    kEnc = new unsigned char[symKsize];
-    spc_rand(kEnc, symKsize);
+    kEnc = new unsigned char[symBlocksize];
+    spc_rand(kEnc, symBlocksize);
     
-    kF = new unsigned char[fKsize];
-    spc_rand(kF, fKsize);
+    kF = new unsigned char[fBlocksize];
+    spc_rand(kF, fBlocksize);
 }
 
 void IeeCrypt::spc_rand(unsigned char *buf, int l) {
@@ -137,4 +137,12 @@ void IeeCrypt::spc_rand(unsigned char *buf, int l) {
 
 unsigned char* IeeCrypt::get_kF() {
     return kF;
+}
+
+unsigned char* IeeCrypt::get_kCom() {
+    return kCom;
+}
+
+unsigned char* IeeCrypt::get_kEnc() {
+    return kEnc;
 }

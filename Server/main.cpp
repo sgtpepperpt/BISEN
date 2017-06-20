@@ -10,6 +10,7 @@
 #include "SseServer.hpp"
 
 int main(int argc, const char * argv[]) {
+    setvbuf(stdout, NULL, _IONBF, 0);
     SseServer server;
     
     return 0;

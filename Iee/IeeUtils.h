@@ -29,6 +29,8 @@ long double unpack754(uint64_t i, unsigned bits, unsigned expbits);
 
 void pee(const char *msg);
 
+void socketSend (int sockfd, char* buff, long size);
+
 int sendall(int s, char *buf, long len);
 
 void socketReceive(int sockfd, char* buff, long size);

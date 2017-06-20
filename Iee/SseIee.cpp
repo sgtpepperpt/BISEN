@@ -18,37 +18,38 @@ SseIee::SseIee() {
     //start listening for client calls through bridge
     while (true) {
         //receive data
-        char* buf = new char[sizeof(int)];
-        if (receiveAll(clientBridgePipe, buf, sizeof(int)) < 0)
-            pee("SseIee::SseIee - ERROR reading len from pipe");
+        char buff[sizeof(int)];
+        socketReceive(clientBridgePipe, buff, sizeof(int));
         int pos = 0;
-        int len = readIntFromArr(buf, &pos);
-        delete[] buf;
+        const int enc_data_size = readIntFromArr(buff, &pos);
         
-        char* bufAll = new char[len];
-        if (receiveAll(clientBridgePipe, bufAll, len) < 0)
-            pee("SseIee::SseIee - ERROR reading data from pipe");
+        unsigned char* enc_data = new unsigned char[enc_data_size];
+        socketReceive(clientBridgePipe, (char*)enc_data, enc_data_size);
         
-        //if kCom is NULL, can only accept setup operation
+        //process request
         if (!crypto->hasStoredKcom()) {
-            setup(bufAll, len);
-            
-        //already has kCom, decrypt with it and perform update or search
+            //if kCom is NULL, can only accept setup operation
+            setup(enc_data, enc_data_size);
         } else {
-            char* data = new char[len];
-            int data_len = crypto->decryptSymmetric((unsigned char*)data, (unsigned char*)bufAll, len);
-            delete[] bufAll;
+            //already has kCom, decrypt with it and perform update or search
+            char* data = new char[enc_data_size];
+            int data_size = crypto->decryptSymmetric((unsigned char*)data, enc_data, enc_data_size, crypto->get_kCom());
             
             //add / update operation
-            if (data[0] == 'a') {
-                add(data, data_len);
+            if (data[0] == 'a')
+                add(data, data_size);
                 
             //search operation
-            } else if (data[0] == 's') {
-                search();
-            }
+            else if (data[0] == 's')
+                search(data, data_size);
+            
+            delete[] data;
         }
+        delete[] enc_data;
         
+            
+            
+            
 //        switch (cmd) {
 //                //read from W
 //            case '1':
@@ -71,13 +72,16 @@ SseIee::SseIee() {
 //                    write(writeIeePipe,&(it->second[i]),1);
 //                break;
 //        }
+        
     }
-    
 }
 
 
 SseIee::~SseIee() {
-    
+    crypto->~IeeCrypt();
+    close(readServerPipe);
+    close(writeServerPipe);
+    close(clientBridgePipe);
 }
 
 
@@ -115,17 +119,19 @@ void SseIee::initIee() {
         if(errno != EEXIST)
             pee("SseServer::bridgeClientIeeThread: Fail to mknod");
     clientBridgePipe = open(pipeName, O_ASYNC | O_RDONLY);
+    
+    printf("Finished IEE init! Gonna start listening for client requests through bridge!\n");
 }
 
 
-void SseIee::setup(char* bufAll, int len) {
-    vector<unsigned char> data = crypto->decryptPublic((unsigned char*)bufAll, len);
-    delete[] bufAll;
+void SseIee::setup(unsigned char* enc_data, int enc_data_size) {
+    vector<unsigned char> data = crypto->decryptPublic(enc_data, enc_data_size);
     crypto->storeKcom(data);
     crypto->initKeys();
-    //tell server to init I
+    
+    //tell server to init index I
     char op = '1';
-    sendall(writeServerPipe, &op, sizeof(char));
+    socketSend(writeServerPipe, &op, sizeof(char));
 }
 
 
@@ -135,41 +141,116 @@ void SseIee::add(char* data, int data_len) {
     const int d = readIntFromArr(data, &pos);
     const int c = readIntFromArr(data, &pos);
     const int w_size = data_len - pos;
-    unsigned char* w = new unsigned char [w_size];
+    char* w = new char [w_size];
     readFromArr(w, w_size, data, &pos);
-    delete[] data;
     
     //calculate key kW
-    unsigned char* kW = new unsigned char[crypto->fKsize];
-    crypto->f(crypto->get_kF(), w, w_size, kW);
+    unsigned char* kW = new unsigned char[crypto->fBlocksize];
+    crypto->f(crypto->get_kF(), (unsigned char*)w, w_size, kW);
     delete[] w;
     
-    //calculate index position l
-    unsigned char* l = new unsigned char[crypto->fKsize];
-    crypto->f(kW, (unsigned char*)&c, sizeof(int), l);
+    //calculate index position label
+    unsigned char* label = new unsigned char[crypto->fBlocksize];
+    crypto->f(kW, (unsigned char*)&c, sizeof(int), label);
     delete[] kW;
     
-    //calculate index value enc_d
-    const int enc_d_size = sizeof(int)+16;
-    unsigned char* enc_d = new unsigned char[enc_d_size];
-    crypto->encryptSymmetric((unsigned char*)&d, enc_d_size, enc_d);
+    //calculate index value enc_data
+    int enc_data_size = sizeof(int)+crypto->symBlocksize;
+    unsigned char* enc_data = new unsigned char[enc_data_size];
+    enc_data_size = crypto->encryptSymmetric((unsigned char*)&d, sizeof(int), enc_data, crypto->get_kEnc());
     
-    //send l and enc_d to server
+    //send label and enc_data to server
     char op = '2';
-    sendall(writeServerPipe, &op, sizeof(char));
-    sendall(writeServerPipe, (char*)l, crypto->fKsize);
-    sendall(writeServerPipe, (char*)enc_d, enc_d_size);
+    socketSend(writeServerPipe, &op, sizeof(char));
+    socketSend(writeServerPipe, (char*)label, crypto->fBlocksize);
+    socketSend(writeServerPipe, (char*)enc_data, enc_data_size);
     
-    delete[] l;
-    delete[] enc_d;
+    delete[] label;
+    delete[] enc_data;
 }
 
 
-void SseIee::search() {
+void SseIee::search(char* query, int query_size) {
+    //read counter from buffer
+    int pos = 1;
+    int counter = readIntFromArr(query, &pos) + 1;
     
+    //read query
+    int len = query_size - sizeof(char) - sizeof(int);
+    char* buff = new char[len];
+    readFromArr(buff, len, query, &pos);
     
+    //calculate key kW
+    unsigned char* kW = new unsigned char[crypto->fBlocksize];
+    crypto->f(crypto->get_kF(), (unsigned char*)buff, len, kW);
+    delete[] buff;
+    
+    //calculate relevant index positions
+    vector< vector<unsigned char> > labels (counter);
+    unsigned char* l = new unsigned char[crypto->fBlocksize];
+    for (int c = 0; c < counter; c++) {
+        crypto->f(kW, (unsigned char*)&c, sizeof(int), l);
+        vector<unsigned char> label (crypto->fBlocksize);
+        for (int i = 0; i < crypto->fBlocksize; i++)
+            label[i] = l[i];
+        labels[c] = label;
+        bzero(l, crypto->fBlocksize);
+    }
+    delete[] l;
+    delete[] kW;
+    
+    //randomize index postions
+    /**TODO*/
+    
+    //request index positions from server
+    len = sizeof(char) + sizeof(int) + counter * crypto->fBlocksize;
+    buff = new char[len];
     char op = '3';
-    sendall(writeServerPipe, &op, sizeof(char));
+    pos = 0;
+    addToArr(&op, sizeof(char), buff, &pos);
+    addIntToArr(counter, buff, &pos);
+    for (int i = 0; i < counter; i++)
+        for (int j = 0; j < crypto->fBlocksize; j++)
+            addToArr(&(labels[i][j]), sizeof(unsigned char), buff, &pos);
+    
+    socketSend(writeServerPipe, buff, len);
+    delete[] buff;
+    
+    //decrypt query results
+    len = counter * sizeof(int);
+    buff = new char[len];
+    unsigned char* enc_data = new unsigned char[crypto->symBlocksize];
+    unsigned char* data = new unsigned char[crypto->symBlocksize];
+    pos = 0;
+    for (int i = 0; i < counter; i++) {
+        socketReceive(readServerPipe, (char*)enc_data, crypto->symBlocksize);
+        crypto->decryptSymmetric(data, enc_data, crypto->symBlocksize, crypto->get_kEnc());
+        addToArr((char*)data, sizeof(int), buff, &pos);
+        bzero(enc_data, crypto->symBlocksize);
+        bzero(data, crypto->symBlocksize);
+    }
+    delete[] enc_data;
+    delete[] data;
+    
+    //calculate boolean formula here; for now its sinlge keyword
+    
+    //send query results with kCom
+    int enc_results_size = len + crypto->symBlocksize;
+    unsigned char* enc_results = new unsigned char[enc_results_size];
+    enc_results_size = crypto->encryptSymmetric((unsigned char*)buff, len, enc_results, crypto->get_kCom());
+    delete[] buff;
+    
+    //send results to client
+    op = '4';
+    socketSend(writeServerPipe, &op, sizeof(char));
+    
+    buff = new char[sizeof(int)];
+    pos = 0;
+    addIntToArr(enc_results_size, buff, &pos);
+    socketSend(writeServerPipe, buff, sizeof(int));
+    delete[] buff;
+    
+    socketSend(writeServerPipe, (char*)enc_results, enc_results_size);
 }
 
 

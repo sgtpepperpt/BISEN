@@ -10,9 +10,10 @@
 #include "SseClient.hpp"
 
 int main(int argc, const char * argv[]) {
+    setvbuf(stdout, NULL, _IONBF, 0);
     SseClient client;
     client.setup();
-    client.addDocs("/Users/bernardo/Datasets/flickr_tags");
+//    client.addDocs("/Users/bernardo/Datasets/flickr_tags");
 //    client.addDocs("/Users/bernardo/Datasets/enron");
     
     return 0;

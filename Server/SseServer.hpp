@@ -31,7 +31,6 @@ using namespace std;
 class SseServer {
     
 private:
-    static const int serverPort = 9978;
     static const char* pipeDir;
 
     int readIeePipe;

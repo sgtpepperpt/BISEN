@@ -1,8 +1,8 @@
 Client : Main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o ClientUtils.o PorterStemmer.o
-	g++ -o Client Main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o ClientUtils.o PorterStemmer.o -lcrypto -ldl -pthread
+	g++ -o Client main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o ClientUtils.o PorterStemmer.o -lcrypto -ldl -pthread
 
 Debug : Main.debug SseClient.debug ClientCrypt.debug EnglishAnalyzer.debug ClientUtils.debug PorterStemmer.debug
-	g++ -o Client Main.debug SseClient.debug ClientCrypt.debug EnglishAnalyzer.debug ClientUtils.debug PorterStemmer.debug -lcrypto -ldl -pthread
+	g++ -o Client main.debug SseClient.debug ClientCrypt.debug EnglishAnalyzer.debug ClientUtils.debug PorterStemmer.debug -lcrypto -ldl -pthread
 
 Main.o : main.cpp
 	g++ -std=c++11 -pthread -c main.cpp
@@ -23,7 +23,7 @@ PorterStemmer.o : PorterStemmer.c
 	gcc -pthread -c PorterStemmer.c
 
 Main.debug : main.cpp
-	g++ -std=c++11 -pthread -g -O0 -c main.cpp -o Main.debug
+	g++ -std=c++11 -pthread -g -O0 -c main.cpp -o main.debug
 
 SseClient.debug : SseClient.cpp
 	g++ -std=c++11 -pthread -g -O0 -c SseClient.cpp -o SseClient.debug
@@ -41,6 +41,6 @@ PorterStemmer.debug : PorterStemmer.c
 	gcc -pthread -g -O0 -c PorterStemmer.c -o PorterStemmer.debug
 
 clean :
-	rm Server Main.o MIEServer.o MIEServerMT.o SSEServer.o ServerUtil.o CashServer.o PaillierCashServer.o paillier.o core
+	rm -f Client main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o ClientUtils.o PorterStemmer.o main.debug SseClient.debug ClientCrypt.debug EnglishAnalyzer.debug ClientUtils.debug PorterStemmer.debug
 
 .PHONY: run clean

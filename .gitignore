@@ -22,3 +22,40 @@ xcuserdata
 *.xccheckout
 *.moved-aside
 *.xcuserstate
+
+# executables
+Client/Client
+Server/Server
+Iee/Iee
+
+# Created by https://www.gitignore.io/api/c++,linux
+
+### C++ ###
+*.d
+*.slo
+*.lo
+*.o
+*.obj
+*.debug
+*.gch
+*.pch
+*.so
+*.dylib
+*.dll
+*.mod
+*.smod
+*.lai
+*.la
+*.a
+*.lib
+*.exe
+*.out
+*.app
+
+### Linux ###
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+# End of https://www.gitignore.io/api/c++,linux

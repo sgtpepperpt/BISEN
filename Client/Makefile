@@ -7,6 +7,9 @@ endif
 Client : Main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o ClientUtils.o PorterStemmer.o
 	g++ -o Client Main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o ClientUtils.o PorterStemmer.o -lcrypto -ldl -pthread
 
+Debug : Main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o ClientUtils.o PorterStemmer.o
+	g++ -o Client Main.debug SseClient.debug ClientCrypt.debug EnglishAnalyzer.debug ClientUtils.debug PorterStemmer.debug -lcrypto -ldl -pthread
+
 Main.o : main.cpp
 	g++ -std=c++11 -pthread -c main.cpp
 
@@ -24,6 +27,27 @@ ClientUtils.o : ClientUtils.cpp
 
 PorterStemmer.o : PorterStemmer.c
 	gcc -pthread -c PorterStemmer.c
+
+
+Main.debug : main.cpp
+g++ -std=c++11 -pthread -g -O0 -c main.cpp
+
+SseClient.debug : SseClient.cpp
+g++ -std=c++11 -pthread -g -O0 -c SseClient.cpp
+
+ClientCrypt.debug : ClientCrypt.cpp
+g++ -std=c++11 -pthread -g -O0 -c ClientCrypt.cpp
+
+EnglishAnalyzer.debug : EnglishAnalyzer.cpp
+g++ -std=c++11 -pthread -g -O0 -c EnglishAnalyzer.cpp
+
+ClientUtils.debug : ClientUtils.cpp
+g++ -std=c++11 -pthread -g -O0 -c ClientUtils.cpp
+
+PorterStemmer.debug : PorterStemmer.c
+gcc -pthread -g -O0 -c PorterStemmer.c
+
+
 
 clean :
 	rm Server Main.o MIEServer.o MIEServerMT.o SSEServer.o ServerUtil.o CashServer.o PaillierCashServer.o paillier.o core

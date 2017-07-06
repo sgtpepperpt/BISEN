@@ -23,22 +23,22 @@ PorterStemmer.o : PorterStemmer.c
 	gcc -pthread -c PorterStemmer.c
 
 Main.debug : main.cpp
-	g++ -std=c++11 -pthread -g -O0 -c main.cpp
+	g++ -std=c++11 -pthread -g -O0 -c main.cpp -o Main.debug
 
 SseClient.debug : SseClient.cpp
-	g++ -std=c++11 -pthread -g -O0 -c SseClient.cpp
+	g++ -std=c++11 -pthread -g -O0 -c SseClient.cpp -o SseClient.debug
 
 ClientCrypt.debug : ClientCrypt.cpp
-	g++ -std=c++11 -pthread -g -O0 -c ClientCrypt.cpp
+	g++ -std=c++11 -pthread -g -O0 -c ClientCrypt.cpp -o ClientCrypt.debug
 
 EnglishAnalyzer.debug : EnglishAnalyzer.cpp
-	g++ -std=c++11 -pthread -g -O0 -c EnglishAnalyzer.cpp
+	g++ -std=c++11 -pthread -g -O0 -c EnglishAnalyzer.cpp -o EnglishAnalyzer.debug
 
 ClientUtils.debug : ClientUtils.cpp
-	g++ -std=c++11 -pthread -g -O0 -c ClientUtils.cpp
+	g++ -std=c++11 -pthread -g -O0 -c ClientUtils.cpp -o ClientUtils.debug
 
 PorterStemmer.debug : PorterStemmer.c
-	gcc -pthread -g -O0 -c PorterStemmer.c
+	gcc -pthread -g -O0 -c PorterStemmer.c -o PorterStemmer.debug
 
 clean :
 	rm Server Main.o MIEServer.o MIEServerMT.o SSEServer.o ServerUtil.o CashServer.o PaillierCashServer.o paillier.o core

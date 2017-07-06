@@ -8,7 +8,7 @@ Client : Main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o ClientUtils.o Porter
 g++ -o Client Main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o ClientUtils.o PorterStemmer.o -lcrypto -ldl -pthread
 
 Main.o : main.cpp
-g++ -std=c++11 -pthread -c Main.cpp
+g++ -std=c++11 -pthread -c main.cpp
 
 SseClient.o : SseClient.cpp
 g++ -std=c++11 -pthread -c SseClient.cpp

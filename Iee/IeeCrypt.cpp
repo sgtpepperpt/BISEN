@@ -14,7 +14,7 @@ IeeCrypt::IeeCrypt() {
     //read IEE private key from disk
     char keyPath[256];
     strcpy(keyPath, homePath);
-    strcpy(keyPath+strlen(keyPath), "Data/Client/BooleanSSE/IeePriv.pem");
+    strcpy(keyPath+strlen(keyPath), ieePrivFile);
     FILE* f = fopen(keyPath, "rb");
     IeePrivK = PEM_read_RSAPrivateKey(f, NULL, NULL, NULL);
     fclose(f);

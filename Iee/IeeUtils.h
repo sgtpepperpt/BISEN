@@ -16,12 +16,15 @@
 #include <sys/socket.h>
 #include <string.h>
 
+#include <stdint.h> // added to work on linux
+#include <arpa/inet.h> // added to work on linux
+
 #define pack754_32(f) (pack754((f), 32, 8))
 #define pack754_64(f) (pack754((f), 64, 11))
 #define unpack754_32(i) (unpack754((i), 32, 8))
 #define unpack754_64(i) (unpack754((i), 64, 11))
 
-static const char* homePath = "/Users/bernardo/";
+static const char* homePath = getenv("HOME_DIR") ? getenv("HOME_DIR") : "/Users/bernardo/";
 
 uint64_t pack754(long double f, unsigned bits, unsigned expbits);
 

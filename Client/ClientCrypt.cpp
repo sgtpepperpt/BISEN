@@ -15,19 +15,19 @@ using namespace std;
 ClientCrypt::ClientCrypt() {
     //read IEE public key from disk
     string keyFilename = homePath;
-    FILE* f = fopen((keyFilename+"Data/Client/BooleanSSE/IeePub.pem").c_str(), "rb");
+    FILE* f = fopen((keyFilename+ieePubFile).c_str(), "rb");
     IeePubK = PEM_read_RSA_PUBKEY(f, NULL, NULL, NULL);
     fclose(f);
     
     //read symmetric key from disk or generate and persist
     keyFilename = homePath;
-    f = fopen((keyFilename+"Data/Client/BooleanSSE/Kcom").c_str(), "rb");
+    f = fopen((keyFilename+KcomFile).c_str(), "rb");
     Kcom = new unsigned char[symKsize]; //Kcom = (unsigned char*)malloc(symKsize);
     if (f != NULL)
         fread (Kcom, 1, symKsize, f);
     else {
         spc_rand(Kcom, symKsize);
-        f = fopen((keyFilename+"Data/Client/BooleanSSE/Kcom").c_str(), "wb");
+        f = fopen((keyFilename+KcomFile).c_str(), "wb");
         fwrite(Kcom, 1, symKsize, f);
     }
     fclose(f);

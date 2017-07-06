@@ -19,7 +19,8 @@
 #include <openssl/rand.h>
 #include "ClientUtils.h"
 
-
+static const char* ieePubFile = getenv("IEE_PUB_FILE") ? getenv("IEE_PUB_FILE") : "Data/Client/BooleanSSE/IeePub.pem";
+static const char* KcomFile = getenv("KCOM_FILE") ? getenv("KCOM_FILE") : "Data/Client/BooleanSSE/Kcom";
 
 using namespace std;
 

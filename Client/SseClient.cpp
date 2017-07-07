@@ -100,7 +100,7 @@ vector<int> SseClient::search(string query) {
 	
 	int data_size = sizeof(char); // char from op
 	
-	// first query iteration to get needed size and counters
+	// first query iteration: to get needed size and counters
 	for(int i = 0; i < rpn.size(); i++) {
     	token tkn = rpn[i];
     	//cout << tkn.type << " " << tkn.word << endl << sizeof(tkn.word) << endl;
@@ -126,7 +126,7 @@ vector<int> SseClient::search(string query) {
     char op = 's';
     addToArr(&op, sizeof(char), (char*)data, &pos);
     
-    // second query iteration to fill "data"
+    // second query iteration: to fill "data" buffer
     for(vector<token>::iterator it = rpn.begin(); it != rpn.end(); ++it) {
     	token tkn = *it;
 

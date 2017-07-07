@@ -146,7 +146,7 @@ void SseIee::add(char* data, int data_len) {
 
 
 void SseIee::search(char* buffer, int query_size) {
-	queue<token> query;
+	vector<token> query; //TODO for boolean eval should be queue, but we have to iterate twice before that for now...
 	
 	//read buffer
 	int pos = 1;
@@ -157,6 +157,9 @@ void SseIee::search(char* buffer, int query_size) {
     	readFromArr(tmp_type, 1, buffer, &pos);
     	
     	tkn.type = tmp_type[0];
+    	delete[] tmp_type;
+    	
+    	cout<< "type is "<< tkn.type <<endl;
     	
     	if(tkn.type == 't') {
     		// read counter
@@ -170,79 +173,104 @@ void SseIee::search(char* buffer, int query_size) {
 				readFromArr(tmp, 1, buffer, &pos);
     			
     			tkn.word += tmp[0];
+    			//
     		} while(tmp[0] != '\0');
     		
+    		delete[] tmp;
     		cout<< "word is "<< tkn.word<<endl;
     	}
     	
-    	query.push(tkn);
+    	query.push_back(tkn);
     }
-       
+    
     printf("query size %d\n", query_size);
-    /*
-    //calculate key kW
-    unsigned char* kW = new unsigned char[crypto->fBlocksize];
-    crypto->f(crypto->get_kF(), (unsigned char*)buff, len, kW);
-    delete[] buff;
     
-    //calculate relevant index positions
-    vector< vector<unsigned char> > labels (counter);
-    unsigned char* l = new unsigned char[crypto->fBlocksize];
-    for (int c = 0; c < counter; c++) {
-        crypto->f(kW, (unsigned char*)&c, sizeof(int), l);
-        vector<unsigned char> label (crypto->fBlocksize);
-        for (int i = 0; i < crypto->fBlocksize; i++)
-            label[i] = l[i];
-        labels[c] = label;
-        bzero(l, crypto->fBlocksize);
-    }
-    delete[] l;
-    delete[] kW;
-    
-    //randomize index postions
-    /**TODO*/
-    
-    //request index positions from server
-    /*len = sizeof(char) + sizeof(int) + counter * crypto->fBlocksize;
-    buff = new char[len];
-    char op = '3';
-    pos = 0;
-    addToArr(&op, sizeof(char), buff, &pos);
-    addIntToArr(counter, buff, &pos);
-    for (int i = 0; i < counter; i++)
-        for (int j = 0; j < crypto->fBlocksize; j++)
-            addToArr(&(labels[i][j]), sizeof(unsigned char), buff, &pos);
-    
-    socketSend(writeServerPipe, buff, len);
-    delete[] buff;
-    
-    //decrypt query results
-    len = counter * sizeof(int);
-    buff = new char[len];
-    unsigned char* enc_data = new unsigned char[crypto->symBlocksize];
-    unsigned char* data = new unsigned char[crypto->symBlocksize];
-    pos = 0;
-    for (int i = 0; i < counter; i++) {
-        socketReceive(readServerPipe, (char*)enc_data, crypto->symBlocksize);
-        crypto->decryptSymmetric(data, enc_data, crypto->symBlocksize, crypto->get_kEnc());
-        addToArr((char*)data, sizeof(int), buff, &pos);
+    // start evaluating the query
+    for(int i = 0; i < query.size(); i++) {
+    	token tkn = query[i];
+    	
+    	if(tkn.type != 't')
+    		continue;
+    	
+    	const char* word_str = tkn.word.c_str();
+    	
+    	//calculate key kW
+    	unsigned char* kW = new unsigned char[crypto->fBlocksize];
+		crypto->f(crypto->get_kF(), (unsigned char*)word_str, strlen(word_str), kW);
+		
+		//calculate relevant index positions
+		vector< vector<unsigned char> > labels (tkn.counter);
+		unsigned char* l = new unsigned char[crypto->fBlocksize];
+		for (int c = 0; c < tkn.counter; c++) {
+		    crypto->f(kW, (unsigned char*)&c, sizeof(int), l);
+		    vector<unsigned char> label (crypto->fBlocksize);
+		    for (int i = 0; i < crypto->fBlocksize; i++)
+		        label[i] = l[i];
+		    labels[c] = label;
+		    bzero(l, crypto->fBlocksize);
+		}
+		delete[] l;
+		delete[] kW;
+		
+		//request index positions from server
+		int len = sizeof(char) + sizeof(int) + tkn.counter * crypto->fBlocksize;
+		char* buff = new char[len];
+		char op = '3';
+		pos = 0;
+		addToArr(&op, sizeof(char), buff, &pos);
+		addIntToArr(tkn.counter, buff, &pos);
+		for (int i = 0; i < tkn.counter; i++)
+		    for (int j = 0; j < crypto->fBlocksize; j++)
+		        addToArr(&(labels[i][j]), sizeof(unsigned char), buff, &pos);
+		
+		socketSend(writeServerPipe, buff, len);
+		delete[] buff;
+		
+		//decrypt query results
+		len = tkn.counter * sizeof(int);
+		buff = new char[len];
+		unsigned char* enc_data = new unsigned char[crypto->symBlocksize];
+		unsigned char* data = new unsigned char[crypto->symBlocksize];
+		pos = 0;
+		for (int i = 0; i < tkn.counter; i++) {
+		    socketReceive(readServerPipe, (char*)enc_data, crypto->symBlocksize);
+		    crypto->decryptSymmetric(data, enc_data, crypto->symBlocksize, crypto->get_kEnc());
+		    addToArr((char*)data, sizeof(int), buff, &pos);
 
-/** Another way of doing it
-        int d = -1;
-        memcpy(&d, data, sizeof(int));
-        addIntToArr(d, buff, &pos); 
- **//*
-        bzero(enc_data, crypto->symBlocksize);
-        bzero(data, crypto->symBlocksize);
+		/** Another way of doing it
+		    int d = -1;
+		    memcpy(&d, data, sizeof(int));
+		    addIntToArr(d, buff, &pos); 
+	 	**/
+		    bzero(enc_data, crypto->symBlocksize);
+		    bzero(data, crypto->symBlocksize);
+		}
+	
+		const int nr_docs = len / sizeof(int);
+    	vector<int> docs(nr_docs);
+    	pos = 0;
+		for (int i = 0; i < nr_docs; i++) {
+	        memcpy(&docs[i], buff+pos, sizeof(int));
+        	pos += sizeof(int);
+		}
+
+		// insert result into token's struct
+		tkn.docs = docs;
+		
+		delete[] enc_data;
+		delete[] data;
+		
+		for(int i = 0; i < tkn.docs.size(); i++)
+        	printf("%i ", tkn.docs[i]);
+    	printf("\n");
+    
+		query[i] = tkn; //TODO hack, fix to directly write into original token (now writes to a copy so we need this)
     }
-    
-    delete[] enc_data;
-    delete[] data;
-    
+    	
     //calculate boolean formula here; for now its sinlge keyword
 
     //send query results with kCom
-    int enc_results_size = len + crypto->symBlocksize;
+    /*int enc_results_size = len + crypto->symBlocksize;
     unsigned char* enc_results = new unsigned char[enc_results_size];
     enc_results_size = crypto->encryptSymmetric((unsigned char*)buff, len, enc_results, crypto->get_kCom());
     delete[] buff;

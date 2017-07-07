@@ -13,6 +13,7 @@ typedef struct token {
 	char type;
 	int counter;
 	std::string word;
+	vector<int> docs;
 } token;
 
 int evaluate(std::queue<std::string> rpn_expr);

@@ -25,7 +25,6 @@ int main(int argc, const char * argv[]) {
     client.add(2, "ola");
     client.add(3, "ola");
     client.add(1, "viva");
-    client.add(1, "viva");
     client.add(3, "camarada");
     client.add(2, "howdy");
     

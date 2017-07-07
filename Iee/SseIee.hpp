@@ -23,6 +23,7 @@
 #include <string.h>
 #include "IeeUtils.h"
 #include "IeeCrypt.hpp"
+#include "QueryEvaluator.hpp"
 
 using namespace std;
 

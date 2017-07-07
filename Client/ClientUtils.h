@@ -15,6 +15,7 @@
 #include <set>
 #include <map>
 #include <vector>
+#include <stack>
 #include <stdint.h>
 #include <math.h>
 #include <openssl/rand.h>

@@ -145,16 +145,41 @@ void SseIee::add(char* data, int data_len) {
 }
 
 
-void SseIee::search(char* query, int query_size) {
-    //read counter from buffer
-    int pos = 1;
-    int counter = readIntFromArr(query, &pos) + 1;
-    
-    //read query
-    int len = query_size - sizeof(char) - sizeof(int);
-    char* buff = new char[len];
-    readFromArr(buff, len, query, &pos);
-    
+void SseIee::search(char* buffer, int query_size) {
+	queue<token> query;
+	
+	//read buffer
+	int pos = 1;
+	while(pos < query_size) {
+		token tkn;
+	
+		char* tmp_type = new char[1];
+    	readFromArr(tmp_type, 1, buffer, &pos);
+    	
+    	tkn.type = tmp_type[0];
+    	
+    	if(tkn.type == 't') {
+    		// read counter
+    		tkn.counter = readIntFromArr(buffer, &pos) + 1;
+    		printf("counter is %d\n", tkn.counter);
+    		
+    		// read word
+    		char* tmp;
+    		do {
+				tmp = new char[1];
+				readFromArr(tmp, 1, buffer, &pos);
+    			
+    			tkn.word += tmp[0];
+    		} while(tmp[0] != '\0');
+    		
+    		cout<< "word is "<< tkn.word<<endl;
+    	}
+    	
+    	query.push(tkn);
+    }
+       
+    printf("query size %d\n", query_size);
+    /*
     //calculate key kW
     unsigned char* kW = new unsigned char[crypto->fBlocksize];
     crypto->f(crypto->get_kF(), (unsigned char*)buff, len, kW);
@@ -178,7 +203,7 @@ void SseIee::search(char* query, int query_size) {
     /**TODO*/
     
     //request index positions from server
-    len = sizeof(char) + sizeof(int) + counter * crypto->fBlocksize;
+    /*len = sizeof(char) + sizeof(int) + counter * crypto->fBlocksize;
     buff = new char[len];
     char op = '3';
     pos = 0;
@@ -206,15 +231,16 @@ void SseIee::search(char* query, int query_size) {
         int d = -1;
         memcpy(&d, data, sizeof(int));
         addIntToArr(d, buff, &pos); 
- **/
+ **//*
         bzero(enc_data, crypto->symBlocksize);
         bzero(data, crypto->symBlocksize);
     }
+    
     delete[] enc_data;
     delete[] data;
     
     //calculate boolean formula here; for now its sinlge keyword
-    
+
     //send query results with kCom
     int enc_results_size = len + crypto->symBlocksize;
     unsigned char* enc_results = new unsigned char[enc_results_size];
@@ -231,7 +257,7 @@ void SseIee::search(char* query, int query_size) {
     socketSend(writeServerPipe, buff, sizeof(int));
     delete[] buff;
     
-    socketSend(writeServerPipe, (char*)enc_results, enc_results_size);
+    socketSend(writeServerPipe, (char*)enc_results, enc_results_size);*/
     printf("Finished Search!\n");
 }
 

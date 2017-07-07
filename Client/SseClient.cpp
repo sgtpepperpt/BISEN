@@ -89,23 +89,66 @@ void SseClient::add(int d, string w) {
     delete[] ciphertext;
 }
 
-
 //boolean operands: AND, OR, NOT, (, )
 //for now only single keyword queries supported
 vector<int> SseClient::search(string query) {
+	printf("entering search\n");
+	char term = '\0'; // used to terminate all strings, maybe better solution?
+	
+	// apply the shunting yard algorithm while also preparing the data structures
+	vector<token> rpn = shunting_yard(query);
+	
+	int data_size = sizeof(char); // char from op
+	
+	// first query iteration to get needed size and counters
+	for(int i = 0; i < rpn.size(); i++) {
+    	token tkn = rpn[i];
+    	//cout << tkn.type << " " << tkn.word << endl << sizeof(tkn.word) << endl;
+    	
+    	if(tkn.type == 't') {
+    		tkn.counter = (*W)[tkn.word];
+    		//cout << "orig counter " << (*W)[tkn.word] << " " << tkn.counter << endl;
+    		data_size += sizeof(char) + sizeof(int) + (tkn.word.size() + 1);
+    	} else {
+    		data_size += sizeof(char);
+    	}
+    	
+    	rpn[i] = tkn; //TODO hack, fix to directly write into original token (now writes to a copy so we need this)
+	}
+	
+	//cout << "size is" << " " << data_size << endl;
+	//cout << rpn[0].counter << endl;
+	
     //prepare query
-    const int data_size = sizeof(char) + (int)query.size() + sizeof(int);
     unsigned char* data = new unsigned char[data_size];
-    char op = 's';
-    int counter = (*W)[query];
     int pos = 0;
     
+    char op = 's';
     addToArr(&op, sizeof(char), (char*)data, &pos);
-    addIntToArr(counter, (char*)data, &pos);
-    for (int i = 0; i < query.size(); i++)
-        addToArr(&query[i], sizeof(char), (char*)data, &pos);
     
-    
+    // second query iteration to fill "data"
+    for(vector<token>::iterator it = rpn.begin(); it != rpn.end(); ++it) {
+    	token tkn = *it;
+
+    	addToArr(&(tkn.type), sizeof(char), (char*)data, &pos);
+
+    	if(tkn.type == 't') {
+    		addIntToArr(tkn.counter, (char*)data, &pos);
+    		//cout << "counter " << tkn.counter << endl;
+    		
+    		string word = tkn.word;
+    		for (int i = 0; i < word.size(); i++)
+        		addToArr(&word[i], sizeof(char), (char*)data, &pos);
+        	
+        	addToArr(&term, sizeof(char), (char*)data, &pos);
+    	}
+	}
+	
+	for(int i = 0; i < data_size; i++){
+		printf("%02x ", data[i]);
+	}
+	printf("\n");
+
     //encrypt query
     int ciphertext_size = data_size + 16;
     unsigned char* ciphertext = new unsigned char[ciphertext_size];

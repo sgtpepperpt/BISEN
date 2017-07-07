@@ -15,7 +15,6 @@ void printResults (vector<int> results) {
     printf("\n");
 }
 
-
 int main(int argc, const char * argv[]) {
     setvbuf(stdout, NULL, _IONBF, 0);
     SseClient client;
@@ -26,11 +25,12 @@ int main(int argc, const char * argv[]) {
     client.add(2, "ola");
     client.add(3, "ola");
     client.add(1, "viva");
+    client.add(1, "viva");
     client.add(3, "camarada");
     client.add(2, "howdy");
     
+    printResults( client.search("ola && viva") );
     printResults( client.search("ola") );
-    printResults( client.search("viva") );
     printResults( client.search("camarada") );
     printResults( client.search("howdy") );
     

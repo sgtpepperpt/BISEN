@@ -15,6 +15,8 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <string.h>
+#include <queue>
+#include <stack>
 
 #include <stdint.h> // added to work on linux
 #include <arpa/inet.h> // added to work on linux

@@ -15,14 +15,13 @@
 #include "EnglishAnalyzer.h"
 #include "ClientCrypt.hpp"
 #include "ClientUtils.h"
+#include "QueryParser.hpp"
 
 using namespace std;
 
-
 class SseClient {
-    
-protected:
 
+protected:
     EnglishAnalyzer* analyzer;
     ClientCrypt* crypto;
     map<string,int>* W;

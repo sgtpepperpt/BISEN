@@ -187,9 +187,9 @@ vector<int> SseClient::search(string query) {
     vector<int> results(nDocs);
     pos = 0;
     for (int i = 0; i < nDocs; i++) {
-//        results[i] = readIntFromArr((char*)result_buff, &pos);
-        memcpy(&results[i], result_buff+pos, sizeof(int));
-        pos += sizeof(int);
+        results[i] = readIntFromArr((char*)result_buff, &pos);
+     //   memcpy(&results[i], result_buff+pos, sizeof(int));
+       // pos += sizeof(int);
     }
     
     delete[] result_buff;

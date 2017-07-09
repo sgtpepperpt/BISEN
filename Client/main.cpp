@@ -30,7 +30,7 @@ int main(int argc, const char * argv[]) {
     client.add(2, "howdy");
     
     printResults( client.search("ola && viva") );
-    //printResults( client.search("ola") );
+    printResults( client.search("ola && viva && howdy") );
     //printResults( client.search("camarada") );
     //printResults( client.search("howdy") );
     

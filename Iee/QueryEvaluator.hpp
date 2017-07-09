@@ -1,10 +1,6 @@
 #ifndef QueryEvaluator
 #define QueryEvaluator
 
-#define AND "&&"
-#define OR "||"
-#define NOT "!"
-
 #include "IeeUtils.h"
 #include <stdio.h>
 #include <iostream>
@@ -13,7 +9,7 @@ typedef struct token {
 	char type;
 	int counter;
 	std::string word;
-	std::set<int> docs;
+	std::vector<int> docs;
 } token;
 
 // this function takes a reverse-polish notation boolean expression

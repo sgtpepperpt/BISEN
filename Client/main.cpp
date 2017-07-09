@@ -18,24 +18,28 @@ void printResults (vector<int> results) {
 int main(int argc, const char * argv[]) {
     setvbuf(stdout, NULL, _IONBF, 0);
     SseClient client;
-    
+
     client.setup();
-    
+
     client.add(1, "ola");
     client.add(2, "ola");
     client.add(3, "ola");
+
     client.add(1, "viva");
     client.add(3, "viva");
+
     client.add(3, "camarada");
+
     client.add(2, "howdy");
-    
+    client.add(4, "howdy");
+
     printResults( client.search("ola && viva") );
-    printResults( client.search("ola && viva && howdy") );
+    printResults( client.search("ola && viva || howdy") );
     //printResults( client.search("camarada") );
     //printResults( client.search("howdy") );
-    
-    
-    
+
+
+
 //    client.addDocs("/Users/bernardo/Datasets/flickr_tags");
 //    client.addDocs("/Users/bernardo/Datasets/enron");
     return 0;

@@ -5,7 +5,6 @@ using namespace std;
 vector<int> evaluate(deque <token> rpn_expr)
 {
 	stack<token> eval_stack;
-	vector<int> result;
 
 	while (!rpn_expr.empty()) {
 		token tkn = rpn_expr.front();
@@ -15,53 +14,62 @@ vector<int> evaluate(deque <token> rpn_expr)
 			if (eval_stack.size() < 2)
 				throw invalid_argument("Insufficient operands for AND!");
 
-			token left = eval_stack.top();
+			// get both operands for AND
+			vector<int> left = eval_stack.top().docs;
 			eval_stack.pop();
 
-			token right = eval_stack.top();
+			vector<int> right = eval_stack.top().docs;
 			eval_stack.pop();
 			
+			// intersection of the two sets of documents
+			vector<int> set_inter;
+			set_intersection(left.begin(), left.end(), right.begin(), right.end(), back_inserter(set_inter));
+
 			printf("intersection ");
-			std::vector<int> v_intersection;
-			std::set_intersection(left.docs.begin(), left.docs.end(),
-                          right.docs.begin(), right.docs.end(),
-                          std::back_inserter(v_intersection));
-                          
-			for(int x : v_intersection)
+			for(int x : set_inter)
         		printf("%i ", x);
     		printf("\n");
-    		
+
     		token res;
     		res.type = 'r';
-    		
-    		std::set<int> s(v_intersection.begin(), v_intersection.end());
-    		res.docs = s;
-    		
+    		res.docs = set_inter;
+
     		eval_stack.push(res);
 			
 		} else if(tkn.type == 'o') {
 			if (eval_stack.size() < 2)
 				throw invalid_argument("Insufficient operands for OR!");
 
-			token left = eval_stack.top();
+			// get both operands for OR
+			vector<int> left = eval_stack.top().docs;
 			eval_stack.pop();
 
-			token right = eval_stack.top();
+			vector<int> right = eval_stack.top().docs;
 			eval_stack.pop();
 
-			std::vector<int> v_intersection;
-			std::set_intersection(left.docs.begin(), left.docs.end(),
-                          right.docs.begin(), right.docs.end(),
-                          std::back_inserter(v_intersection));
-                          
+			// union of the two sets of documents
+			vector<int> set_un;
+			set_union(left.begin(), left.end(), right.begin(), right.end(), back_inserter(set_un));
+
+            printf("union ");      
+			for(int x : set_un)
+        		printf("%i ", x);
+    		printf("\n");
+    		
+    		token res;
+    		res.type = 'r';
+    		res.docs = set_un;
+    		
+    		eval_stack.push(res);
 			
 		} else if(tkn.type == 'n') {
 			if (eval_stack.size() < 1)
 				throw invalid_argument("Insufficient operands for NOT!");
 
-			token left = eval_stack.top();
+			vector<int> left = eval_stack.top().docs;
 			eval_stack.pop();
 
+			// TODO get all documents
 			//eval_stack.push(!left.compare("1")?"1":"0");
 			
 		} else {
@@ -73,6 +81,5 @@ vector<int> evaluate(deque <token> rpn_expr)
 		throw invalid_argument("Wrong number of operands left: " + eval_stack.size());
 	}
 
-	copy(eval_stack.top().docs.begin(), eval_stack.top().docs.end(), back_inserter(result));
-	return result;
+	return eval_stack.top().docs;
 }

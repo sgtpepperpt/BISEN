@@ -189,6 +189,7 @@ void SseIee::search(char* buffer, int query_size) {
     for(int i = 0; i < query.size(); i++) {
     	token tkn = query[i];
     	
+    	// ignore operators for document searching
     	if(tkn.type != 't')
     		continue;
     	
@@ -225,7 +226,7 @@ void SseIee::search(char* buffer, int query_size) {
 		
 		socketSend(writeServerPipe, buff, len);
 		delete[] buff;
-		
+
 		//decrypt query results
 		len = tkn.counter * sizeof(int);
 		buff = new char[len];
@@ -245,16 +246,13 @@ void SseIee::search(char* buffer, int query_size) {
 		    bzero(enc_data, crypto->symBlocksize);
 		    bzero(data, crypto->symBlocksize);
 		}
-	
+
 		const int nr_docs = len / sizeof(int);
-    	set<int> docs;
+		vector<int> docs(nr_docs); // TODO check if this is always sorted, else has to be sorted in evaluator
     	pos = 0;
 		for (int i = 0; i < nr_docs; i++) {
-			int tmp;
-	        memcpy(&tmp, buff+pos, sizeof(int));
+	        memcpy(&docs[i], buff+pos, sizeof(int));
         	pos += sizeof(int);
-        	
-        	docs.insert(tmp);
 		}
 
 		// insert result into token's struct
@@ -300,10 +298,6 @@ void SseIee::search(char* buffer, int query_size) {
     socketSend(writeServerPipe, (char*)enc_results, enc_results_size);
     printf("Finished Search!\n");
 }
-
-
-
-
 
 //void initServer (int newsockfd) {
 //    int port = 5566;

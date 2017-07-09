@@ -15,7 +15,10 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <string.h>
-#include <queue>
+#include <deque>
+#include <set>
+#include <algorithm>
+#include <vector> //still needed?
 #include <stack>
 #include <map>
 

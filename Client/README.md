@@ -1,5 +1,5 @@
 ```
-export HOME_DIR="/home/user/"
+export HOME_DIR="/home/pepper/"
 
 export IEE_PUB_FILE="IeePub.pem"
 

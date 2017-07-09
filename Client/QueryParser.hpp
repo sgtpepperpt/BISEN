@@ -11,12 +11,11 @@
 #include <iostream>
 
 typedef struct token {
-	char type;
-	int counter;
-	std::string word;
+    char type;
+    int counter;
+    std::string word;
 } token;
 
 std::vector<token> shunting_yard(std::string query);
-//int evaluate(std::queue<std::string> rpn_expr);
 
 #endif

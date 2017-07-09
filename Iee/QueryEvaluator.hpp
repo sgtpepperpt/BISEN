@@ -6,10 +6,10 @@
 #include <iostream>
 
 typedef struct token {
-	char type;
-	int counter;
-	std::string word;
-	std::vector<int> docs;
+    char type;
+    int counter;
+    std::string word;
+    std::vector<int> docs;
 } token;
 
 // this function takes a reverse-polish notation boolean expression

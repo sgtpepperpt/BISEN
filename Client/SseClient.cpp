@@ -102,18 +102,16 @@ vector<int> SseClient::search(string query) {
 	
 	// first query iteration: to get needed size and counters
 	for(int i = 0; i < rpn.size(); i++) {
-    	token tkn = rpn[i];
+    	token *tkn = &rpn[i];
     	//cout << tkn.type << " " << tkn.word << endl << sizeof(tkn.word) << endl;
     	
-    	if(tkn.type == 't') {
-    		tkn.counter = (*W)[tkn.word];
+    	if(tkn->type == 't') {
+    		tkn->counter = (*W)[tkn->word];
     		//cout << "orig counter " << (*W)[tkn.word] << " " << tkn.counter << endl;
-    		data_size += sizeof(char) + sizeof(int) + (tkn.word.size() + 1);
+    		data_size += sizeof(char) + sizeof(int) + (tkn->word.size() + 1);
     	} else {
     		data_size += sizeof(char);
     	}
-    	
-    	rpn[i] = tkn; //TODO hack, fix to directly write into original token (now writes to a copy so we need this)
 	}
 	
 	//cout << "size is" << " " << data_size << endl;

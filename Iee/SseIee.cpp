@@ -185,24 +185,24 @@ void SseIee::search(char* buffer, int query_size) {
     
     printf("query size %d\n", query_size);
     
-    // start evaluating the query
+    // start evaluating the query, get documents from uee
     for(int i = 0; i < query.size(); i++) {
-    	token tkn = query[i];
+    	token *tkn = &query[i];
     	
     	// ignore operators for document searching
-    	if(tkn.type != 't')
+    	if(tkn->type != 't')
     		continue;
     	
-    	const char* word_str = tkn.word.c_str();
+    	const char* word_str = tkn->word.c_str();
     	
     	//calculate key kW
     	unsigned char* kW = new unsigned char[crypto->fBlocksize];
 		crypto->f(crypto->get_kF(), (unsigned char*)word_str, strlen(word_str), kW);
 		
 		//calculate relevant index positions
-		vector< vector<unsigned char> > labels (tkn.counter);
+		vector< vector<unsigned char> > labels (tkn->counter);
 		unsigned char* l = new unsigned char[crypto->fBlocksize];
-		for (int c = 0; c < tkn.counter; c++) {
+		for (int c = 0; c < tkn->counter; c++) {
 		    crypto->f(kW, (unsigned char*)&c, sizeof(int), l);
 		    vector<unsigned char> label (crypto->fBlocksize);
 		    for (int i = 0; i < crypto->fBlocksize; i++)
@@ -214,13 +214,13 @@ void SseIee::search(char* buffer, int query_size) {
 		delete[] kW;
 		
 		//request index positions from server
-		int len = sizeof(char) + sizeof(int) + tkn.counter * crypto->fBlocksize;
+		int len = sizeof(char) + sizeof(int) + tkn->counter * crypto->fBlocksize;
 		char* buff = new char[len];
 		char op = '3';
 		pos = 0;
 		addToArr(&op, sizeof(char), buff, &pos);
-		addIntToArr(tkn.counter, buff, &pos);
-		for (int i = 0; i < tkn.counter; i++)
+		addIntToArr(tkn->counter, buff, &pos);
+		for (int i = 0; i < tkn->counter; i++)
 		    for (int j = 0; j < crypto->fBlocksize; j++)
 		        addToArr(&(labels[i][j]), sizeof(unsigned char), buff, &pos);
 		
@@ -228,12 +228,12 @@ void SseIee::search(char* buffer, int query_size) {
 		delete[] buff;
 
 		//decrypt query results
-		len = tkn.counter * sizeof(int);
+		len = tkn->counter * sizeof(int);
 		buff = new char[len];
 		unsigned char* enc_data = new unsigned char[crypto->symBlocksize];
 		unsigned char* data = new unsigned char[crypto->symBlocksize];
 		pos = 0;
-		for (int i = 0; i < tkn.counter; i++) {
+		for (int i = 0; i < tkn->counter; i++) {
 		    socketReceive(readServerPipe, (char*)enc_data, crypto->symBlocksize);
 		    crypto->decryptSymmetric(data, enc_data, crypto->symBlocksize, crypto->get_kEnc());
 		    addToArr((char*)data, sizeof(int), buff, &pos);
@@ -256,16 +256,14 @@ void SseIee::search(char* buffer, int query_size) {
 		}
 
 		// insert result into token's struct
-		tkn.docs = docs;
+		tkn->docs = docs;
 		
 		delete[] enc_data;
 		delete[] data;
 		
-		for(int x : tkn.docs)
+		for(int x : tkn->docs)
         	printf("%i ", x);
     	printf("\n");
-    
-		query[i] = tkn; //TODO hack, fix to directly write into original token (now writes to a copy so we need this)
     }
     
     //calculate boolean formula

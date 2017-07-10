@@ -145,15 +145,41 @@ void SseIee::add(char* data, int data_len) {
 }
 
 void SseIee::get_docs_from_server(deque<token> &query) {
-    token *rand = new token[query.size()];
-    
-    int count = 0;
+    // initialise array to hold all tokens in random order
+    token *rand[query.size()];
+    for(int i = 0; i < query.size(); i++)
+        rand[i] = NULL;
 
+    // randomly fill the array with the tokens we need
     for(int i = 0; i < query.size(); i++) {
-        token *tkn = &query[i];
+        if(query[i].type != 't')
+            continue;
+
+        // choose a random unoccupied position from the rand array
+        int pos;
+        do {
+            pos = spc_rand_uint_range(0, query.size());
+            cout << "pos " << pos << " " << query[i].word << endl;
+        } while(rand[pos] != NULL);
+        
+        rand[pos] = &query[i];
+    }
+    
+    printf("array filled\n");
+    for(int i = 0; i < query.size(); i++)
+        printf("%c ", rand[i] == NULL ? '-':rand[i]->type);
+    printf("\n");
+    
+    for(int i = 0; i < query.size(); i++)
+        printf("%s ", rand[i] == NULL ? "-":rand[i]->word.c_str());
+    printf("\n");
+
+    // request the documents from the server
+    for(int i = 0; i < query.size(); i++) {
+        token *tkn = rand[i];
 
         // ignore operators for document searching
-        if(tkn->type != 't')
+        if(tkn == NULL)
             continue;
 
         const char* word_str = tkn->word.c_str();
@@ -213,23 +239,20 @@ void SseIee::get_docs_from_server(deque<token> &query) {
         const int nr_docs = len / sizeof(int);
         vector<int> docs(nr_docs); // TODO check if this is always sorted, else has to be sorted in evaluator
         pos = 0;
+        cout << "docs " << tkn->word << endl;
         for (int i = 0; i < nr_docs; i++) {
             memcpy(&docs[i], buff+pos, sizeof(int));
             pos += sizeof(int);
+            cout << docs[i] << " ";
         }
-
+        cout << endl;
+        
         // insert result into token's struct
         tkn->docs = docs;
 
         delete[] enc_data;
         delete[] data;
-
-        for(int x : tkn->docs)
-            printf("%i ", x);
-        printf("\n");
     }
-    
-    delete[] rand;
 }
 
 void SseIee::search(char* buffer, int query_size) {
@@ -247,12 +270,9 @@ void SseIee::search(char* buffer, int query_size) {
         tkn.type = tmp_type[0];
         delete[] tmp_type;
 
-        cout<< "type is "<< tkn.type <<endl;
-
         if(tkn.type == 't') {
             // read counter
             tkn.counter = readIntFromArr(buffer, &pos) + 1;
-            printf("counter is %d\n", tkn.counter);
 
             // read word
             char* tmp;
@@ -261,21 +281,16 @@ void SseIee::search(char* buffer, int query_size) {
                 readFromArr(tmp, 1, buffer, &pos);
 
                 tkn.word += tmp[0];
-                //
             } while(tmp[0] != '\0');
 
             delete[] tmp;
-            cout<< "word is "<< tkn.word<<endl;
         } else if(tkn.type == 'z') {
             nDocs = tkn.counter = readIntFromArr(buffer, &pos);
-            cout << nDocs << " nDocs" << endl;
             continue;
         }
 
         query.push_back(tkn);
     }
-
-    printf("query size %d\n", query.size());
 
     // get documents from uee
     get_docs_from_server(query);

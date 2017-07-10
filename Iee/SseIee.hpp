@@ -48,7 +48,6 @@ private:
 public:
     SseIee();
     ~SseIee();
-    
 };
 
 

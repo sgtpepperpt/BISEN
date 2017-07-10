@@ -36,7 +36,7 @@ int main(int argc, const char * argv[]) {
     client.add(1, "howdy");
     client.add(3, "howdy");
 
-    printResults( client.search("! ola && viva || howdy") );
+    printResults( client.search("! ola && ( viva || howdy )") ); //TODO fix problem with characters having to be separated with spaces to work
     //printResults( client.search("ola && viva") );
     //printResults( client.search("ola && (viva || howdy)") );
     //printResults( client.search("camarada") );

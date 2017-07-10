@@ -130,9 +130,13 @@ void IeeCrypt::initKeys() {
     spc_rand(kF, fBlocksize);
 }
 
-void IeeCrypt::spc_rand(unsigned char *buf, int l) {
-    if (!RAND_bytes(buf, l))
-        pee("The PRNG is not seeded!\n");
+unsigned char* spc_rand(unsigned char *buf, int l) {
+    if (!RAND_bytes(buf, l)) {
+        fprintf(stderr, "The PRNG is not seeded!\n");
+        abort(  );
+    }
+    
+    return buf;
 }
 
 unsigned char* IeeCrypt::get_kF() {
@@ -147,13 +151,14 @@ unsigned char* IeeCrypt::get_kEnc() {
     return kEnc;
 }
 
-unsigned int IeeCrypt::spc_rand_uint() {
+unsigned int spc_rand_uint() {
     unsigned int res;
     spc_rand((unsigned char *)&res, sizeof(unsigned int));
+    
     return res;
 }
 
-unsigned int IeeCrypt::spc_rand_uint_range(int min, int max) {
+unsigned int spc_rand_uint_range(int min, int max) {
     if (max < min) abort();
-    return spc_rand_uint() * (max - min) + min;
+    return min + (spc_rand_uint() % static_cast<int>(max - min));
 }

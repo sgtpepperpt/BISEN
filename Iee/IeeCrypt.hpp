@@ -21,18 +21,17 @@ static const char* ieePrivFile = getenv("IEE_PRIV_FILE") ? getenv("IEE_PRIV_FILE
 
 using namespace std;
 
+unsigned int spc_rand_uint_range(int min, int max);
+unsigned int spc_rand_uint();
+unsigned char* spc_rand(unsigned char *buf, int l);
+
 class IeeCrypt {
-    
 private:
     RSA* IeePrivK;
     unsigned char* kCom;
     unsigned char* kEnc;
     unsigned char* kF;
-    
-    void spc_rand(unsigned char *buf, int l);
-    unsigned int spc_rand_uint();
-    unsigned int spc_rand_uint_range(int min, int max);
-    
+
 public:
     static const int symBlocksize = 16;
     static const int fBlocksize = 20;

@@ -1,6 +1,7 @@
 #ifndef QueryEvaluator
 #define QueryEvaluator
 
+#include "IeeCrypt.hpp"
 #include "IeeUtils.h"
 #include <stdio.h>
 #include <iostream>

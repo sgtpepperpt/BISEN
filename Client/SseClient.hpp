@@ -26,6 +26,7 @@ protected:
     ClientCrypt* crypto;
     map<string,int>* W;
     int querySocket;
+    int nDocs;
     
     void openQueryResponseSocket();
     int acceptQueryResponseSocket();
@@ -38,6 +39,7 @@ public:
     void setup();
     void add(int d, string w);
     vector<int> search(string query);
+    void newDoc();
     
     void addDocs(string textDataset);
 };

@@ -27,6 +27,7 @@ void SseClient::setup() {
     analyzer = new EnglishAnalyzer;
     crypto = new ClientCrypt;   //inits kCom
     W = new map<string,int>;    /**TODO persist W*/
+    nDocs = 0;
 
 
     //get encrypted kCom and init buffers
@@ -48,6 +49,10 @@ void SseClient::setup() {
 
     delete[] data;
     close(sockfd);
+}
+
+void SseClient::newDoc() {
+    nDocs++;
 }
 
 void SseClient::add(int d, string w) {
@@ -112,6 +117,14 @@ vector<int> SseClient::search(string query) {
             data_size += sizeof(char);
         }
     }
+    
+    // add number of documents to the data structure, needed for NOT
+    token t;
+    t.type = 'z';
+    t.counter = nDocs;
+    
+    rpn.push_back(t);
+    data_size += sizeof(char) + sizeof(int);
 
     //cout << "size is" << " " << data_size << endl;
     //cout << rpn[0].counter << endl;
@@ -138,6 +151,8 @@ vector<int> SseClient::search(string query) {
                 addToArr(&word[i], sizeof(char), (char*)data, &pos);
 
             addToArr(&term, sizeof(char), (char*)data, &pos);
+        } else if(tkn.type == 'z') {
+            addIntToArr(tkn.counter, (char*)data, &pos);
         }
     }
 

@@ -20,21 +20,24 @@ int main(int argc, const char * argv[]) {
     SseClient client;
 
     client.setup();
-
-    client.add(1, "ola");
+    
+    for(int i = 0; i < 4; i++)
+        client.newDoc();
+        
+    client.add(0, "ola");
     client.add(2, "ola");
-    client.add(3, "ola");
+    client.add(0, "ola");
 
-    client.add(1, "viva");
-    client.add(3, "viva");
+    client.add(0, "viva");
+    client.add(2, "viva");
 
-    client.add(3, "camarada");
+    client.add(2, "camarada");
 
-    client.add(2, "howdy");
-    client.add(4, "howdy");
+    client.add(1, "howdy");
+    client.add(3, "howdy");
 
     printResults( client.search("ola && viva") );
-    printResults( client.search("ola && viva || howdy") );
+    //printResults( client.search("ola && (viva || howdy)") );
     //printResults( client.search("camarada") );
     //printResults( client.search("howdy") );
 

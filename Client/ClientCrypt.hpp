@@ -33,6 +33,7 @@ class ClientCrypt {
     unsigned int spc_rand_uint();
     float spc_rand_real(void);
     float spc_rand_real_range(float min, float max);
+    unsigned int spc_rand_uint_range(int min, int max);
     
 public:
     
@@ -46,7 +47,6 @@ public:
     int encryptSymmetric (unsigned char* data, int size, unsigned char* ciphertext);
     int decryptSymmetric (unsigned char* ciphertext, int ciphertextSize, unsigned char* plaintext);
     vector<unsigned char> getEncryptedKcom();
-    
 };
 
 

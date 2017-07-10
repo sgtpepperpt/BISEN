@@ -43,6 +43,7 @@ private:
     void setup(unsigned char* enc_data, int enc_data_size);
     void add(char* data, int data_size);
     void search(char* data, int data_size);
+    void get_docs_from_server(deque<token> &query);
     
 public:
     SseIee();

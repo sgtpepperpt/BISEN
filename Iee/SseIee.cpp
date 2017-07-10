@@ -144,48 +144,11 @@ void SseIee::add(char* data, int data_len) {
     printf("Finished Add!\n");
 }
 
+void SseIee::get_docs_from_server(deque<token> &query) {
+    token *rand = new token[query.size()];
+    
+    int count = 0;
 
-void SseIee::search(char* buffer, int query_size) {
-    deque<token> query; //TODO for boolean eval should be queue, but we have to iterate twice before that for now...
-
-    //read buffer
-    int pos = 1;
-    while(pos < query_size) {
-        token tkn;
-
-        char* tmp_type = new char[1];
-        readFromArr(tmp_type, 1, buffer, &pos);
-
-        tkn.type = tmp_type[0];
-        delete[] tmp_type;
-
-        cout<< "type is "<< tkn.type <<endl;
-
-        if(tkn.type == 't') {
-            // read counter
-            tkn.counter = readIntFromArr(buffer, &pos) + 1;
-            printf("counter is %d\n", tkn.counter);
-
-            // read word
-            char* tmp;
-            do {
-                tmp = new char[1];
-                readFromArr(tmp, 1, buffer, &pos);
-
-                tkn.word += tmp[0];
-                //
-            } while(tmp[0] != '\0');
-
-            delete[] tmp;
-            cout<< "word is "<< tkn.word<<endl;
-        }
-
-        query.push_back(tkn);
-    }
-
-    printf("query size %d\n", query_size);
-
-    // start evaluating the query, get documents from uee
     for(int i = 0; i < query.size(); i++) {
         token *tkn = &query[i];
 
@@ -217,7 +180,7 @@ void SseIee::search(char* buffer, int query_size) {
         int len = sizeof(char) + sizeof(int) + tkn->counter * crypto->fBlocksize;
         char* buff = new char[len];
         char op = '3';
-        pos = 0;
+        int pos = 0;
         addToArr(&op, sizeof(char), buff, &pos);
         addIntToArr(tkn->counter, buff, &pos);
         for (int i = 0; i < tkn->counter; i++)
@@ -265,6 +228,57 @@ void SseIee::search(char* buffer, int query_size) {
             printf("%i ", x);
         printf("\n");
     }
+    
+    delete rand[];
+}
+
+void SseIee::search(char* buffer, int query_size) {
+    deque<token> query; //TODO for boolean eval should be queue, but we have to iterate twice before that for now...
+    int nDocs;
+    
+    //read buffer
+    int pos = 1;
+    while(pos < query_size) {
+        token tkn;
+
+        char* tmp_type = new char[1];
+        readFromArr(tmp_type, 1, buffer, &pos);
+
+        tkn.type = tmp_type[0];
+        delete[] tmp_type;
+
+        cout<< "type is "<< tkn.type <<endl;
+
+        if(tkn.type == 't') {
+            // read counter
+            tkn.counter = readIntFromArr(buffer, &pos) + 1;
+            printf("counter is %d\n", tkn.counter);
+
+            // read word
+            char* tmp;
+            do {
+                tmp = new char[1];
+                readFromArr(tmp, 1, buffer, &pos);
+
+                tkn.word += tmp[0];
+                //
+            } while(tmp[0] != '\0');
+
+            delete[] tmp;
+            cout<< "word is "<< tkn.word<<endl;
+        } else if(tkn.type == 'z') {
+            nDocs = tkn.counter = readIntFromArr(buffer, &pos) + 1;
+            cout << nDocs << " nDocs" << endl;
+            continue;
+        }
+
+        query.push_back(tkn);
+    }
+
+    printf("query size %d\n", query.size());
+
+    // get documents from uee
+    get_docs_from_server(query);
 
     //calculate boolean formula
     vector<int> response_docs = evaluate(query);

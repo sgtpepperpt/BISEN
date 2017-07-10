@@ -140,6 +140,11 @@ unsigned int ClientCrypt::spc_rand_uint() {
     return res;
 }
 
+unsigned int ClientCrypt::spc_rand_uint_range(int min, int max) {
+    if (max < min) abort();
+    return spc_rand_uint() * (max - min) + min;
+}
+
 float ClientCrypt::spc_rand_real(void) {
     return ((float)spc_rand_uint()) / (float)UINT_MAX;
 }

@@ -146,3 +146,14 @@ unsigned char* IeeCrypt::get_kCom() {
 unsigned char* IeeCrypt::get_kEnc() {
     return kEnc;
 }
+
+unsigned int IeeCrypt::spc_rand_uint() {
+    unsigned int res;
+    spc_rand((unsigned char *)&res, sizeof(unsigned int));
+    return res;
+}
+
+unsigned int IeeCrypt::spc_rand_uint_range(int min, int max) {
+    if (max < min) abort();
+    return spc_rand_uint() * (max - min) + min;
+}

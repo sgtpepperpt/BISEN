@@ -77,7 +77,8 @@ vector<int> evaluate(deque <token> rpn_expr) {
     }
 
     if (eval_stack.size() != 1) {
-        throw invalid_argument("Wrong number of operands left: " + eval_stack.size());
+        string err = "Wrong number of operands left: " + eval_stack.size();
+        throw invalid_argument(err);
     }
 
     return eval_stack.top().docs;

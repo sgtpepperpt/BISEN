@@ -64,7 +64,7 @@ vector<token> shunting_yard(string query) {
         while(query[i] != '\0' && query[i] != ' ') {
             word += query[i];
             i++;
-        }
+        } // TODO recognize token without spaces
 
         //printf("iteration %d %c\n", i, token);
         //cout << "op stack\t"<<operators<<endl;

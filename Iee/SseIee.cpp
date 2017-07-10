@@ -229,7 +229,7 @@ void SseIee::get_docs_from_server(deque<token> &query) {
         printf("\n");
     }
     
-    delete rand[];
+    delete[] rand;
 }
 
 void SseIee::search(char* buffer, int query_size) {
@@ -267,7 +267,7 @@ void SseIee::search(char* buffer, int query_size) {
             delete[] tmp;
             cout<< "word is "<< tkn.word<<endl;
         } else if(tkn.type == 'z') {
-            nDocs = tkn.counter = readIntFromArr(buffer, &pos) + 1;
+            nDocs = tkn.counter = readIntFromArr(buffer, &pos);
             cout << nDocs << " nDocs" << endl;
             continue;
         }
@@ -281,7 +281,11 @@ void SseIee::search(char* buffer, int query_size) {
     get_docs_from_server(query);
 
     //calculate boolean formula
-    vector<int> response_docs = evaluate(query);
+    vector<int> response_docs = evaluate(query, nDocs);
+    for(int z : response_docs)
+        cout << z << " ";
+        
+    cout << endl;
 
     //send query results with kCom
     int len = response_docs.size() * sizeof(int);

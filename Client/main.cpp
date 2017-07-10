@@ -25,8 +25,8 @@ int main(int argc, const char * argv[]) {
         client.newDoc();
         
     client.add(0, "ola");
+    client.add(1, "ola");
     client.add(2, "ola");
-    client.add(0, "ola");
 
     client.add(0, "viva");
     client.add(2, "viva");
@@ -36,7 +36,8 @@ int main(int argc, const char * argv[]) {
     client.add(1, "howdy");
     client.add(3, "howdy");
 
-    printResults( client.search("ola && viva") );
+    printResults( client.search("! ola && viva || howdy") );
+    //printResults( client.search("ola && viva") );
     //printResults( client.search("ola && (viva || howdy)") );
     //printResults( client.search("camarada") );
     //printResults( client.search("howdy") );

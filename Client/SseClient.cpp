@@ -122,6 +122,7 @@ vector<int> SseClient::search(string query) {
     token t;
     t.type = 'z';
     t.counter = nDocs;
+    cout << "NDOCS " << nDocs << endl;
     
     rpn.push_back(t);
     data_size += sizeof(char) + sizeof(int);

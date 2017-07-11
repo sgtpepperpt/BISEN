@@ -37,10 +37,12 @@ public:
     ~SseClient();
     
     void setup();
-    void add(int d, string w);
-    vector<int> search(string query);
-    void newDoc();
     
+    int newDoc();
+    void addWord(int d, string w);
+    void addDocument(string fname);
+
+    vector<int> search(string query);
     void addDocs(string textDataset);
 };
     

@@ -38,14 +38,12 @@ private:
     static int clientSock;
     map<vector<unsigned char>,vector<unsigned char> >* I;
 
-    
     static void* bridgeClientIeeThread(void* threadData);
     vector<unsigned char> fillVector(unsigned char* array, int len);
     
 public:
     SseServer();
     ~SseServer();
-    
 };
 
 #endif /* MainUEE_hpp */

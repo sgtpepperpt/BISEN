@@ -9,7 +9,7 @@
 #include "SseServer.hpp"
 
 using namespace std;
-
+#include <iostream>
 const char* SseServer::pipeDir = "/tmp/BooleanSSE/";
 int SseServer::clientSock;
 
@@ -79,11 +79,13 @@ SseServer::SseServer() {
                 socketReceive(readIeePipe, buff, sizeof(int));
                 int pos = 0;
                 const int counter = readIntFromArr(buff, &pos);
+                //cout << "counter size " << counter << endl;
                 unsigned char* label = new unsigned char[20];
                 for (int i = 0; i < counter; i++) {
                     socketReceive(readIeePipe, (char*)label, 20);
                     vector<unsigned char> l = fillVector(label, 20);
                     vector<unsigned char> enc_d = (*I)[l];
+                    //cout << "enc_d size " << enc_d.size() << endl;
                     for (int j = 0; j < enc_d.size(); j++)
                         socketSend(writeIeePipe, (char*)&enc_d[j], sizeof(unsigned char));
                 }
@@ -116,7 +118,6 @@ SseServer::SseServer() {
         }
     }
 }
-
 
 void* SseServer::bridgeClientIeeThread(void* threadData) {
     //start listening socket

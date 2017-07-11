@@ -114,6 +114,7 @@ void SseIee::add(char* data, int data_len) {
     int pos = 1;
     const int d = readIntFromArr(data, &pos);
     const int c = readIntFromArr(data, &pos);
+    cout << "add counter " << c << endl;
     const int w_size = data_len - pos;
     char* w = new char [w_size];
     readFromArr(w, w_size, data, &pos);
@@ -165,15 +166,6 @@ void SseIee::get_docs_from_server(deque<token> &query) {
         rand[pos] = &query[i];
     }
 
-    printf("array filled\n");
-    for(int i = 0; i < query.size(); i++)
-        printf("%c ", rand[i] == NULL ? '-':rand[i]->type);
-    printf("\n");
-
-    for(int i = 0; i < query.size(); i++)
-        printf("%s ", rand[i] == NULL ? "-":rand[i]->word.c_str());
-    printf("\n");
-
     // request the documents from the server
     for(int i = 0; i < query.size(); i++) {
         token *tkn = rand[i];
@@ -181,6 +173,12 @@ void SseIee::get_docs_from_server(deque<token> &query) {
         // ignore operators for document searching
         if(tkn == NULL)
             continue;
+        
+        cout << "counter for " << tkn->word << " is " << tkn->counter << endl;
+        if(tkn->counter == 0) {
+            vector<int> dummy;
+            tkn->docs = dummy;
+        }
 
         const char* word_str = tkn->word.c_str();
 
@@ -224,9 +222,10 @@ void SseIee::get_docs_from_server(deque<token> &query) {
         pos = 0;
         for (int i = 0; i < tkn->counter; i++) {
             socketReceive(readServerPipe, (char*)enc_data, crypto->symBlocksize);
+
             crypto->decryptSymmetric(data, enc_data, crypto->symBlocksize, crypto->get_kEnc());
             addToArr((char*)data, sizeof(int), buff, &pos);
-
+            //cout << "recv ." << buff << "." << endl;
             /** Another way of doing it
                 int d = -1;
                 memcpy(&d, data, sizeof(int));
@@ -239,14 +238,15 @@ void SseIee::get_docs_from_server(deque<token> &query) {
         const int nr_docs = len / sizeof(int);
         vector<int> docs(nr_docs); // TODO check if this is always sorted, else has to be sorted in evaluator
         pos = 0;
-        cout << "docs " << tkn->word << endl;
         for (int i = 0; i < nr_docs; i++) {
             memcpy(&docs[i], buff+pos, sizeof(int));
             pos += sizeof(int);
-            cout << docs[i] << " ";
         }
-        cout << endl;
         
+        for(int x : docs)
+            cout << x << " ";
+        cout << endl;
+
         // insert result into token's struct
         tkn->docs = docs;
 
@@ -258,7 +258,7 @@ void SseIee::get_docs_from_server(deque<token> &query) {
 void SseIee::search(char* buffer, int query_size) {
     deque<token> query; //TODO for boolean eval should be queue, but we have to iterate twice before that for now...
     int nDocs;
-    
+
     //read buffer
     int pos = 1;
     while(pos < query_size) {
@@ -272,7 +272,7 @@ void SseIee::search(char* buffer, int query_size) {
 
         if(tkn.type == WORD_TOKEN) {
             // read counter
-            tkn.counter = readIntFromArr(buffer, &pos) + 1;
+            tkn.counter = readIntFromArr(buffer, &pos) + 1; //TODO issue with counters
 
             // read word
             char* tmp;
@@ -285,7 +285,7 @@ void SseIee::search(char* buffer, int query_size) {
 
             delete[] tmp;
         } else if(tkn.type == META_TOKEN) {
-            nDocs = tkn.counter = readIntFromArr(buffer, &pos);
+            nDocs = readIntFromArr(buffer, &pos);
             continue;
         }
 
@@ -294,6 +294,8 @@ void SseIee::search(char* buffer, int query_size) {
 
     // get documents from uee
     get_docs_from_server(query);
+    
+    printf("got docs\n");
 
     //calculate boolean formula
     vector<int> response_docs = evaluate(query, nDocs);

@@ -20,35 +20,35 @@ int main(int argc, const char * argv[]) {
     SseClient client;
 
     client.setup();
-    
+    /*
     for(int i = 0; i < 4; i++)
         client.newDoc();
-        
-    client.add(0, "ola");
-    client.add(1, "ola");
-    client.add(2, "ola");
 
-    client.add(1, "viva");
-    client.add(3, "viva");
+    client.addWord(0, "ola");
+    client.addWord(1, "ola");
+    client.addWord(2, "ola");
 
-    client.add(1, "camarada");
+    client.addWord(1, "viva");
+    client.addWord(3, "viva");
 
-    client.add(1, "howdy");
-    client.add(3, "howdy");
+    client.addWord(1, "camarada");
 
-    //printResults( client.search("! ( ! camarada )") );
-    
-    //TODO fix problem with characters having to be separated with spaces to work
+    client.addWord(1, "howdy");
+    client.addWord(3, "howdy");
+
+    printResults( client.search("! (! camarada)") );
     printResults( client.search("ola && viva") );
     printResults( client.search("ola && ( viva || howdy )") );
     printResults( client.search("camarada") );
-    printResults( client.search("howdy") );
+    printResults( client.search("howdy") );*/
 
 
+    client.addDocument("text/1984_1.txt");
+    client.addDocument("text/1984_2.txt");
+
+    printResults(client.search("big && brother && !chestnut"));
 
 //    client.addDocs("/Users/bernardo/Datasets/flickr_tags");
 //    client.addDocs("/Users/bernardo/Datasets/enron");
     return 0;
 }
-
-

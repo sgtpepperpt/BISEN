@@ -20,16 +20,14 @@
 using namespace std;
 
 class EnglishAnalyzer {
-
     #define INC 50
     char * s;
     int i_max;
     set<string> stopWords;
-    
+
     void increase_s();
-    
+
 public:
-    
     EnglishAnalyzer();
     ~EnglishAnalyzer();
     set<string> extractUniqueKeywords(string fname);

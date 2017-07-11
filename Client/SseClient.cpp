@@ -27,8 +27,7 @@ void SseClient::setup() {
     analyzer = new EnglishAnalyzer;
     crypto = new ClientCrypt;   //inits kCom
     W = new map<string,int>;    /**TODO persist W*/
-    nDocs = 0;
-
+    nDocs = 1;
 
     //get encrypted kCom and init buffers
     vector<unsigned char> kCom = crypto->getEncryptedKcom();
@@ -51,13 +50,23 @@ void SseClient::setup() {
     close(sockfd);
 }
 
-void SseClient::newDoc() {
-    nDocs++;
+int SseClient::newDoc() {
+    return nDocs++;
 }
 
-void SseClient::add(int d, string w) {
+void SseClient::addDocument(string fname) {
+    int id = newDoc();
+
+    set<string> text = analyzer->extractUniqueKeywords(fname);
+    for(string s : text)
+       addWord(id, s);
+
+    printf("Finished add document %d\n", id);
+}
+
+void SseClient::addWord(int d, string w) {
     //get counter c for w
-    int c = 0;
+    int c = 0; //TODO counter should start at 1 with the first word?
     map<string,int>::iterator it = W->find(w);
     if (it != W->end())
         c = it->second + 1;
@@ -107,7 +116,13 @@ vector<int> SseClient::search(string query) {
         token *tkn = &rpn[i];
 
         if(tkn->type == WORD_TOKEN) {
-            tkn->counter = (*W)[tkn->word];
+            map<string,int>::iterator counterIt = W->find(tkn->word);
+            if(counterIt != W->end())
+                tkn->counter = counterIt->second;
+            else
+                tkn->counter = 0;
+
+            printf("counter %s %d\n", tkn->word.c_str(), tkn->counter);
             data_size += sizeof(char) + sizeof(int) + (tkn->word.size() + 1);
         } else {
             data_size += sizeof(char);

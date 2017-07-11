@@ -17,9 +17,6 @@ int precedence(char op) {
         return -1;
 }
 
-#include <stdio.h>
-#include <iostream>
-
 vector<token> tokenize(string query) {
     vector <token> result;
 
@@ -44,7 +41,7 @@ vector<token> tokenize(string query) {
             tkn.type = WORD_TOKEN;
 
             while(query[i] != '\0' && query[i] != ' ' && !is_operator(query[i])){
-                tkn.word += query[i];
+                tkn.word += tolower(query[i]);
                 i++;
             }
             // NULL termination is added in serialization

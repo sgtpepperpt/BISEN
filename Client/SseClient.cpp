@@ -58,30 +58,45 @@ void SseClient::addDocument(string fname) {
     int id = newDoc();
 
     set<string> text = analyzer->extractUniqueKeywords(fname);
-    for(string s : text)
-       addWord(id, s);
+    addWords(id, text);
 
     printf("Finished add document %d\n", id);
 }
 
-void SseClient::addWord(int d, string w) {
-    //get counter c for w
-    int c = 1; // with new words, this is the first instance of it
-    map<string,int>::iterator it = W->find(w);
-    if (it != W->end())
-        c = it->second + 1;
+void SseClient::addWords(int d, set<string> words) {
+    int data_size = sizeof(char);
 
-    //prepare data buffer
-    const int data_size = sizeof(char) + 2*sizeof(int) + (int)w.size();
+    // first iteration: to get the size of the buffer to allocate
+    for(string w : words) {
+        data_size += 2*sizeof(int) + (int)w.size() + 1;
+    }
+
+    //allocate data buffer
     unsigned char* data = new unsigned char[data_size];
+
     char op = 'a';
     int pos = 0;
-
     addToArr(&op, sizeof(char), (char*)data, &pos);
-    addIntToArr(d, (char*)data, &pos);
-    addIntToArr(c - 1, (char*)data, &pos); // counter starts at 1, so -1 for indexing
-    for (int i = 0; i < w.size(); i++)
-        addToArr(&w[i], sizeof(char), (char*)data, &pos);
+
+    // second iteration: to fill the buffer
+    for(string w : words) {
+        //get counter c for w
+        int c = 1; // with new words, this is the first instance of it
+        map<string,int>::iterator it = W->find(w);
+        if (it != W->end())
+            c = it->second + 1;
+            
+        // update counter c
+        (*W)[w] = c;
+
+        addIntToArr(d, (char*)data, &pos);
+        addIntToArr(c - 1, (char*)data, &pos); // counter starts at 1, so -1 for indexing
+        for (int i = 0; i < w.size(); i++)
+            addToArr(&w[i], sizeof(char), (char*)data, &pos);
+        
+        char term = '\0';
+        addToArr(&term, sizeof(char), (char*)data, &pos);
+    }
 
     //encrypt data
     int ciphertext_size = data_size+16;
@@ -95,9 +110,6 @@ void SseClient::addWord(int d, string w) {
     addIntToArr(ciphertext_size, buff, &pos);
     int sockfd = connectAndSend(buff, sizeof(int));
     socketSend(sockfd, (char*)ciphertext, ciphertext_size);
-
-    //update counter c
-    (*W)[w] = c;
 
     close(sockfd);
     delete[] ciphertext;

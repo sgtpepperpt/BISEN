@@ -110,38 +110,49 @@ void SseIee::setup(unsigned char* enc_data, int enc_data_size) {
 
 
 void SseIee::add(char* data, int data_len) {
-    //get d,c,w from array
+    // read buffer
     int pos = 1;
-    const int d = readIntFromArr(data, &pos);
-    const int c = readIntFromArr(data, &pos);
+    while(pos < data_len) {
+        //get d,c,w from array
+        const int d = readIntFromArr(data, &pos);
+        const int c = readIntFromArr(data, &pos);
 
-    const int w_size = data_len - pos;
-    char* w = new char [w_size];
-    readFromArr(w, w_size, data, &pos);
+        // read word
+        string word;
+        char* tmp;
+        do {
+            tmp = new char[1];
+            readFromArr(tmp, 1, data, &pos);
+            word += tmp[0];
+        } while(tmp[0] != '\0');
+        delete[] tmp;
 
-    //calculate key kW
-    unsigned char* kW = new unsigned char[crypto->fBlocksize];
-    crypto->f(crypto->get_kF(), (unsigned char*)w, w_size, kW);
-    delete[] w;
+        const char* w = word.c_str();
 
-    //calculate index position label
-    unsigned char* label = new unsigned char[crypto->fBlocksize];
-    crypto->f(kW, (unsigned char*)&c, sizeof(int), label);
-    delete[] kW;
+        //calculate key kW
+        unsigned char* kW = new unsigned char[crypto->fBlocksize];
+        crypto->f(crypto->get_kF(), (unsigned char*)w, strlen(w), kW);
 
-    //calculate index value enc_data
-    int enc_data_size = sizeof(int)+crypto->symBlocksize;
-    unsigned char* enc_data = new unsigned char[enc_data_size];
-    enc_data_size = crypto->encryptSymmetric((unsigned char*)&d, sizeof(int), enc_data, crypto->get_kEnc());
+        //calculate index position label
+        unsigned char* label = new unsigned char[crypto->fBlocksize];
+        crypto->f(kW, (unsigned char*)&c, sizeof(int), label);
+        delete[] kW;
 
-    //send label and enc_data to server
-    char op = '2';
-    socketSend(writeServerPipe, &op, sizeof(char));
-    socketSend(writeServerPipe, (char*)label, crypto->fBlocksize);
-    socketSend(writeServerPipe, (char*)enc_data, enc_data_size);
+        //calculate index value enc_data
+        int enc_data_size = sizeof(int)+crypto->symBlocksize;
+        unsigned char* enc_data = new unsigned char[enc_data_size];
+        enc_data_size = crypto->encryptSymmetric((unsigned char*)&d, sizeof(int), enc_data, crypto->get_kEnc());
 
-    delete[] label;
-    delete[] enc_data;
+        //send label and enc_data to server
+        char op = '2';
+        socketSend(writeServerPipe, &op, sizeof(char));
+        socketSend(writeServerPipe, (char*)label, crypto->fBlocksize);
+        socketSend(writeServerPipe, (char*)enc_data, enc_data_size);
+
+        delete[] label;
+        delete[] enc_data;
+    }
+
     printf("Finished Add!\n");
 }
 

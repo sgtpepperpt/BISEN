@@ -39,7 +39,7 @@ public:
     void setup();
     
     int newDoc();
-    void addWord(int d, string w);
+    void addWords(int d, set<string> words);
     void addDocument(string fname);
 
     vector<int> search(string query);

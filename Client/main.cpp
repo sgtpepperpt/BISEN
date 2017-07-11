@@ -47,7 +47,6 @@ int main(int argc, const char * argv[]) {
     printResults( client.search("camarada") );
     printResults( client.search("howdy") );*/
 
-
     client.addDocument("text/1984_1.txt");
     client.addDocument("text/1984_2.txt");
     

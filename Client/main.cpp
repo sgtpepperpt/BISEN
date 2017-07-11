@@ -60,6 +60,14 @@ int main(int argc, const char * argv[]) {
     query = "adler && sherlock";
     printf("%s\n", query.c_str());
     printResults(client.search(query));
+    
+    query = "sherlock";
+    printf("%s\n", query.c_str());
+    printResults(client.search(query));
+    
+    query = "newspeak || !(sherlock && adler)";
+    printf("%s\n", query.c_str());
+    printResults(client.search(query));
 
 //    client.addDocs("/Users/bernardo/Datasets/flickr_tags");
 //    client.addDocs("/Users/bernardo/Datasets/enron");

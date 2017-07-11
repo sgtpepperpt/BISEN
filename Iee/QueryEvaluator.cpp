@@ -15,7 +15,7 @@ vector<int> get_not_docs(int nDocs, vector<int> negate){
     for(int i = 0; i < negate.size(); i++) {
         count[negate[i]]++;
     }
-        
+
     // all elements that have count == 0 are the negation of the set
     vector<int> result(nDocs-negate.size());
     int res_count = 0;
@@ -28,6 +28,8 @@ vector<int> get_not_docs(int nDocs, vector<int> negate){
     return result;
 }
 
+// evaluates a query in reverse polish notation, returning
+// the resulting set of docs
 vector<int> evaluate(deque <token> rpn_expr, int nDocs) {
     stack<token> eval_stack;
 
@@ -35,7 +37,7 @@ vector<int> evaluate(deque <token> rpn_expr, int nDocs) {
         token tkn = rpn_expr.front();
         rpn_expr.pop_front();
 
-        if(tkn.type == 'a') {
+        if(tkn.type == '&') {
             if (eval_stack.size() < 2)
                 throw invalid_argument("Insufficient operands for AND!");
 
@@ -61,7 +63,7 @@ vector<int> evaluate(deque <token> rpn_expr, int nDocs) {
 
             eval_stack.push(res);
 
-        } else if(tkn.type == 'o') {
+        } else if(tkn.type == '|') {
             if (eval_stack.size() < 2)
                 throw invalid_argument("Insufficient operands for OR!");
 
@@ -87,7 +89,7 @@ vector<int> evaluate(deque <token> rpn_expr, int nDocs) {
 
             eval_stack.push(res);
 
-        } else if(tkn.type == 'n') {
+        } else if(tkn.type == '!') {
             if (eval_stack.size() < 1)
                 throw invalid_argument("Insufficient operands for NOT!");
 

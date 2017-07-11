@@ -28,19 +28,21 @@ int main(int argc, const char * argv[]) {
     client.add(1, "ola");
     client.add(2, "ola");
 
-    client.add(0, "viva");
-    client.add(2, "viva");
+    client.add(1, "viva");
+    client.add(3, "viva");
 
-    client.add(2, "camarada");
+    client.add(1, "camarada");
 
     client.add(1, "howdy");
     client.add(3, "howdy");
 
-    printResults( client.search("! ola && ( viva || howdy )") ); //TODO fix problem with characters having to be separated with spaces to work
-    //printResults( client.search("ola && viva") );
-    //printResults( client.search("ola && (viva || howdy)") );
-    //printResults( client.search("camarada") );
-    //printResults( client.search("howdy") );
+    //printResults( client.search("! ( ! camarada )") );
+    
+    //TODO fix problem with characters having to be separated with spaces to work
+    printResults( client.search("ola && viva") );
+    printResults( client.search("ola && ( viva || howdy )") );
+    printResults( client.search("camarada") );
+    printResults( client.search("howdy") );
 
 
 

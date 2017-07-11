@@ -1,14 +1,10 @@
 #ifndef QueryParser
 #define QueryParser
 
-#define AND "&&"
-#define OR "||"
-#define NOT "!"
+#define WORD_TOKEN 'w'
+#define META_TOKEN 'z'
 
 #include "ClientUtils.h"
-#include "_TODOremove.cpp"
-#include <stdio.h>
-#include <iostream>
 
 typedef struct token {
     char type;
@@ -16,6 +12,7 @@ typedef struct token {
     std::string word;
 } token;
 
-std::vector<token> shunting_yard(std::string query);
+std::vector<token> tokenize(std::string query);
+std::vector<token> shunting_yard(std::vector<token>);
 
 #endif

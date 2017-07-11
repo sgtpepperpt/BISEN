@@ -1,6 +1,9 @@
 #ifndef QueryEvaluator
 #define QueryEvaluator
 
+#define WORD_TOKEN 'w'
+#define META_TOKEN 'z'
+
 #include "IeeCrypt.hpp"
 #include "IeeUtils.h"
 #include <stdio.h>

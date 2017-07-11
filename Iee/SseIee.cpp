@@ -152,24 +152,24 @@ void SseIee::get_docs_from_server(deque<token> &query) {
 
     // randomly fill the array with the tokens we need
     for(int i = 0; i < query.size(); i++) {
-        if(query[i].type != 't')
+        // ignore non-word tokens
+        if(query[i].type != WORD_TOKEN)
             continue;
 
         // choose a random unoccupied position from the rand array
         int pos;
         do {
             pos = spc_rand_uint_range(0, query.size());
-            cout << "pos " << pos << " " << query[i].word << endl;
         } while(rand[pos] != NULL);
-        
+
         rand[pos] = &query[i];
     }
-    
+
     printf("array filled\n");
     for(int i = 0; i < query.size(); i++)
         printf("%c ", rand[i] == NULL ? '-':rand[i]->type);
     printf("\n");
-    
+
     for(int i = 0; i < query.size(); i++)
         printf("%s ", rand[i] == NULL ? "-":rand[i]->word.c_str());
     printf("\n");
@@ -270,7 +270,7 @@ void SseIee::search(char* buffer, int query_size) {
         tkn.type = tmp_type[0];
         delete[] tmp_type;
 
-        if(tkn.type == 't') {
+        if(tkn.type == WORD_TOKEN) {
             // read counter
             tkn.counter = readIntFromArr(buffer, &pos) + 1;
 
@@ -284,7 +284,7 @@ void SseIee::search(char* buffer, int query_size) {
             } while(tmp[0] != '\0');
 
             delete[] tmp;
-        } else if(tkn.type == 'z') {
+        } else if(tkn.type == META_TOKEN) {
             nDocs = tkn.counter = readIntFromArr(buffer, &pos);
             continue;
         }
@@ -297,10 +297,10 @@ void SseIee::search(char* buffer, int query_size) {
 
     //calculate boolean formula
     vector<int> response_docs = evaluate(query, nDocs);
-    for(int z : response_docs)
+    /*for(int z : response_docs)
         cout << z << " ";
         
-    cout << endl;
+    cout << endl;*/
 
     //send query results with kCom
     int len = response_docs.size() * sizeof(int);

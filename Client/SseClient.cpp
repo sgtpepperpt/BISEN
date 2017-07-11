@@ -27,7 +27,7 @@ void SseClient::setup() {
     analyzer = new EnglishAnalyzer;
     crypto = new ClientCrypt;   //inits kCom
     W = new map<string,int>;    /**TODO persist W*/
-    nDocs = 1;
+    nDocs = 0;
 
     //get encrypted kCom and init buffers
     vector<unsigned char> kCom = crypto->getEncryptedKcom();
@@ -66,7 +66,7 @@ void SseClient::addDocument(string fname) {
 
 void SseClient::addWord(int d, string w) {
     //get counter c for w
-    int c = 0; //TODO counter should start at 1 with the first word?
+    int c = 1; // with new words, this is the first instance of it
     map<string,int>::iterator it = W->find(w);
     if (it != W->end())
         c = it->second + 1;
@@ -79,7 +79,7 @@ void SseClient::addWord(int d, string w) {
 
     addToArr(&op, sizeof(char), (char*)data, &pos);
     addIntToArr(d, (char*)data, &pos);
-    addIntToArr(c, (char*)data, &pos);
+    addIntToArr(c - 1, (char*)data, &pos); // counter starts at 1, so -1 for indexing
     for (int i = 0; i < w.size(); i++)
         addToArr(&w[i], sizeof(char), (char*)data, &pos);
 
@@ -122,7 +122,7 @@ vector<int> SseClient::search(string query) {
             else
                 tkn->counter = 0;
 
-            printf("counter %s %d\n", tkn->word.c_str(), tkn->counter);
+            //printf("counter %s %d\n", tkn->word.c_str(), tkn->counter);
             data_size += sizeof(char) + sizeof(int) + (tkn->word.size() + 1);
         } else {
             data_size += sizeof(char);
@@ -143,9 +143,7 @@ vector<int> SseClient::search(string query) {
 
     char op = 's';
     addToArr(&op, sizeof(char), (char*)data, &pos);
-    
-    char term = '\0'; // TODO used to terminate all strings, maybe better solution?
-    
+
     // second query iteration: to fill "data" buffer
     for(vector<token>::iterator it = rpn.begin(); it != rpn.end(); ++it) {
         token tkn = *it;
@@ -159,6 +157,7 @@ vector<int> SseClient::search(string query) {
             for (int i = 0; i < word.size(); i++)
                 addToArr(&word[i], sizeof(char), (char*)data, &pos);
 
+            char term = '\0';
             addToArr(&term, sizeof(char), (char*)data, &pos);
         } else if(tkn.type == META_TOKEN) {
             addIntToArr(tkn.counter, (char*)data, &pos);

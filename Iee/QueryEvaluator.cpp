@@ -17,9 +17,9 @@ vector<int> get_not_docs(int nDocs, vector<int> negate){
     }
 
     // all elements that have count == 0 are the negation of the set
-    vector<int> result(nDocs-negate.size() - 1); //TODO same as below, remove -1
+    vector<int> result(nDocs-negate.size());
     int res_count = 0;
-    for(int i = 1; i < nDocs; i++) { //TODO i=0 when counter issue is fixed
+    for(int i = 0; i < nDocs; i++) {
         if(count[i] == 0) {
             result[res_count++] = i;
         }

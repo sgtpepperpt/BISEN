@@ -114,7 +114,7 @@ void SseIee::add(char* data, int data_len) {
     int pos = 1;
     const int d = readIntFromArr(data, &pos);
     const int c = readIntFromArr(data, &pos);
-    cout << "add counter " << c << endl;
+
     const int w_size = data_len - pos;
     char* w = new char [w_size];
     readFromArr(w, w_size, data, &pos);
@@ -174,7 +174,7 @@ void SseIee::get_docs_from_server(deque<token> &query) {
         if(tkn == NULL)
             continue;
         
-        cout << "counter for " << tkn->word << " is " << tkn->counter << endl;
+        //cout << "counter for " << tkn->word << " is " << tkn->counter << endl;
         if(tkn->counter == 0) {
             vector<int> dummy;
             tkn->docs = dummy;
@@ -242,10 +242,6 @@ void SseIee::get_docs_from_server(deque<token> &query) {
             memcpy(&docs[i], buff+pos, sizeof(int));
             pos += sizeof(int);
         }
-        
-        for(int x : docs)
-            cout << x << " ";
-        cout << endl;
 
         // insert result into token's struct
         tkn->docs = docs;
@@ -272,7 +268,7 @@ void SseIee::search(char* buffer, int query_size) {
 
         if(tkn.type == WORD_TOKEN) {
             // read counter
-            tkn.counter = readIntFromArr(buffer, &pos) + 1; //TODO issue with counters
+            tkn.counter = readIntFromArr(buffer, &pos);
 
             // read word
             char* tmp;
@@ -294,15 +290,9 @@ void SseIee::search(char* buffer, int query_size) {
 
     // get documents from uee
     get_docs_from_server(query);
-    
-    printf("got docs\n");
 
     //calculate boolean formula
     vector<int> response_docs = evaluate(query, nDocs);
-    /*for(int z : response_docs)
-        cout << z << " ";
-        
-    cout << endl;*/
 
     //send query results with kCom
     int len = response_docs.size() * sizeof(int);

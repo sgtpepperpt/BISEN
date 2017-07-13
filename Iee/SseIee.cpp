@@ -6,17 +6,28 @@
 //  Copyright © 2016 Bernardo Ferreira. All rights reserved.
 //
 
+/*
+ Required changes are tagged with [BP]
+
+ Modifications:
+ -> There is no connection between client and IEE. Client requests will be given as input messages to SseIee.
+ -> SseIee runs with a message already on plaintext. Secure channel encryption/decryption is taken care of outside SseIee.
+ -> Thus, KCom no longer exists here.
+ -> Pipe connections will thus only be required for Iee->Server and Server->Iee. 
+*/
+
 #include "SseIee.hpp"
 
 using namespace std;
 
 const char* SseIee::pipeDir = "/tmp/BooleanSSE/";
-
-SseIee::SseIee() {
+// [BP] - Must receive a message, which will be either two keys (for the setup), or an Add/Search command.
+SseIee::SseIee() { 
     initIee();
 
-    //start listening for client calls through bridge
-    while (true) {
+    //start listening for client calls through bridge 
+    // [BP] - client calls are now given as input messages. No pipes or decryption necessary.
+    while (true) { 
         //receive data
         char buff[sizeof(int)];
         socketReceive(clientBridgePipe, buff, sizeof(int));
@@ -27,11 +38,13 @@ SseIee::SseIee() {
         socketReceive(clientBridgePipe, (char*)enc_data, enc_data_size);
 
         //process request
+        // [BP] - Kcom does not exist. This check cannot allow for requests to be processed before setup.
         if (!crypto->hasStoredKcom()) {
             //if kCom is NULL, can only accept setup operation
             setup(enc_data, enc_data_size);
         } else {
             //already has kCom, decrypt with it and perform update or search
+            // [BP] - Received message is already decrypted. 
             char* data = new char[enc_data_size];
             int data_size = crypto->decryptSymmetric((unsigned char*)data, enc_data, enc_data_size, crypto->get_kCom());
 
@@ -54,6 +67,7 @@ SseIee::~SseIee() {
     crypto->~IeeCrypt();
     close(readServerPipe);
     close(writeServerPipe);
+    // [BP] - This pipe will no longer exist
     close(clientBridgePipe);
 }
 
@@ -85,6 +99,7 @@ void SseIee::initIee() {
     writeServerPipe = open(pipeName, O_ASYNC | O_WRONLY);
 
     //start iee pipe
+    // [BP] - This is no longer necessary, since requests are now inputs to SseIee.
     bzero(pipeName,256);
     strcpy(pipeName, pipeDir);
     strcpy(pipeName+strlen(pipeName), "clientBridge");
@@ -98,8 +113,10 @@ void SseIee::initIee() {
 
 
 void SseIee::setup(unsigned char* enc_data, int enc_data_size) {
+    // [BP] - Decryption is no longer necessary, neither is storeKcom.
     vector<unsigned char> data = crypto->decryptPublic(enc_data, enc_data_size);
     crypto->storeKcom(data);
+    // [BP] - Keys will be given by the client (as input message)
     crypto->initKeys();
 
     //tell server to init index I
@@ -306,6 +323,7 @@ void SseIee::search(char* buffer, int query_size) {
     vector<int> response_docs = evaluate(query, nDocs);
 
     //send query results with kCom
+    // [BP] - Instead of encrypting with kCom and sending via pipe, it must simply be returned by SseIee in plaintext.
     int len = response_docs.size() * sizeof(int);
     char* buff = new char[len];
     pos = 0;

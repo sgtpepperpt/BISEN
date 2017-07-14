@@ -22,24 +22,58 @@ SseClient::~SseClient() {
 }
 
 void SseClient::setup() {
-    //init data structures
+    // init data structures
     openQueryResponseSocket();
     analyzer = new EnglishAnalyzer;
     crypto = new ClientCrypt;   //inits kCom
     W = new map<string,int>;    /**TODO persist W*/
     nDocs = 0;
 
-    //get encrypted kCom and init buffers
-    vector<unsigned char> kCom = crypto->getEncryptedKcom();
-    const int data_size = (int)kCom.size();
+    // get keys
+    unsigned char* kCom = crypto->getKcom();
+    unsigned char* kEnc = crypto->getKenc();
+    unsigned char* kF = crypto->getKf();
+
+    const int symKsize = crypto->symKsize;
+    const int fBlocksize = crypto->fBlocksize;
+
+    // pack the keys into a buffer
+    int data_size = 3 * sizeof(int) + 2 * symKsize + fBlocksize;
     char* data = new char[data_size];
     int pos = 0;
 
-    //prepare data buffers
-    for (int i = 0; i < kCom.size(); i++)
+    // add kCom to buffer
+    addIntToArr(symKsize, data, &pos);
+    for (int i = 0; i < symKsize; i++)
         addToArr(&kCom[i], sizeof(unsigned char), data, &pos);
 
-    //send data
+    // add kEnc to buffer
+    addIntToArr(symKsize, data, &pos);
+    for (int i = 0; i < symKsize; i++)
+        addToArr(&kEnc[i], sizeof(unsigned char), data, &pos);
+
+    // add kF to buffer
+    addIntToArr(fBlocksize, data, &pos);
+    for (int i = 0; i < fBlocksize; i++)
+        addToArr(&kF[i], sizeof(unsigned char), data, &pos);
+
+    /*for(int i = 0; i < symKsize; i++)
+        printf("%02x ", kCom[i]);
+    printf("\n");*/
+
+    // encrypt the buffer
+    vector<unsigned char> enc = crypto->encryptPublic((unsigned char*) data, data_size);
+    delete[] data;
+
+    // transform into a new buffer
+    data_size = enc.size();
+    data = new char[data_size];
+    pos = 0;
+
+    for (int i = 0; i < data_size; i++)
+        addToArr(&enc[i], sizeof(unsigned char), data, &pos);
+
+    // send data
     char buff[sizeof(int)];
     pos = 0;
     addIntToArr(data_size, buff, &pos);

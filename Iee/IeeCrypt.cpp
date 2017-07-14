@@ -27,10 +27,8 @@ IeeCrypt::~IeeCrypt() {
     delete[] kF;
 }
 
-void IeeCrypt::storeKcom(vector<unsigned char> key) {
-    kCom = new unsigned char[key.size()];
-    for (int i = 0; i < key.size(); i++)
-        kCom[i] = key[i];
+void IeeCrypt::storeKcom(unsigned char* key) {
+    kCom = key;
 }
 
 bool IeeCrypt::hasStoredKcom() {
@@ -122,14 +120,6 @@ void IeeCrypt::f(unsigned char* key, unsigned char* data, int dataSize, unsigned
         pee("CashCrypt::hmac - md size of different from expected\n");
 }
 
-void IeeCrypt::initKeys() {
-    kEnc = new unsigned char[symBlocksize];
-    spc_rand(kEnc, symBlocksize);
-    
-    kF = new unsigned char[fBlocksize];
-    spc_rand(kF, fBlocksize);
-}
-
 unsigned char* spc_rand(unsigned char *buf, int l) {
     if (!RAND_bytes(buf, l)) {
         fprintf(stderr, "The PRNG is not seeded!\n");
@@ -137,18 +127,6 @@ unsigned char* spc_rand(unsigned char *buf, int l) {
     }
     
     return buf;
-}
-
-unsigned char* IeeCrypt::get_kF() {
-    return kF;
-}
-
-unsigned char* IeeCrypt::get_kCom() {
-    return kCom;
-}
-
-unsigned char* IeeCrypt::get_kEnc() {
-    return kEnc;
 }
 
 unsigned int spc_rand_uint() {
@@ -161,4 +139,21 @@ unsigned int spc_rand_uint() {
 unsigned int spc_rand_uint_range(int min, int max) {
     if (max < min) abort();
     return min + (spc_rand_uint() % static_cast<int>(max - min));
+}
+
+void IeeCrypt::setKeys(unsigned char* kEnc, unsigned char* kF) {
+    this->kEnc = kEnc;
+    this->kF = kF;
+}
+
+unsigned char* IeeCrypt::get_kCom() {
+    return kCom;
+}
+
+unsigned char* IeeCrypt::get_kF() {
+    return kF;
+}
+
+unsigned char* IeeCrypt::get_kEnc() {
+    return kEnc;
 }

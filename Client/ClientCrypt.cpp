@@ -31,19 +31,34 @@ ClientCrypt::ClientCrypt() {
         fwrite(Kcom, 1, symKsize, f);
     }
     fclose(f);
+
+    // generate kF and Kenc
+    Kenc = new unsigned char[symKsize];
+    spc_rand(Kenc, symKsize);
+
+    Kf = new unsigned char[fBlocksize];
+    spc_rand(Kf, fBlocksize);
 }
 
 
 ClientCrypt::~ClientCrypt() {
     delete[] Kcom;
+    delete[] Kenc;
+    delete[] Kf;
     delete IeePubK;
 }
 
-
-vector<unsigned char> ClientCrypt::getEncryptedKcom() {
-    return encryptPublic(Kcom, symKsize);
+unsigned char* ClientCrypt::getKcom() {
+    return Kcom;
 }
 
+unsigned char* ClientCrypt::getKenc() {
+    return Kenc;
+}
+
+unsigned char* ClientCrypt::getKf() {
+    return Kf;
+}
 
 vector<unsigned char> ClientCrypt::encryptPublic (unsigned char* data, int size) {
     unsigned char* encrypt = (unsigned char*)malloc(pubKsize);
@@ -123,8 +138,6 @@ int ClientCrypt::decryptSymmetric (unsigned char* ciphertext, int ciphertextSize
  
     return plaintext_len;
 }
-
-
 
 unsigned char* ClientCrypt::spc_rand(unsigned char *buf, int l) {
     if (!RAND_bytes(buf, l)) {

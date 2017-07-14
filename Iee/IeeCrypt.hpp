@@ -29,27 +29,31 @@ class IeeCrypt {
 private:
     RSA* IeePrivK;
     unsigned char* kCom;
+
+    // keys sent by the client
     unsigned char* kEnc;
     unsigned char* kF;
 
 public:
     static const int symBlocksize = 16;
     static const int fBlocksize = 20;
-    
+
     IeeCrypt();
     ~IeeCrypt();
-    void initKeys();
-    void storeKcom(vector<unsigned char> key);
-    bool hasStoredKcom();
+
     vector<unsigned char> decryptPublic (unsigned char* data, int size);
     int encryptSymmetric (unsigned char* data, int size, unsigned char* ciphertext, unsigned char* key);
     int decryptSymmetric (unsigned char* plaintext, unsigned char* ciphertext, int ciphertextSize, unsigned char* key);
     void f (unsigned char* key, unsigned char* data, int dataSize, unsigned char* md);
-    unsigned char* get_kF();
+
+    void storeKcom(unsigned char* key);
+    bool hasStoredKcom();
+
+    void setKeys(unsigned char* kEnc, unsigned char* kF);
+
     unsigned char* get_kCom();
+    unsigned char* get_kF();
     unsigned char* get_kEnc();
 };
-
-
 
 #endif /* IeeCrypt_hpp */

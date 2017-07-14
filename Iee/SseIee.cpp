@@ -27,7 +27,7 @@ SseIee::SseIee() {
 
     //start listening for client calls through bridge 
     // [BP] - client calls are now given as input messages. No pipes or decryption necessary.
-    while (true) { 
+    while (true) {
         //receive data
         char buff[sizeof(int)];
         socketReceive(clientBridgePipe, buff, sizeof(int));
@@ -36,7 +36,7 @@ SseIee::SseIee() {
 
         unsigned char* enc_data = new unsigned char[enc_data_size];
         socketReceive(clientBridgePipe, (char*)enc_data, enc_data_size);
-
+        
         //process request
         // [BP] - Kcom does not exist. This check cannot allow for requests to be processed before setup.
         if (!crypto->hasStoredKcom()) {
@@ -44,7 +44,7 @@ SseIee::SseIee() {
             setup(enc_data, enc_data_size);
         } else {
             //already has kCom, decrypt with it and perform update or search
-            // [BP] - Received message is already decrypted. 
+            // [BP] - Received message is already decrypted.
             char* data = new char[enc_data_size];
             int data_size = crypto->decryptSymmetric((unsigned char*)data, enc_data, enc_data_size, crypto->get_kCom());
 
@@ -115,9 +115,38 @@ void SseIee::initIee() {
 void SseIee::setup(unsigned char* enc_data, int enc_data_size) {
     // [BP] - Decryption is no longer necessary, neither is storeKcom.
     vector<unsigned char> data = crypto->decryptPublic(enc_data, enc_data_size);
-    crypto->storeKcom(data);
+
+    //TODO redo so as to use data instead of copying to array
+    char buff[data.size()];
+    for(int i = 0; i < data.size(); i++) {
+        buff[i] = data[i];
+    }
+
+    int pos = 0;
+
+    // read kCom
+    const int kCom_size = readIntFromArr(buff, &pos);
+    unsigned char* kCom = new unsigned char[kCom_size];
+    readFromArr(kCom, kCom_size, buff, &pos);
+
+    // read kEnc
+    const int kEnc_size = readIntFromArr(buff, &pos);
+    unsigned char* kEnc = new unsigned char[kEnc_size];
+    readFromArr(kEnc, kEnc_size, buff, &pos);
+
+    // read kF
+    const int kF_size = readIntFromArr(buff, &pos);
+    unsigned char* kF = new unsigned char[kF_size];
+    readFromArr(kF, kCom_size, buff, &pos);
+    
+    /*for(int i = 0; i < kF_size; i++)
+        printf("%02x ", kF[i]);
+    printf("\n");*/
+
+    //TODO storeKcom is no longer necessary.
+    crypto->storeKcom(kCom);
     // [BP] - Keys will be given by the client (as input message)
-    crypto->initKeys();
+    crypto->setKeys(kEnc, kF);
 
     //tell server to init index I
     char op = '1';
@@ -280,6 +309,7 @@ void SseIee::get_docs_from_server(deque<token> &query) {
 }
 
 void SseIee::search(char* buffer, int query_size) {
+    cout << "search!" << endl;
     deque<token> query; //TODO for boolean eval should be queue, but we have to iterate twice before that for now...
     int nDocs;
 

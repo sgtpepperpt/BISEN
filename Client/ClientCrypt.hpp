@@ -25,29 +25,34 @@ static const char* KcomFile = getenv("KCOM_FILE") ? getenv("KCOM_FILE") : "Data/
 using namespace std;
 
 class ClientCrypt {
-    
     RSA* IeePubK;
-    unsigned char* Kcom;
-    
+
     unsigned char* spc_rand(unsigned char *buf, int l);
     unsigned int spc_rand_uint();
     float spc_rand_real(void);
     float spc_rand_real_range(float min, float max);
     unsigned int spc_rand_uint_range(int min, int max);
-    
+
+private:
+    unsigned char* Kcom;
+    unsigned char* Kenc;
+    unsigned char* Kf;
+
 public:
-    
     static const unsigned int pubKsize = 128; //128 bits
     static const unsigned int symKsize = 16; //128 bits
-    
+    static const int fBlocksize = 20;
+
     ClientCrypt();
     ~ClientCrypt();
     
     vector<unsigned char> encryptPublic (unsigned char* data, int size);
     int encryptSymmetric (unsigned char* data, int size, unsigned char* ciphertext);
     int decryptSymmetric (unsigned char* ciphertext, int ciphertextSize, unsigned char* plaintext);
-    vector<unsigned char> getEncryptedKcom();
+    
+    unsigned char* getKcom();
+    unsigned char* getKenc();
+    unsigned char* getKf();
 };
-
 
 #endif /* ClientCrypt_hpp */

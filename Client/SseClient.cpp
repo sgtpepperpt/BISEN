@@ -38,9 +38,12 @@ void SseClient::setup() {
     const int fBlocksize = crypto->fBlocksize;
 
     // pack the keys into a buffer
-    int data_size = 3 * sizeof(int) + 2 * symKsize + fBlocksize;
+    int data_size = sizeof(char) + 3 * sizeof(int) + 2 * symKsize + fBlocksize;
     char* data = new char[data_size];
+    
+    char op = 'i';
     int pos = 0;
+    addToArr(&op, sizeof(char), (char*)data, &pos);
 
     // add kCom to buffer
     addIntToArr(symKsize, data, &pos);

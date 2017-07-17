@@ -41,15 +41,14 @@ public:
     IeeCrypt();
     ~IeeCrypt();
 
-    vector<unsigned char> decryptPublic (unsigned char* data, int size);
+    int decryptPublic (unsigned char* plaintext, unsigned char* ciphertext, int ciphertextSize);
     int encryptSymmetric (unsigned char* data, int size, unsigned char* ciphertext, unsigned char* key);
     int decryptSymmetric (unsigned char* plaintext, unsigned char* ciphertext, int ciphertextSize, unsigned char* key);
     void f (unsigned char* key, unsigned char* data, int dataSize, unsigned char* md);
 
-    void storeKcom(unsigned char* key);
     bool hasStoredKcom();
 
-    void setKeys(unsigned char* kEnc, unsigned char* kF);
+    void setKeys(unsigned char* kCom, unsigned char* kEnc, unsigned char* kF);
 
     unsigned char* get_kCom();
     unsigned char* get_kF();

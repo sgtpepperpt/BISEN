@@ -27,7 +27,7 @@ SseIee::SseIee() {
 
     //start listening for client calls through bridge 
     // [BP] - client calls are now given as input messages. No pipes or decryption necessary.
-    while (true) {
+    /*while (true) {
         //receive data
         char buff[sizeof(int)];
         socketReceive(clientBridgePipe, buff, sizeof(int));
@@ -39,36 +39,58 @@ SseIee::SseIee() {
         
         //process request
         // [BP] - Kcom does not exist. This check cannot allow for requests to be processed before setup.
-        if (!crypto->hasStoredKcom()) {
-            //if kCom is NULL, can only accept setup operation
-            setup(enc_data, enc_data_size);
-        } else {
-            //already has kCom, decrypt with it and perform update or search
-            // [BP] - Received message is already decrypted.
-            char* data = new char[enc_data_size];
-            int data_size = crypto->decryptSymmetric((unsigned char*)data, enc_data, enc_data_size, crypto->get_kCom());
-
-            //add / update operation
-            if (data[0] == 'a')
-                add(data, data_size);
-
-            //search operation
-            else if (data[0] == 's')
-                search(data, data_size);
-
-            delete[] data;
-        }
+        
         delete[] enc_data;
-    }
+    }*/
 }
 
+// ponto de entrada do IEE
+// output deve ser NULL
+int SseIee::process(char* ciphertext, int ciphertext_size, char* enc_output) {
+    char* plaintext = new char[ciphertext_size];
+    const int plaintext_size = decrypt_data(plaintext, ciphertext, ciphertext_size);
+    
+    char* output;
+    const int output_size = f(plaintext, plaintext_size, output);
+    delete[] plaintext;
+    
+    if(output != NULL) {
+        const int enc_output_size = output_size + crypto->symBlocksize;
+        enc_output = new char[enc_output_size];
+        return crypto->encryptSymmetric((unsigned char*)output, output_size, (unsigned char*)enc_output, crypto->get_kCom());
+    }
+    
+    return -1;
+}
+
+int SseIee::f(char* data, int data_size, char* output) {
+    //setup operation
+    if(data[0] == 'i')
+        setup(data, data_size);
+    //add / update operation
+    else if (data[0] == 'a')
+        add(data, data_size);
+    //search operation
+    else if (data[0] == 's')
+        return search(data, data_size, output);
+        
+    return -1;
+}
+
+int SseIee::decrypt_data(char* plaintext, char* ciphertext, int ciphertext_size) {
+    if(crypto->hasStoredKcom()) {
+        return crypto->decryptSymmetric((unsigned char*)plaintext, (unsigned char*)ciphertext, ciphertext_size, crypto->get_kCom());
+    } else {
+        return crypto->decryptPublic((unsigned char*)plaintext, (unsigned char*)ciphertext, ciphertext_size);
+    }
+}
 
 SseIee::~SseIee() {
     crypto->~IeeCrypt();
     close(readServerPipe);
     close(writeServerPipe);
     // [BP] - This pipe will no longer exist
-    close(clientBridgePipe);
+    //close(clientBridgePipe);
 }
 
 
@@ -100,57 +122,50 @@ void SseIee::initIee() {
 
     //start iee pipe
     // [BP] - This is no longer necessary, since requests are now inputs to SseIee.
-    bzero(pipeName,256);
+    /*bzero(pipeName,256);
     strcpy(pipeName, pipeDir);
     strcpy(pipeName+strlen(pipeName), "clientBridge");
     if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
         if(errno != EEXIST)
             pee("SseServer::bridgeClientIeeThread: Fail to mknod");
-    clientBridgePipe = open(pipeName, O_ASYNC | O_RDONLY);
+    clientBridgePipe = open(pipeName, O_ASYNC | O_RDONLY);*/
 
     printf("Finished IEE init! Gonna start listening for client requests through bridge!\n");
 }
 
 
-void SseIee::setup(unsigned char* enc_data, int enc_data_size) {
+void SseIee::setup(char* data, int data_size) {
     // [BP] - Decryption is no longer necessary, neither is storeKcom.
-    vector<unsigned char> data = crypto->decryptPublic(enc_data, enc_data_size);
-
-    //TODO redo so as to use data instead of copying to array
-    char buff[data.size()];
-    for(int i = 0; i < data.size(); i++) {
-        buff[i] = data[i];
-    }
+    //vector<unsigned char> data = crypto->decryptPublic(enc_data, enc_data_size);
 
     int pos = 0;
 
     // read kCom
-    const int kCom_size = readIntFromArr(buff, &pos);
+    const int kCom_size = readIntFromArr(data, &pos);
     unsigned char* kCom = new unsigned char[kCom_size];
-    readFromArr(kCom, kCom_size, buff, &pos);
+    readFromArr(kCom, kCom_size, data, &pos);
 
     // read kEnc
-    const int kEnc_size = readIntFromArr(buff, &pos);
+    const int kEnc_size = (int) readIntFromArr(data, &pos);
     unsigned char* kEnc = new unsigned char[kEnc_size];
-    readFromArr(kEnc, kEnc_size, buff, &pos);
+    readFromArr(kEnc, kEnc_size, data, &pos);
 
     // read kF
-    const int kF_size = readIntFromArr(buff, &pos);
+    const int kF_size = readIntFromArr(data, &pos);
     unsigned char* kF = new unsigned char[kF_size];
-    readFromArr(kF, kCom_size, buff, &pos);
+    readFromArr(kF, kCom_size, data, &pos);
     
     /*for(int i = 0; i < kF_size; i++)
         printf("%02x ", kF[i]);
     printf("\n");*/
 
-    //TODO storeKcom is no longer necessary.
-    crypto->storeKcom(kCom);
     // [BP] - Keys will be given by the client (as input message)
-    crypto->setKeys(kEnc, kF);
+    crypto->setKeys(kCom, kEnc, kF);
 
     //tell server to init index I
     char op = '1';
     socketSend(writeServerPipe, &op, sizeof(char));
+    
     printf("Finished Setup!\n");
 }
 
@@ -165,9 +180,8 @@ void SseIee::add(char* data, int data_len) {
 
         // read word
         string word;
-        char* tmp;
+        char* tmp = new char[1];
         do {
-            tmp = new char[1];
             readFromArr(tmp, 1, data, &pos);
             word += tmp[0];
         } while(tmp[0] != '\0');
@@ -308,7 +322,7 @@ void SseIee::get_docs_from_server(deque<token> &query) {
     }
 }
 
-void SseIee::search(char* buffer, int query_size) {
+int SseIee::search(char* buffer, int query_size, char* output) {
     cout << "search!" << endl;
     deque<token> query; //TODO for boolean eval should be queue, but we have to iterate twice before that for now...
     int nDocs;
@@ -329,15 +343,13 @@ void SseIee::search(char* buffer, int query_size) {
             tkn.counter = readIntFromArr(buffer, &pos);
 
             // read word
-            char* tmp;
+            char* tmp = new char[1];
             do {
-                tmp = new char[1];
                 readFromArr(tmp, 1, buffer, &pos);
-
                 tkn.word += tmp[0];
             } while(tmp[0] != '\0');
-
             delete[] tmp;
+            
         } else if(tkn.type == META_TOKEN) {
             nDocs = readIntFromArr(buffer, &pos);
             continue;
@@ -354,31 +366,34 @@ void SseIee::search(char* buffer, int query_size) {
 
     //send query results with kCom
     // [BP] - Instead of encrypting with kCom and sending via pipe, it must simply be returned by SseIee in plaintext.
-    int len = response_docs.size() * sizeof(int);
-    char* buff = new char[len];
+    int output_size = response_docs.size() * sizeof(int);
+    output = new char[output_size];
     pos = 0;
 
     for(int i = 0; i < response_docs.size(); i++) {
-        addIntToArr(response_docs[i], buff, &pos);
+        addIntToArr(response_docs[i], output, &pos);
     }
 
+    printf("Finished Search!\n");
+    return output_size;
+    
+    /*
     int enc_results_size = len + crypto->symBlocksize;
     unsigned char* enc_results = new unsigned char[enc_results_size];
     enc_results_size = crypto->encryptSymmetric((unsigned char*)buff, len, enc_results, crypto->get_kCom());
     delete[] buff;
 
     //send results to client
-    char op = '4';
-    socketSend(writeServerPipe, &op, sizeof(char));
+    //char op = '4';
+    //socketSend(writeServerPipe, &op, sizeof(char));
 
-    buff = new char[sizeof(int)];
-    pos = 0;
-    addIntToArr(enc_results_size, buff, &pos);
-    socketSend(writeServerPipe, buff, sizeof(int));
+    //buff = new char[sizeof(int)];
+    //pos = 0;
+    //addIntToArr(enc_results_size, buff, &pos);
+    //socketSend(writeServerPipe, buff, sizeof(int));
     delete[] buff;
 
-    socketSend(writeServerPipe, (char*)enc_results, enc_results_size);
-    printf("Finished Search!\n");
+    socketSend(writeServerPipe, (char*)enc_results, enc_results_size);*/
 }
 
 //void initServer (int newsockfd) {

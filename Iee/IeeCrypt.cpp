@@ -27,25 +27,23 @@ IeeCrypt::~IeeCrypt() {
     delete[] kF;
 }
 
-void IeeCrypt::storeKcom(unsigned char* key) {
-    kCom = key;
-}
-
 bool IeeCrypt::hasStoredKcom() {
     return kCom != NULL;
 }
 
-vector<unsigned char> IeeCrypt::decryptPublic (unsigned char* data, int size) {
-    unsigned char* decrypt = new unsigned char[size];
-    int decSize = RSA_private_decrypt(size, data, decrypt, IeePrivK, RSA_PKCS1_OAEP_PADDING);
+int IeeCrypt::decryptPublic (unsigned char* plaintext, unsigned char* ciphertext, int ciphertextSize) {
+    //unsigned char* decrypt = new unsigned char[size];
+    int decSize = RSA_private_decrypt(ciphertextSize, ciphertext, plaintext, IeePrivK, RSA_PKCS1_OAEP_PADDING);
     if (decSize == -1)
         pee("IeeCrypt::decryptPublic - couldn't decrypt.");
-    vector<unsigned char> result;
+        
+    return decSize;
+   /* vector<unsigned char> result;
     result.resize(decSize);
     for (int i = 0; i < decSize; i++)
-        result[i] = decrypt[i];
-    delete[] decrypt;
-    return result;
+        result[i] = plaintext[i];
+    //delete[] decrypt;
+    return result;*/
 }
 
 int IeeCrypt::encryptSymmetric (unsigned char* data, int size, unsigned char* ciphertext, unsigned char* key) {
@@ -141,7 +139,8 @@ unsigned int spc_rand_uint_range(int min, int max) {
     return min + (spc_rand_uint() % static_cast<int>(max - min));
 }
 
-void IeeCrypt::setKeys(unsigned char* kEnc, unsigned char* kF) {
+void IeeCrypt::setKeys(unsigned char* kCom, unsigned char* kEnc, unsigned char* kF) {
+    this->kCom = kCom;
     this->kEnc = kEnc;
     this->kF = kF;
 }

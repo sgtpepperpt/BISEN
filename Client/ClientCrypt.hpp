@@ -50,7 +50,7 @@ public:
     int encryptSymmetric (unsigned char* data, int size, unsigned char* ciphertext);
     int decryptSymmetric (unsigned char* ciphertext, int ciphertextSize, unsigned char* plaintext);
     
-    unsigned char* getKcom();
+    //unsigned char* getKcom();
     unsigned char* getKenc();
     unsigned char* getKf();
 };

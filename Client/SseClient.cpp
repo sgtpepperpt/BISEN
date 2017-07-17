@@ -30,7 +30,7 @@ void SseClient::setup() {
     nDocs = 0;
 
     // get keys
-    unsigned char* kCom = crypto->getKcom();
+    //unsigned char* kCom = crypto->getKcom();
     unsigned char* kEnc = crypto->getKenc();
     unsigned char* kF = crypto->getKf();
 
@@ -38,7 +38,7 @@ void SseClient::setup() {
     const int fBlocksize = crypto->fBlocksize;
 
     // pack the keys into a buffer
-    int data_size = sizeof(char) + 3 * sizeof(int) + 2 * symKsize + fBlocksize;
+    int data_size = sizeof(char) + 2 * sizeof(int) + symKsize + fBlocksize;
     char* data = new char[data_size];
     
     char op = 'i';
@@ -47,9 +47,9 @@ void SseClient::setup() {
 
     // TODO client envia o kCom, deve ser lido pela framework do norte
     // add kCom to buffer
-    addIntToArr(symKsize, data, &pos);
+    /*addIntToArr(symKsize, data, &pos);
     for (int i = 0; i < symKsize; i++)
-        addToArr(&kCom[i], sizeof(unsigned char), data, &pos);
+        addToArr(&kCom[i], sizeof(unsigned char), data, &pos);*/
 
     // add kEnc to buffer
     addIntToArr(symKsize, data, &pos);
@@ -66,16 +66,16 @@ void SseClient::setup() {
     printf("\n");*/
 
     // encrypt the buffer
-    vector<unsigned char> enc = crypto->encryptPublic((unsigned char*) data, data_size);
-    delete[] data;
+    //vector<unsigned char> enc = crypto->encryptPublic((unsigned char*) data, data_size);
+    //delete[] data;
 
     // transform into a new buffer
-    data_size = enc.size();
+    /*data_size = enc.size();
     data = new char[data_size];
     pos = 0;
 
     for (int i = 0; i < data_size; i++)
-        addToArr(&enc[i], sizeof(unsigned char), data, &pos);
+        addToArr(&enc[i], sizeof(unsigned char), data, &pos);*/
 
     // send data
     char buff[sizeof(int)];
@@ -137,20 +137,20 @@ void SseClient::addWords(int d, set<string> words) {
     }
 
     //encrypt data
-    int ciphertext_size = data_size+16;
+    /*int ciphertext_size = data_size+16;
     unsigned char* ciphertext = new unsigned char[ciphertext_size];
     ciphertext_size = crypto->encryptSymmetric(data, data_size, ciphertext);
-    delete[] data;
+    delete[] data;*/
 
     //send data
     char buff[sizeof(int)];
     pos = 0;
-    addIntToArr(ciphertext_size, buff, &pos);
+    addIntToArr(data_size, buff, &pos);
     int sockfd = connectAndSend(buff, sizeof(int));
-    socketSend(sockfd, (char*)ciphertext, ciphertext_size);
+    socketSend(sockfd, (char*)data, data_size);
 
     close(sockfd);
-    delete[] ciphertext;
+    delete[] data;
 }
 
 //boolean operands: AND, OR, NOT, (, )
@@ -215,19 +215,19 @@ vector<int> SseClient::search(string query) {
     }
 
     //encrypt query
-    int ciphertext_size = data_size + 16;
+    /*int ciphertext_size = data_size + 16;
     unsigned char* ciphertext = new unsigned char[ciphertext_size];
     ciphertext_size = crypto->encryptSymmetric(data, data_size, ciphertext);
-    delete[] data;
+    delete[] data;*/
 
     //send query
     char buff[sizeof(int)];
     pos = 0;
-    addIntToArr(ciphertext_size, buff, &pos);
+    addIntToArr(data_size, buff, &pos);
 
     int sockfd = connectAndSend(buff, sizeof(int));
-    socketSend(sockfd, (char*)ciphertext, ciphertext_size);
-    delete[] ciphertext;
+    socketSend(sockfd, (char*)data, data_size);
+    delete[] data;
     close(sockfd);
 
     //open socket and receive results
@@ -237,15 +237,15 @@ vector<int> SseClient::search(string query) {
     socketReceive(response_sockfd, buff, sizeof(int));
     pos = 0;
 
-    const int enc_result_size = readIntFromArr(buff, &pos);
-    unsigned char* enc_result_buff = new unsigned char[enc_result_size];
-    socketReceive(response_sockfd, (char*) enc_result_buff, enc_result_size);
+    const int result_size = readIntFromArr(buff, &pos);
+    unsigned char* result_buff = new unsigned char[result_size];
+    socketReceive(response_sockfd, (char*) result_buff, result_size);
     close(response_sockfd);
 
     //decrypt results
-    unsigned char* result_buff = new unsigned char[enc_result_size];
+    /*unsigned char* result_buff = new unsigned char[enc_result_size];
     const int result_size = crypto->decryptSymmetric(enc_result_buff, enc_result_size, result_buff);
-    delete[] enc_result_buff;
+    delete[] enc_result_buff;*/
 
     //process results
     const int nDocs = result_size / sizeof(int);

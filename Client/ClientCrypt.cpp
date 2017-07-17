@@ -42,15 +42,15 @@ ClientCrypt::ClientCrypt() {
 
 
 ClientCrypt::~ClientCrypt() {
-    delete[] Kcom;
+    //delete[] Kcom;
     delete[] Kenc;
     delete[] Kf;
     delete IeePubK;
 }
 
-unsigned char* ClientCrypt::getKcom() {
+/*unsigned char* ClientCrypt::getKcom() {
     return Kcom;
-}
+}*/
 
 unsigned char* ClientCrypt::getKenc() {
     return Kenc;

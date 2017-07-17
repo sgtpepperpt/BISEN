@@ -45,6 +45,7 @@ void SseClient::setup() {
     int pos = 0;
     addToArr(&op, sizeof(char), (char*)data, &pos);
 
+    // TODO client envia o kCom, deve ser lido pela framework do norte
     // add kCom to buffer
     addIntToArr(symKsize, data, &pos);
     for (int i = 0; i < symKsize; i++)

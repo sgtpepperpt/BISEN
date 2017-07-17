@@ -22,14 +22,14 @@ IeeCrypt::IeeCrypt() {
 
 IeeCrypt::~IeeCrypt() {
     delete IeePrivK;
-    delete[] kCom;
+    //delete[] kCom;
     delete[] kEnc;
     delete[] kF;
 }
-
+/*
 bool IeeCrypt::hasStoredKcom() {
     return kCom != NULL;
-}
+}*/
 
 int IeeCrypt::decryptPublic (unsigned char* plaintext, unsigned char* ciphertext, int ciphertextSize) {
     //unsigned char* decrypt = new unsigned char[size];
@@ -139,15 +139,15 @@ unsigned int spc_rand_uint_range(int min, int max) {
     return min + (spc_rand_uint() % static_cast<int>(max - min));
 }
 
-void IeeCrypt::setKeys(unsigned char* kCom, unsigned char* kEnc, unsigned char* kF) {
-    this->kCom = kCom;
+void IeeCrypt::setKeys(unsigned char* kEnc, unsigned char* kF) {
+    //this->kCom = kCom;
     this->kEnc = kEnc;
     this->kF = kF;
 }
-
+/*
 unsigned char* IeeCrypt::get_kCom() {
     return kCom;
-}
+}*/
 
 unsigned char* IeeCrypt::get_kF() {
     return kF;

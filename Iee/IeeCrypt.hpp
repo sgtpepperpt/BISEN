@@ -28,7 +28,7 @@ unsigned char* spc_rand(unsigned char *buf, int l);
 class IeeCrypt {
 private:
     RSA* IeePrivK;
-    unsigned char* kCom;
+    //unsigned char* kCom;
 
     // keys sent by the client
     unsigned char* kEnc;
@@ -46,11 +46,11 @@ public:
     int decryptSymmetric (unsigned char* plaintext, unsigned char* ciphertext, int ciphertextSize, unsigned char* key);
     void f (unsigned char* key, unsigned char* data, int dataSize, unsigned char* md);
 
-    bool hasStoredKcom();
+    //bool hasStoredKcom();
 
-    void setKeys(unsigned char* kCom, unsigned char* kEnc, unsigned char* kF);
+    void setKeys(unsigned char* kEnc, unsigned char* kF);
 
-    unsigned char* get_kCom();
+    //unsigned char* get_kCom();
     unsigned char* get_kF();
     unsigned char* get_kEnc();
 };

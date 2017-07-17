@@ -42,7 +42,7 @@ private:
     void initIee();
 
     int f(char* data, int data_size, char* output);
-    int decrypt_data(char* plaintext, char* ciphertext, int ciphertext_size);
+    //int decrypt_data(char* plaintext, char* ciphertext, int ciphertext_size);
     
     void setup(char* enc_data, int enc_data_size);
     void add(char* data, int data_size);

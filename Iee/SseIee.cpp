@@ -45,22 +45,18 @@ SseIee::SseIee() {
 }
 
 // ponto de entrada do IEE
-// output deve ser NULL
-int SseIee::process(char* ciphertext, int ciphertext_size, char* enc_output) {
-    char* plaintext = new char[ciphertext_size];
-    const int plaintext_size = decrypt_data(plaintext, ciphertext, ciphertext_size);
+// enc_output deve ser NULL
+int SseIee::process(char* data, int data_size, char* output) {
+    //char* plaintext = new char[ciphertext_size];
+    //const int plaintext_size = decrypt_data(plaintext, ciphertext, ciphertext_size);
     
-    char* output;
-    const int output_size = f(plaintext, plaintext_size, output);
-    delete[] plaintext;
+    const int output_size = f(data, data_size, output);
+    //delete[] plaintext;
     
-    if(output != NULL) {
-        const int enc_output_size = output_size + crypto->symBlocksize;
-        enc_output = new char[enc_output_size];
-        return crypto->encryptSymmetric((unsigned char*)output, output_size, (unsigned char*)enc_output, crypto->get_kCom());
-    }
-    
-    return -1;
+    /*const int enc_output_size = output_size + crypto->symBlocksize;
+    enc_output = new char[enc_output_size];
+    return crypto->encryptSymmetric((unsigned char*)output, output_size, (unsigned char*)enc_output, crypto->get_kCom());*/
+    return output_size;
 }
 
 int SseIee::f(char* data, int data_size, char* output) {
@@ -77,13 +73,13 @@ int SseIee::f(char* data, int data_size, char* output) {
     return -1;
 }
 
-int SseIee::decrypt_data(char* plaintext, char* ciphertext, int ciphertext_size) {
+/*int SseIee::decrypt_data(char* plaintext, char* ciphertext, int ciphertext_size) {
     if(crypto->hasStoredKcom()) {
         return crypto->decryptSymmetric((unsigned char*)plaintext, (unsigned char*)ciphertext, ciphertext_size, crypto->get_kCom());
     } else {
         return crypto->decryptPublic((unsigned char*)plaintext, (unsigned char*)ciphertext, ciphertext_size);
     }
-}
+}*/
 
 SseIee::~SseIee() {
     crypto->~IeeCrypt();
@@ -141,9 +137,9 @@ void SseIee::setup(char* data, int data_size) {
     int pos = 0;
 
     // read kCom
-    const int kCom_size = readIntFromArr(data, &pos);
+    /*const int kCom_size = readIntFromArr(data, &pos);
     unsigned char* kCom = new unsigned char[kCom_size];
-    readFromArr(kCom, kCom_size, data, &pos);
+    readFromArr(kCom, kCom_size, data, &pos);*/
 
     // read kEnc
     const int kEnc_size = (int) readIntFromArr(data, &pos);
@@ -153,14 +149,14 @@ void SseIee::setup(char* data, int data_size) {
     // read kF
     const int kF_size = readIntFromArr(data, &pos);
     unsigned char* kF = new unsigned char[kF_size];
-    readFromArr(kF, kCom_size, data, &pos);
+    readFromArr(kF, kF_size, data, &pos);
     
     /*for(int i = 0; i < kF_size; i++)
         printf("%02x ", kF[i]);
     printf("\n");*/
 
     // [BP] - Keys will be given by the client (as input message)
-    crypto->setKeys(kCom, kEnc, kF);
+    crypto->setKeys(kEnc, kF);
 
     //tell server to init index I
     char op = '1';

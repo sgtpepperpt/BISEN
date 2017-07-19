@@ -1,4 +1,4 @@
-Client : Main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o ClientUtils.o  QueryParser.o PorterStemmer.o
+Client : Main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o ClientUtils.o QueryParser.o PorterStemmer.o
 	g++ -o Client main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o ClientUtils.o QueryParser.o PorterStemmer.o -lcrypto -ldl -pthread
 
 Debug : Main.debug SseClient.debug ClientCrypt.debug EnglishAnalyzer.debug ClientUtils.debug QueryParser.debug PorterStemmer.debug
@@ -41,7 +41,7 @@ EnglishAnalyzer.debug : EnglishAnalyzer.cpp
 
 ClientUtils.debug : ClientUtils.cpp
 	g++ -std=c++11 -pthread -g -O0 -c ClientUtils.cpp -o ClientUtils.debug
-	
+
 QueryParser.debug : QueryParser.cpp
 	g++ -std=c++11 -pthread -g -O0 -c QueryParser.cpp -o QueryParser.debug
 

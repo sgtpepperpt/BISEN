@@ -9,7 +9,6 @@
 
 #include "ClientCrypt.hpp"
 
-
 using namespace std;
 
 ClientCrypt::ClientCrypt() {

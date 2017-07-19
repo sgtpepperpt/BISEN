@@ -1,6 +1,6 @@
 //
 //  main.cpp
-//  BooleanSSE
+//  BooleanSSE (it's BISEN now)
 //
 //  Created by Bernardo Ferreira on 16/11/16.
 //  Copyright © 2016 Bernardo Ferreira. All rights reserved.
@@ -23,53 +23,19 @@ void printResults (vector<int> results) {
 int main(int argc, const char * argv[]) {
     setvbuf(stdout, NULL, _IONBF, 0);
     SseClient client;
-
     client.setup();
-    /*
-    for(int i = 0; i < 4; i++)
-        client.newDoc();
 
-    client.addWord(0, "ola");
-    client.addWord(1, "ola");
-    client.addWord(2, "ola");
+    // get list of docs for test
+    const string base_dir = "../Test/parsed/";
 
-    client.addWord(1, "viva");
-    client.addWord(3, "viva");
+    vector<string> docs;
+    client.listTxtFiles(base_dir, docs);
 
-    client.addWord(1, "camarada");
+    // add documents from the directory
+    for(string doc : docs)
+        client.addDocument(base_dir + doc);
 
-    client.addWord(1, "howdy");
-    client.addWord(3, "howdy");
+    // TODO generate random queries
 
-    printResults( client.search("! (! camarada)") );
-    printResults( client.search("ola && viva") );
-    printResults( client.search("ola && ( viva || howdy )") );
-    printResults( client.search("camarada") );
-    printResults( client.search("howdy") );*/
-
-    client.addDocument("text/1984_1.txt");
-    client.addDocument("text/1984_2.txt");
-    
-    client.addDocument("text/sherlock_1.txt");
-    client.addDocument("text/sherlock_2.txt");
-
-    string query = "big && brother || chestnut";
-    printf("%s\n", query.c_str());
-    printResults(client.search(query));
-
-    query = "adler && sherlock";
-    printf("%s\n", query.c_str());
-    printResults(client.search(query));
-    
-    query = "sherlock";
-    printf("%s\n", query.c_str());
-    printResults(client.search(query));
-    
-    query = "newspeak || !(sherlock && adler)";
-    printf("%s\n", query.c_str());
-    printResults(client.search(query));
-
-//    client.addDocs("/Users/bernardo/Datasets/flickr_tags");
-//    client.addDocs("/Users/bernardo/Datasets/enron");
     return 0;
 }

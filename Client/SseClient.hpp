@@ -30,20 +30,21 @@ protected:
 
     void openQueryResponseSocket();
     int acceptQueryResponseSocket();
-    void listTxtFiles (string path, vector<string>& docs);
-    
+
 public:
     SseClient();
     ~SseClient();
 
     void setup();
 
-    int newDoc();
-    void addWords(int d, set<string> words);
     void addDocument(string fname);
-
     vector<int> search(string query);
     void addDocs(string textDataset);
+    void listTxtFiles (string path, vector<string>& docs);
+
+private:
+    int newDoc();
+    void addWords(int d, set<string> words);
 };
     
 #endif /* SseClient_hpp */

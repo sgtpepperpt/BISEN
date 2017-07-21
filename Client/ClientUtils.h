@@ -12,10 +12,12 @@
 #include <iostream>
 #include <fstream>
 #include <dirent.h>
+#include <algorithm>
 #include <set>
 #include <map>
 #include <vector>
 #include <stack>
+#include <queue>
 #include <stdint.h>
 #include <math.h>
 #include <openssl/rand.h>

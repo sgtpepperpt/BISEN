@@ -24,6 +24,19 @@ void EnglishAnalyzer::increase_s() {
     s = new_s;
 }
 
+string EnglishAnalyzer::stemWord(string word) {
+    char* original = (char*) word.c_str();
+    string response;
+
+    for(int i = 0; original[i] != '\0'; i++) {
+        original[i] = tolower(original[i]); /* forces lower case */
+    }
+
+    original[stem(original,0,strlen(original)-1)+1]  = 0; /* calls the stemmer and uses its result to zero-terminate the string in s */
+
+    return string(original);
+}
+
 set<string> EnglishAnalyzer::extractUniqueKeywords(string fname) {
     FILE* f = fopen(fname.c_str(),"r");
     set<string> words;

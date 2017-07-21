@@ -154,7 +154,7 @@ unsigned int ClientCrypt::spc_rand_uint() {
 
 unsigned int ClientCrypt::spc_rand_uint_range(int min, int max) {
     if (max < min) abort();
-    return spc_rand_uint() * (max - min) + min;
+    return min + (spc_rand_uint() % static_cast<int>(max - min));
 }
 
 float ClientCrypt::spc_rand_real(void) {

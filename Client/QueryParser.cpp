@@ -17,7 +17,7 @@ int precedence(char op) {
         return -1;
 }
 
-vector<token> tokenize(string query) {
+vector<token> QueryParser::tokenize(string query) {
     vector <token> result;
 
     int i = 0;
@@ -46,6 +46,7 @@ vector<token> tokenize(string query) {
             }
             // NULL termination is added in serialization
             //tkn.word += '\0';
+            tkn.word = analyzer->stemWord(tkn.word);
         }
 
         result.push_back(tkn);
@@ -54,7 +55,7 @@ vector<token> tokenize(string query) {
     return result;
 }
 
-vector<token> shunting_yard(vector<token> infix_query) {
+vector<token> QueryParser::shunting_yard(vector<token> infix_query) {
     stack<char> operators;
     vector<token> output;
 

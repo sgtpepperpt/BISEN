@@ -25,17 +25,32 @@ int main(int argc, const char * argv[]) {
     SseClient client;
     client.setup();
 
-    // get list of docs for test
     const string base_dir = "../Test/parsed/";
+    const int num_queries = 10;
 
-    vector<string> docs;
-    client.listTxtFiles(base_dir, docs);
+    // get list of docs for test
+    vector<string> doc_paths;
+    client.listTxtFiles(base_dir, doc_paths);
 
     // add documents from the directory
-    for(string doc : docs)
-        client.addDocument(base_dir + doc);
+    set<string> all_words_set;
+    for(string doc : doc_paths){
+        set<string> text = client.extractUniqueKeywords(base_dir + doc);
+        client.addDocument(text);
 
-    // TODO generate random queries
+        // add all new words to a set, used later to generate queries
+        all_words_set.insert(text.begin(), text.end());
+    }
+
+    // generate random queries
+    vector<string> all_words(all_words_set.size());
+    copy(all_words_set.begin(), all_words_set.end(), all_words.begin());
+
+    // TODO search the queries in BISEN
+    for(int i = 0; i < num_queries; i++) {
+        string query = client.generate_random_query(all_words);
+        cout << query << endl;
+    }
 
     return 0;
 }

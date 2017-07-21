@@ -92,13 +92,21 @@ int SseClient::newDoc() {
     return nDocs++;
 }
 
-void SseClient::addDocument(string fname) {
+set<string> SseClient::extractUniqueKeywords(string fname) {
+    return analyzer->extractUniqueKeywords(fname);
+}
+
+void SseClient::addDocument(set<string> text) {
     int id = newDoc();
 
-    set<string> text = analyzer->extractUniqueKeywords(fname);
+    timeval start, end;
+    gettimeofday(&start, 0);
     addWords(id, text);
+    gettimeofday(&end, 0);
+    //TODO fix time
+    unsigned long long elapsed = 1000 * (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1000;
 
-    printf("Finished add document %d\n", id);
+    printf("Finished add document #%d (%zu words, %llu ms)\n", id, text.size(), elapsed);
 }
 
 void SseClient::addWords(int d, set<string> words) {
@@ -156,8 +164,8 @@ void SseClient::addWords(int d, set<string> words) {
 //boolean operands: AND, OR, NOT, (, )
 vector<int> SseClient::search(string query) {
     // parse the query into token structs and apply the shunting yard algorithm
-    vector<token> infix_query = tokenize(query);
-    vector<token> rpn = shunting_yard(infix_query);
+    vector<token> infix_query = parser->tokenize(query);
+    vector<token> rpn = parser->shunting_yard(infix_query);
     
     int data_size = sizeof(char); // char from op
 
@@ -312,8 +320,6 @@ int SseClient::acceptQueryResponseSocket() {
 //    }
 //}
 
-
-
 void SseClient::listTxtFiles (std::string path, std::vector<std::string>& docs) {
     DIR* dir = opendir (path.c_str());
     if (dir) {
@@ -333,4 +339,76 @@ void SseClient::listTxtFiles (std::string path, std::vector<std::string>& docs) 
         closedir (dir);
     } else
         pee ("SseClient::listTxtFiles couldn't open dataset dir.");
+}
+
+string SseClient::get_random_segment(vector<string> segments) {
+    return segments[crypto->spc_rand_uint_range(0, segments.size())];
+}
+
+string SseClient::generate_random_query(vector<string> all_words) {
+    const int lone_word_prob = 15;
+    const int not_prob = 50;
+    const int and_prob = 70;
+
+    // generate small segments
+    queue<string> segments;
+    for(int i = 0; i < 10; i++) {
+        int lone_word_rand = crypto->spc_rand_uint_range(0, 100);
+
+        if(lone_word_rand < lone_word_prob) {
+            string word = get_random_segment(all_words);
+
+            int not_rand = crypto->spc_rand_uint_range(0, 100);
+            if(not_rand < not_prob)
+                segments.push("!" + word);
+            else
+                segments.push(word);
+        } else {
+            // AND or OR
+            string word1 = get_random_segment(all_words);
+            string word2 = get_random_segment(all_words);
+
+            // choose operator
+            int op_prob = crypto->spc_rand_uint_range(0, 100);
+            string op = op_prob < and_prob ? " && " : " || ";
+
+            // form either a simple, parenthesis or negated segment
+            int par_prob = crypto->spc_rand_uint_range(0, 100);
+            if(par_prob < 30) {
+                int not_rand = crypto->spc_rand_uint_range(0, 100);
+                if(not_rand < not_prob)
+                    segments.push("!(" + word1 + op + word2 + ")");
+                else
+                    segments.push("(" + word1 + op + word2 + ")");
+            } else {
+                segments.push(word1 + op + word2);
+            }
+        }
+    }
+
+    while(segments.size() > 1) {
+        // pop two segments from the queue
+        string seg1 = segments.front();
+        segments.pop();
+        string seg2 = segments.front();
+        segments.pop();
+
+        // choose operator
+        int op_prob = crypto->spc_rand_uint_range(0, 100);
+        string op = op_prob < and_prob  ? " && " : " || ";
+
+        // form either a simple, parenthesis or negated segment
+        int par_prob = crypto->spc_rand_uint_range(0, 100);
+        if(par_prob < 30) {
+            int not_rand = crypto->spc_rand_uint_range(0, 100);
+            if(not_rand < not_prob)
+                segments.push("!(" + seg1 + op + seg2 + ")");
+            else
+                segments.push("(" + seg1 + op + seg2 + ")");
+        } else {
+            segments.push(seg1 + op + seg2);
+        }
+    }
+
+    return segments.front();
 }

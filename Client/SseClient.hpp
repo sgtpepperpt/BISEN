@@ -24,6 +24,7 @@ class SseClient {
 protected:
     EnglishAnalyzer* analyzer;
     ClientCrypt* crypto;
+    QueryParser* parser;
     map<string,int>* W;
     int querySocket;
     int nDocs;
@@ -37,14 +38,17 @@ public:
 
     void setup();
 
-    void addDocument(string fname);
+    set<string> extractUniqueKeywords(string fname);
+    void addDocument(set<string> text);
     vector<int> search(string query);
-    void addDocs(string textDataset);
+    //void addDocs(string textDataset);
     void listTxtFiles (string path, vector<string>& docs);
+    string generate_random_query(vector<string> all_words);
 
 private:
     int newDoc();
     void addWords(int d, set<string> words);
+    string get_random_segment(vector<string> segments);
 };
     
 #endif /* SseClient_hpp */

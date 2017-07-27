@@ -20,6 +20,7 @@
 #define unpack754_64(i) (unpack754((i), 64, 11))
 
 static const char* homePath = getenv("HOME_DIR") ? getenv("HOME_DIR") : "/Users/bernardo/";
+
 static const char* clientIP = "127.0.0.1";//"54.194.253.119";
 static const char* serverIP = "127.0.0.1";//"54.194.253.119";
 static const int serverPort = 9978;

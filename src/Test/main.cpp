@@ -19,7 +19,7 @@ void printResults (vector<int> results) {
         return;
     }
 
-    for(int i = 0; (unsigned)i < results.size(); i++)
+    for(unsigned i = 0; i < results.size(); i++)
         printf("%i ", results[i]);
     printf("\n");
 }
@@ -77,7 +77,7 @@ int main(int argc, const char * argv[]) {
     vector<string> all_words(all_words_set.size());
     copy(all_words_set.begin(), all_words_set.end(), all_words.begin());
 
-    for(int i = 0; (unsigned)i < num_queries; i++) {
+    for(unsigned i = 0; i < num_queries; i++) {
         string query = client.generate_random_query(all_words);
 
         char* data;

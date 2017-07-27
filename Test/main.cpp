@@ -7,7 +7,9 @@
 //
 
 #include <stdio.h>
-#include "SseClient.hpp"
+#include "../Client/SseClient.hpp"
+#include "../Server/SseServer.hpp"
+#include "../Iee/SseIee.hpp"
 // TODO : INCLUDES
 
 void printResults (vector<int> results) {
@@ -44,8 +46,9 @@ int main(int argc, const char * argv[]) {
     for(string doc : doc_paths){
         set<string> text = client.extractUniqueKeywords(base_dir + doc);
 
-        // TODO : RETURN BYTE ARRAY
-        client.addDocument(text);
+        // generate the byte* to send to the server
+        char* data;
+        int data_size = client.add_new_document(text, data);
 
         // TODO : CALL SERVER WITH BYTEARRAY
 
@@ -63,14 +66,12 @@ int main(int argc, const char * argv[]) {
     vector<string> all_words(all_words_set.size());
     copy(all_words_set.begin(), all_words_set.end(), all_words.begin());
 
-    // TODO search the queries in BISEN
     for(int i = 0; i < num_queries; i++) {
-
-        // TODO : RETURN BYTE ARRAY
         string query = client.generate_random_query(all_words);
 
         // TODO : CALL SERVER WITH BYTEARRAY
-
+        char* data;
+        int data_size = client.search(query, data);
         cout << query << endl;
     }
 

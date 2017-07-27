@@ -96,20 +96,24 @@ set<string> SseClient::extractUniqueKeywords(string fname) {
     return analyzer->extractUniqueKeywords(fname);
 }
 
-void SseClient::addDocument(set<string> text) {
+int SseClient::add_new_document(set<string> text, char* data) {
     int id = newDoc();
 
-    timeval start, end;
-    gettimeofday(&start, 0);
-    addWords(id, text);
-    gettimeofday(&end, 0);
-    //TODO fix time
-    unsigned long long elapsed = 1000 * (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1000;
+    //timeval start, end;
+    //gettimeofday(&start, 0);
 
-    printf("Finished add document #%d (%zu words, %llu ms)\n", id, text.size(), elapsed);
+    // add words to the newly generated document
+    int data_size = add_words(id, text, data);
+
+    //gettimeofday(&end, 0);
+    //unsigned long long elapsed = 1000 * (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1000;
+
+    //printf("Finished add document #%d (%zu words, %llu ms)\n", id, text.size(), elapsed);
+
+    return data_size;
 }
 
-void SseClient::addWords(int d, set<string> words) {
+int SseClient::add_words(int doc_id, set<string> words, char* data) {
     int data_size = sizeof(char);
 
     // first iteration: to get the size of the buffer to allocate
@@ -118,7 +122,7 @@ void SseClient::addWords(int d, set<string> words) {
     }
 
     //allocate data buffer
-    unsigned char* data = new unsigned char[data_size];
+    data = new char[data_size];
 
     char op = 'a';
     int pos = 0;
@@ -135,7 +139,7 @@ void SseClient::addWords(int d, set<string> words) {
         // update counter c
         (*W)[w] = c;
 
-        addIntToArr(d, (char*)data, &pos);
+        addIntToArr(doc_id, (char*)data, &pos);
         addIntToArr(c - 1, (char*)data, &pos); // counter starts at 1, so -1 for indexing
         for (int i = 0; i < w.size(); i++)
             addToArr(&w[i], sizeof(char), (char*)data, &pos);
@@ -144,29 +148,15 @@ void SseClient::addWords(int d, set<string> words) {
         addToArr(&term, sizeof(char), (char*)data, &pos);
     }
 
-    //encrypt data
-    /*int ciphertext_size = data_size+16;
-    unsigned char* ciphertext = new unsigned char[ciphertext_size];
-    ciphertext_size = crypto->encryptSymmetric(data, data_size, ciphertext);
-    delete[] data;*/
-
-    //send data
-    char buff[sizeof(int)];
-    pos = 0;
-    addIntToArr(data_size, buff, &pos);
-    int sockfd = connectAndSend(buff, sizeof(int));
-    socketSend(sockfd, (char*)data, data_size);
-
-    close(sockfd);
-    delete[] data;
+    return data_size;
 }
 
 //boolean operands: AND, OR, NOT, (, )
-vector<int> SseClient::search(string query) {
+int SseClient::search(string query, char* data) {
     // parse the query into token structs and apply the shunting yard algorithm
     vector<token> infix_query = parser->tokenize(query);
     vector<token> rpn = parser->shunting_yard(infix_query);
-    
+
     int data_size = sizeof(char); // char from op
 
     // first query iteration: to get needed size and counters
@@ -196,7 +186,7 @@ vector<int> SseClient::search(string query) {
     data_size += sizeof(char) + sizeof(int);
 
     //prepare query
-    unsigned char* data = new unsigned char[data_size];
+    data = new char[data_size];
     int pos = 0;
 
     char op = 's';
@@ -222,49 +212,7 @@ vector<int> SseClient::search(string query) {
         }
     }
 
-    //encrypt query
-    /*int ciphertext_size = data_size + 16;
-    unsigned char* ciphertext = new unsigned char[ciphertext_size];
-    ciphertext_size = crypto->encryptSymmetric(data, data_size, ciphertext);
-    delete[] data;*/
-
-    //send query
-    char buff[sizeof(int)];
-    pos = 0;
-    addIntToArr(data_size, buff, &pos);
-
-    int sockfd = connectAndSend(buff, sizeof(int));
-    socketSend(sockfd, (char*)data, data_size);
-    delete[] data;
-    close(sockfd);
-
-    //open socket and receive results
-    /**TODO Cliente abrir socket não é muito bom; Implementar solução melhor*/
-    int response_sockfd = acceptQueryResponseSocket();
-    bzero(buff, sizeof(int));
-    socketReceive(response_sockfd, buff, sizeof(int));
-    pos = 0;
-
-    const int result_size = readIntFromArr(buff, &pos);
-    unsigned char* result_buff = new unsigned char[result_size];
-    socketReceive(response_sockfd, (char*) result_buff, result_size);
-    close(response_sockfd);
-
-    //decrypt results
-    /*unsigned char* result_buff = new unsigned char[enc_result_size];
-    const int result_size = crypto->decryptSymmetric(enc_result_buff, enc_result_size, result_buff);
-    delete[] enc_result_buff;*/
-
-    //process results
-    const int nDocs = result_size / sizeof(int);
-    vector<int> results(nDocs);
-    pos = 0;
-    for (int i = 0; i < nDocs; i++) {
-        results[i] = readIntFromArr((char*)result_buff, &pos);
-    }
-
-    delete[] result_buff;
-    return results;
+    return data_size;
 }
 
 void SseClient::openQueryResponseSocket() {

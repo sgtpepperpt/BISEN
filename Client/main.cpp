@@ -36,7 +36,9 @@ int main(int argc, const char * argv[]) {
     set<string> all_words_set;
     for(string doc : doc_paths){
         set<string> text = client.extractUniqueKeywords(base_dir + doc);
-        client.addDocument(text);
+
+        char* data;
+        int data_size = client.add_new_document(text, data);
 
         // add all new words to a set, used later to generate queries
         all_words_set.insert(text.begin(), text.end());
@@ -49,6 +51,10 @@ int main(int argc, const char * argv[]) {
     // TODO search the queries in BISEN
     for(int i = 0; i < num_queries; i++) {
         string query = client.generate_random_query(all_words);
+
+        char* data;
+        int data_size = client.search(query, data);
+
         cout << query << endl;
     }
 

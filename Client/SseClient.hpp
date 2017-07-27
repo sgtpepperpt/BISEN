@@ -38,17 +38,18 @@ public:
 
     void setup();
 
-    set<string> extractUniqueKeywords(string fname);
-    void addDocument(set<string> text);
-    vector<int> search(string query);
-    //void addDocs(string textDataset);
-    void listTxtFiles (string path, vector<string>& docs);
+    int add_new_document(set<string> text, char* data);
+    int add_words(int doc_id, set<string> words, char* data);
+    int search(string query, char* data);
+
+    // functions for testing purposes
     string generate_random_query(vector<string> all_words);
+    void listTxtFiles (string path, vector<string>& docs);
+    set<string> extractUniqueKeywords(string fname);
 
 private:
     int newDoc();
-    void addWords(int d, set<string> words);
-    string get_random_segment(vector<string> segments);
+    string get_random_segment(vector<string> segments);    
 };
     
 #endif /* SseClient_hpp */

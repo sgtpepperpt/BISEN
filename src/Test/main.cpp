@@ -28,14 +28,14 @@ int main(int argc, const char * argv[]) {
 
     setvbuf(stdout, NULL, _IONBF, 0);
 
-    SseServer server;
+//    SseServer server;
     //server.setup();
 
     SseIee iee;
 
     SseClient client;
     char* data;
-    int data_size = client.setup(data);
+    int data_size = client.setup(&data);
 
     ////////////////////////////////////////////////////////////////////////////
     // SETUP ///////////////////////////////////////////////////////////////////
@@ -58,7 +58,7 @@ int main(int argc, const char * argv[]) {
 
         // generate the byte* to send to the server
         char* data;
-        int data_size = client.add_new_document(text, data);
+        int data_size = client.add_new_document(text, &data);
 
         // int SseIee::f(char* data, int data_size, char* output)
         output_size = iee.f(data, data_size, output);
@@ -81,7 +81,7 @@ int main(int argc, const char * argv[]) {
         string query = client.generate_random_query(all_words);
 
         char* data;
-        int data_size = client.search(query, data);
+        int data_size = client.search(query, &data);
 
         // int SseIee::f(char* data, int data_size, char* output)
         output_size = iee.f(data, data_size, output);

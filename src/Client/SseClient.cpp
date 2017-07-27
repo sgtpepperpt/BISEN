@@ -26,7 +26,7 @@ SseClient::~SseClient() {
     close(querySocket);
 }
 
-int SseClient::setup(char* data) {
+int SseClient::setup(char** data) {
     // get keys
     //unsigned char* kCom = crypto->getKcom();
     unsigned char* kEnc = crypto->getKenc();
@@ -37,11 +37,11 @@ int SseClient::setup(char* data) {
 
     // pack the keys into a buffer
     int data_size = sizeof(char) + 2 * sizeof(int) + symKsize + fBlocksize;
-    data = new char[data_size];
+    *data = new char[data_size];
     
     char op = 'i';
     int pos = 0;
-    addToArr(&op, sizeof(char), (char*)data, &pos);
+    addToArr(&op, sizeof(char), (char*)*data, &pos);
 
     // TODO client envia o kCom, deve ser lido pela framework do norte
     // add kCom to buffer
@@ -50,14 +50,14 @@ int SseClient::setup(char* data) {
         addToArr(&kCom[i], sizeof(unsigned char), data, &pos);*/
 
     // add kEnc to buffer
-    addIntToArr(symKsize, data, &pos);
+    addIntToArr(symKsize, *data, &pos);
     for (int i = 0; i < symKsize; i++)
-        addToArr(&kEnc[i], sizeof(unsigned char), data, &pos);
+        addToArr(&kEnc[i], sizeof(unsigned char), *data, &pos);
 
     // add kF to buffer
-    addIntToArr(fBlocksize, data, &pos);
+    addIntToArr(fBlocksize, *data, &pos);
     for (int i = 0; i < fBlocksize; i++)
-        addToArr(&kF[i], sizeof(unsigned char), data, &pos);
+        addToArr(&kF[i], sizeof(unsigned char), *data, &pos);
 
     return data_size;
 }
@@ -70,7 +70,7 @@ set<string> SseClient::extractUniqueKeywords(string fname) {
     return analyzer->extractUniqueKeywords(fname);
 }
 
-int SseClient::add_new_document(set<string> text, char* data) {
+int SseClient::add_new_document(set<string> text, char** data) {
     int id = newDoc();
 
     //timeval start, end;
@@ -87,7 +87,7 @@ int SseClient::add_new_document(set<string> text, char* data) {
     return data_size;
 }
 
-int SseClient::add_words(int doc_id, set<string> words, char* data) {
+int SseClient::add_words(int doc_id, set<string> words, char** data) {
     int data_size = sizeof(char);
 
     // first iteration: to get the size of the buffer to allocate
@@ -96,11 +96,11 @@ int SseClient::add_words(int doc_id, set<string> words, char* data) {
     }
 
     //allocate data buffer
-    data = new char[data_size];
+    *data = new char[data_size];
 
     char op = 'a';
     int pos = 0;
-    addToArr(&op, sizeof(char), (char*)data, &pos);
+    addToArr(&op, sizeof(char), (char*)*data, &pos);
 
     // second iteration: to fill the buffer
     for(string w : words) {
@@ -113,20 +113,20 @@ int SseClient::add_words(int doc_id, set<string> words, char* data) {
         // update counter c
         (*W)[w] = c;
 
-        addIntToArr(doc_id, (char*)data, &pos);
-        addIntToArr(c - 1, (char*)data, &pos); // counter starts at 1, so -1 for indexing
+        addIntToArr(doc_id, (char*)*data, &pos);
+        addIntToArr(c - 1, (char*)*data, &pos); // counter starts at 1, so -1 for indexing
         for (int i = 0; i < w.size(); i++)
-            addToArr(&w[i], sizeof(char), (char*)data, &pos);
+            addToArr(&w[i], sizeof(char), (char*)*data, &pos);
         
         char term = '\0';
-        addToArr(&term, sizeof(char), (char*)data, &pos);
+        addToArr(&term, sizeof(char), (char*)*data, &pos);
     }
 
     return data_size;
 }
 
 //boolean operands: AND, OR, NOT, (, )
-int SseClient::search(string query, char* data) {
+int SseClient::search(string query, char** data) {
     // parse the query into token structs and apply the shunting yard algorithm
     vector<token> infix_query = parser->tokenize(query);
     vector<token> rpn = parser->shunting_yard(infix_query);
@@ -160,29 +160,29 @@ int SseClient::search(string query, char* data) {
     data_size += sizeof(char) + sizeof(int);
 
     //prepare query
-    data = new char[data_size];
+    *data = new char[data_size];
     int pos = 0;
 
     char op = 's';
-    addToArr(&op, sizeof(char), (char*)data, &pos);
+    addToArr(&op, sizeof(char), (char*)*data, &pos);
 
     // second query iteration: to fill "data" buffer
     for(vector<token>::iterator it = rpn.begin(); it != rpn.end(); ++it) {
         token tkn = *it;
 
-        addToArr(&(tkn.type), sizeof(char), (char*)data, &pos);
+        addToArr(&(tkn.type), sizeof(char), (char*)*data, &pos);
 
         if(tkn.type == WORD_TOKEN) {
-            addIntToArr(tkn.counter, (char*)data, &pos);
+            addIntToArr(tkn.counter, (char*)*data, &pos);
 
             string word = tkn.word;
             for (int i = 0; i < word.size(); i++)
-                addToArr(&word[i], sizeof(char), (char*)data, &pos);
+                addToArr(&word[i], sizeof(char), (char*)*data, &pos);
 
             char term = '\0';
-            addToArr(&term, sizeof(char), (char*)data, &pos);
+            addToArr(&term, sizeof(char), (char*)*data, &pos);
         } else if(tkn.type == META_TOKEN) {
-            addIntToArr(tkn.counter, (char*)data, &pos);
+            addIntToArr(tkn.counter, (char*)*data, &pos);
         }
     }
 

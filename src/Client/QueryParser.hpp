@@ -7,7 +7,7 @@
 
 class QueryParser {
 private:
-    EnglishAnalyzer* analyzer;
+    EnglishAnalyzer analyzer;
 
 public:
     std::vector<token> tokenize(std::string query);

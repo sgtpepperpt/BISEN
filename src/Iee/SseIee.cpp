@@ -133,7 +133,7 @@ void SseIee::setup(char* data, int data_size) {
     // [BP] - Decryption is no longer necessary, neither is storeKcom.
     //vector<unsigned char> data = crypto->decryptPublic(enc_data, enc_data_size);
 
-    int pos = 0;
+    int pos = 1;
 
     // read kCom
     /*const int kCom_size = readIntFromArr(data, &pos);

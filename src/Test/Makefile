@@ -4,7 +4,11 @@ SRC = ../Server/SseServer.cpp ../Client/ClientCrypt.cpp ../Client/EnglishAnalyze
 LIBS = -lcrypto -ldl -pthread
 
 main: main.cpp 
-	g++ -std=c++11 -Wall $(INC) -o main main.cpp $(SRC) $(LIBS)
+	g++ -g -std=c++11 -Wall $(INC) -o main main.cpp $(SRC) $(LIBS)
+
+server: server.cpp 
+	g++ -g -std=c++11 -Wall $(INC) -o server server.cpp $(SRC) $(LIBS)
+
 
 # 
 

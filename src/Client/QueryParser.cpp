@@ -46,7 +46,7 @@ vector<token> QueryParser::tokenize(string query) {
             }
             // NULL termination is added in serialization
             //tkn.word += '\0';
-            tkn.word = analyzer->stemWord(tkn.word);
+            tkn.word = analyzer.stemWord(tkn.word);
         }
 
         result.push_back(tkn);

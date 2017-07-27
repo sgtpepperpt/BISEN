@@ -1,5 +1,5 @@
-Test/enron
-Test/parsed
+src/Test/enron
+src/Test/parsed
 
 # Xcode
 #
@@ -27,9 +27,10 @@ xcuserdata
 *.xcuserstate
 
 # executables
-Client/Client
-Server/Server
-Iee/Iee
+src/Client/Client
+src/Server/Server
+src/Iee/Iee
+src/Test/Test
 
 # Created by https://www.gitignore.io/api/c++,linux
 

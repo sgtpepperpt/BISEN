@@ -1,8 +1,8 @@
-Client : Main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o ClientUtils.o QueryParser.o PorterStemmer.o
-	g++ -o Client main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o ClientUtils.o QueryParser.o PorterStemmer.o -lcrypto -ldl -pthread
+Client : Main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o QueryParser.o PorterStemmer.o
+	g++ ../Utils.cpp -o Client main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o QueryParser.o PorterStemmer.o -lcrypto -ldl -pthread
 
-Debug : Main.debug SseClient.debug ClientCrypt.debug EnglishAnalyzer.debug ClientUtils.debug QueryParser.debug PorterStemmer.debug
-	g++ -o Client main.debug SseClient.debug ClientCrypt.debug EnglishAnalyzer.debug ClientUtils.debug QueryParser.debug PorterStemmer.debug -lcrypto -ldl -pthread
+Debug : Main.debug SseClient.debug ClientCrypt.debug EnglishAnalyzer.debug QueryParser.debug PorterStemmer.debug
+	g++ -o Client main.debug SseClient.debug ClientCrypt.debug EnglishAnalyzer.debug QueryParser.debug PorterStemmer.debug -lcrypto -ldl -pthread
 
 ###############################################################################
 Main.o : main.cpp
@@ -16,9 +16,6 @@ ClientCrypt.o : ClientCrypt.cpp
 
 EnglishAnalyzer.o : EnglishAnalyzer.cpp
 	g++ -std=c++11 -pthread -c EnglishAnalyzer.cpp
-
-ClientUtils.o : ClientUtils.cpp
-	g++ -std=c++11 -pthread -c ClientUtils.cpp
 
 QueryParser.o : QueryParser.cpp
 	g++ -std=c++11 -pthread -c QueryParser.cpp
@@ -39,9 +36,6 @@ ClientCrypt.debug : ClientCrypt.cpp
 EnglishAnalyzer.debug : EnglishAnalyzer.cpp
 	g++ -std=c++11 -pthread -g -O0 -c EnglishAnalyzer.cpp -o EnglishAnalyzer.debug
 
-ClientUtils.debug : ClientUtils.cpp
-	g++ -std=c++11 -pthread -g -O0 -c ClientUtils.cpp -o ClientUtils.debug
-
 QueryParser.debug : QueryParser.cpp
 	g++ -std=c++11 -pthread -g -O0 -c QueryParser.cpp -o QueryParser.debug
 
@@ -50,6 +44,6 @@ PorterStemmer.debug : PorterStemmer.c
 	
 ###############################################################################
 clean :
-	rm -f Client main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o ClientUtils.o QueryParser.o PorterStemmer.o main.debug SseClient.debug ClientCrypt.debug EnglishAnalyzer.debug ClientUtils.debug QueryParser.debug PorterStemmer.debug
+	rm -f Client main.o SseClient.o ClientCrypt.o EnglishAnalyzer.o QueryParser.o PorterStemmer.o main.debug SseClient.debug ClientCrypt.debug EnglishAnalyzer.debug QueryParser.debug PorterStemmer.debug
 
 .PHONY: run clean

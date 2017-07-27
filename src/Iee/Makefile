@@ -1,8 +1,8 @@
-Iee : Main.o SseIee.o IeeCrypt.o QueryEvaluator.o IeeUtils.o
-	g++ -o Iee main.o SseIee.o IeeCrypt.o QueryEvaluator.o IeeUtils.o -lcrypto -ldl -pthread
+Iee : Main.o SseIee.o IeeCrypt.o QueryEvaluator.o
+	g++ ../Utils.cpp -o Iee main.o SseIee.o IeeCrypt.o QueryEvaluator.o -lcrypto -ldl -pthread
 
-Debug : Main.debug SseIee.debug IeeCrypt.debug QueryEvaluator.debug IeeUtils.debug
-	g++ -o Iee main.debug SseIee.debug IeeCrypt.debug QueryEvaluator.debug IeeUtils.debug -lcrypto -ldl -pthread
+Debug : Main.debug SseIee.debug IeeCrypt.debug QueryEvaluator.debug
+	g++ -o Iee main.debug SseIee.debug IeeCrypt.debug QueryEvaluator.debug -lcrypto -ldl -pthread
 
 ###############################################################################
 
@@ -18,9 +18,6 @@ IeeCrypt.o : IeeCrypt.cpp
 QueryEvaluator.o : QueryEvaluator.cpp
 	g++ -std=c++11 -pthread -c QueryEvaluator.cpp
 
-IeeUtils.o : IeeUtils.cpp
-	g++ -std=c++11 -pthread -c IeeUtils.cpp
-
 ###############################################################################
 
 Main.debug : main.cpp
@@ -34,13 +31,10 @@ IeeCrypt.debug : IeeCrypt.cpp
 	
 QueryEvaluator.debug : QueryEvaluator.debug
 	g++ -std=c++11 -pthread -g -O0 -c QueryEvaluator.cpp -o QueryEvaluator.debug
-	
-IeeUtils.debug : IeeUtils.cpp
-	g++ -std=c++11 -pthread -g -O0 -c IeeUtils.cpp -o IeeUtils.debug
 
 ###############################################################################
 
 clean :
-	rm -f Iee main.o SseIee.o IeeCrypt.o QueryEvaluator.o IeeUtils.o main.debug SseIee.debug IeeCrypt.debug QueryEvaluator.debug IeeUtils.debug
+	rm -f Iee main.o SseIee.o IeeCrypt.o QueryEvaluator.o main.debug SseIee.debug IeeCrypt.debug QueryEvaluator.debug
 	
 .PHONY: run clean

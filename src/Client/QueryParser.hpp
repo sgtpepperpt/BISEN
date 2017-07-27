@@ -1,17 +1,9 @@
 #ifndef QueryParser_hpp
 #define QueryParser_hpp
 
-#define WORD_TOKEN 'w'
-#define META_TOKEN 'z'
-
 #include "EnglishAnalyzer.h"
-#include "ClientUtils.h"
-
-typedef struct token {
-    char type;
-    int counter;
-    std::string word;
-} token;
+#include "../Utils.h"
+#include "../Definitions.h"
 
 class QueryParser {
 private:

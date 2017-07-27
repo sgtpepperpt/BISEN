@@ -22,8 +22,9 @@ using namespace std;
 
 const char* SseIee::pipeDir = "/tmp/BooleanSSE/";
 // [BP] - Must receive a message, which will be either two keys (for the setup), or an Add/Search command.
-SseIee::SseIee() { 
-    initIee();
+SseIee::SseIee() {
+    crypto = new IeeCrypt;
+    init_pipes();
 
     //start listening for client calls through bridge 
     // [BP] - client calls are now given as input messages. No pipes or decryption necessary.
@@ -90,9 +91,7 @@ SseIee::~SseIee() {
 }
 
 
-void SseIee::initIee() {
-    crypto = new IeeCrypt;
-
+void SseIee::init_pipes() {
     //init pipe directory
     if(mkdir(pipeDir, 0770) == -1)
         if(errno != EEXIST)

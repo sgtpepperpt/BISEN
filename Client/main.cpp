@@ -23,7 +23,8 @@ void printResults (vector<int> results) {
 int main(int argc, const char * argv[]) {
     setvbuf(stdout, NULL, _IONBF, 0);
     SseClient client;
-    client.setup();
+    char* data;
+    int data_size = client.setup(data);
 
     const string base_dir = "../Test/parsed/";
     const int num_queries = 10;

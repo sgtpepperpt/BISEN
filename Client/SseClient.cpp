@@ -11,7 +11,12 @@
 using namespace std;
 
 SseClient::SseClient() {
-    //setup operation does initializations
+    // init data structures
+    openQueryResponseSocket();
+    analyzer = new EnglishAnalyzer;
+    crypto = new ClientCrypt;   //inits kCom
+    W = new map<string,int>;    /**TODO persist W*/
+    nDocs = 0;
 }
 
 SseClient::~SseClient() {
@@ -21,14 +26,7 @@ SseClient::~SseClient() {
     close(querySocket);
 }
 
-void SseClient::setup() {
-    // init data structures
-    openQueryResponseSocket();
-    analyzer = new EnglishAnalyzer;
-    crypto = new ClientCrypt;   //inits kCom
-    W = new map<string,int>;    /**TODO persist W*/
-    nDocs = 0;
-
+int SseClient::setup(char* data) {
     // get keys
     //unsigned char* kCom = crypto->getKcom();
     unsigned char* kEnc = crypto->getKenc();
@@ -39,7 +37,7 @@ void SseClient::setup() {
 
     // pack the keys into a buffer
     int data_size = sizeof(char) + 2 * sizeof(int) + symKsize + fBlocksize;
-    char* data = new char[data_size];
+    data = new char[data_size];
     
     char op = 'i';
     int pos = 0;
@@ -61,31 +59,7 @@ void SseClient::setup() {
     for (int i = 0; i < fBlocksize; i++)
         addToArr(&kF[i], sizeof(unsigned char), data, &pos);
 
-    /*for(int i = 0; i < symKsize; i++)
-        printf("%02x ", kCom[i]);
-    printf("\n");*/
-
-    // encrypt the buffer
-    //vector<unsigned char> enc = crypto->encryptPublic((unsigned char*) data, data_size);
-    //delete[] data;
-
-    // transform into a new buffer
-    /*data_size = enc.size();
-    data = new char[data_size];
-    pos = 0;
-
-    for (int i = 0; i < data_size; i++)
-        addToArr(&enc[i], sizeof(unsigned char), data, &pos);*/
-
-    // send data
-    char buff[sizeof(int)];
-    pos = 0;
-    addIntToArr(data_size, buff, &pos);
-    int sockfd = connectAndSend(buff, sizeof(int));
-    socketSend(sockfd, data, data_size);
-
-    delete[] data;
-    close(sockfd);
+    return data_size;
 }
 
 int SseClient::newDoc() {

@@ -33,13 +33,15 @@ int main(int argc, const char * argv[]) {
     SseIee iee;
 
     SseClient client;
-    client.setup();
+    char* data;
+    int data_size = client.setup(data);
 
     ////////////////////////////////////////////////////////////////////////////
     // SETUP ///////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
-    iee.f();
+    char* output;
+    int output_size = iee.f(data, data_size, output);
 
     const string base_dir = "../Test/parsed/";
     const int num_queries = 10;

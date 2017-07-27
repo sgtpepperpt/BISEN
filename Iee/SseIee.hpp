@@ -39,7 +39,7 @@ private:
     int writeServerPipe;
     int clientBridgePipe;
     
-    void initIee();
+    void init_pipes();
 
     int f(char* data, int data_size, char* output);
     //int decrypt_data(char* plaintext, char* ciphertext, int ciphertext_size);

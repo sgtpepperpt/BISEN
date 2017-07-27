@@ -12,7 +12,7 @@ vector<int> get_not_docs(int nDocs, vector<int> negate){
         count[i] = 0;
 
     // increase the count for elems in the original vector
-    for(int i = 0; i < negate.size(); i++) {
+    for(unsigned i = 0; i < negate.size(); i++) {
         count[negate[i]]++;
     }
 

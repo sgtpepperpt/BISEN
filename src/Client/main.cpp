@@ -15,7 +15,7 @@ void printResults (vector<int> results) {
         return;
     }
 
-    for(int i = 0; i < results.size(); i++)
+    for(unsigned i = 0; i < results.size(); i++)
         printf("%i ", results[i]);
     printf("\n");
 }

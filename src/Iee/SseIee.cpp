@@ -214,11 +214,11 @@ void SseIee::add(char* data, int data_len) {
 void SseIee::get_docs_from_server(deque<token> &query) {
     // initialise array to hold all tokens in random order
     token *rand[query.size()];
-    for(int i = 0; i < query.size(); i++)
+    for(unsigned i = 0; i < query.size(); i++)
         rand[i] = NULL;
 
     // randomly fill the array with the tokens we need
-    for(int i = 0; i < query.size(); i++) {
+    for(unsigned i = 0; i < query.size(); i++) {
         // ignore non-word tokens
         if(query[i].type != WORD_TOKEN)
             continue;
@@ -233,7 +233,7 @@ void SseIee::get_docs_from_server(deque<token> &query) {
     }
 
     // request the documents from the server
-    for(int i = 0; i < query.size(); i++) {
+    for(unsigned i = 0; i < query.size(); i++) {
         token *tkn = rand[i];
 
         // ignore operators for document searching
@@ -318,9 +318,13 @@ void SseIee::get_docs_from_server(deque<token> &query) {
 }
 
 int SseIee::search(char* buffer, int query_size, char** output) {
+
+    #ifdef VERBOSE
     cout << "search!" << endl;
+    #endif
+
     deque<token> query; //TODO for boolean eval should be queue, but we have to iterate twice before that for now...
-    int nDocs;
+    int nDocs = -1;
 
     //read buffer
     int pos = 1;
@@ -365,12 +369,14 @@ int SseIee::search(char* buffer, int query_size, char** output) {
     *output = new char[output_size];
     pos = 0;
 
-    for(int i = 0; i < response_docs.size(); i++) {
+    for(unsigned i = 0; i < response_docs.size(); i++) {
         //cout <<  response_docs[i] << endl;
         addIntToArr(response_docs[i], *output, &pos);
     }
 
+    #ifdef VERBOSE
     printf("Finished Search!\n");
+    #endif
     return output_size;
 }
 

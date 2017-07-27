@@ -59,7 +59,7 @@ vector<token> QueryParser::shunting_yard(vector<token> infix_query) {
     stack<char> operators;
     vector<token> output;
 
-    for(int i = 0; i < infix_query.size(); i++) {
+    for(unsigned i = 0; i < infix_query.size(); i++) {
         token tkn = infix_query[i];
 
         if(tkn.type == WORD_TOKEN) {

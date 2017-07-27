@@ -23,7 +23,10 @@ ClientCrypt::ClientCrypt() {
     f = fopen((keyFilename+KcomFile).c_str(), "rb");
     Kcom = new unsigned char[symKsize]; //Kcom = (unsigned char*)malloc(symKsize);
     if (f != NULL)
-        fread (Kcom, 1, symKsize, f);
+    {
+        if( fread (Kcom, 1, symKsize, f) != symKsize )
+        { pee("ClientCrypt::ClientCrypt():27"); } 
+    }    
     else {
         spc_rand(Kcom, symKsize);
         f = fopen((keyFilename+KcomFile).c_str(), "wb");

@@ -86,7 +86,7 @@ SseServer::SseServer() {
                     vector<unsigned char> l = fillVector(label, 20);
                     vector<unsigned char> enc_d = (*I)[l];
                     //cout << "enc_d size " << enc_d.size() << endl;
-                    for (int j = 0; j < enc_d.size(); j++)
+                    for (unsigned j = 0; j < enc_d.size(); j++)
                         socketSend(writeIeePipe, (char*)&enc_d[j], sizeof(unsigned char));
                 }
                 printf("Finished Search 1st part!\n");

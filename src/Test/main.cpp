@@ -14,6 +14,7 @@
 #include "../Utils.h"
 
 void printResults (vector<int> results) {
+    #ifdef VERBOSE
     if(!results.size()) {
         printf("none\n");
         return;
@@ -22,6 +23,7 @@ void printResults (vector<int> results) {
     for(unsigned i = 0; i < results.size(); i++)
         printf("%i ", results[i]);
     printf("\n");
+    #endif
 }
 
 int main(int argc, const char * argv[]) {
@@ -45,7 +47,7 @@ int main(int argc, const char * argv[]) {
     int output_size = iee.f(data, data_size, &output);
 
     const string base_dir = "../Test/parsed/";
-    const int num_queries = 10;
+    const int num_queries = 10000;
 
     // get list of docs for test
     vector<string> doc_paths;
@@ -77,7 +79,10 @@ int main(int argc, const char * argv[]) {
 
     for(unsigned i = 0; i < num_queries; i++) {
         string query = client.generate_random_query(all_words);
+
+        #ifdef VERBOSE
         cout << "\n----------------------------\nquery: " << query << endl;
+        #endif
 
         char* data;
         int data_size = client.search(query, &data);
@@ -87,7 +92,10 @@ int main(int argc, const char * argv[]) {
 
         //process results
         const int nDocs = output_size / sizeof(int);
+
+        #ifdef VERBOSE
         cout << "number of docs: " << nDocs << endl;
+        #endif
 
         vector<int> results(nDocs);
         int pos = 0;

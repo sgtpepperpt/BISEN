@@ -115,7 +115,7 @@ int SseClient::add_words(int doc_id, set<string> words, char** data) {
 
         addIntToArr(doc_id, (char*)*data, &pos);
         addIntToArr(c - 1, (char*)*data, &pos); // counter starts at 1, so -1 for indexing
-        for (int i = 0; i < w.size(); i++)
+        for (unsigned i = 0; i < w.size(); i++)
             addToArr(&w[i], sizeof(char), (char*)*data, &pos);
         
         char term = '\0';
@@ -134,7 +134,7 @@ int SseClient::search(string query, char** data) {
     int data_size = sizeof(char); // char from op
 
     // first query iteration: to get needed size and counters
-    for(int i = 0; i < rpn.size(); i++) {
+    for(unsigned i = 0; i < rpn.size(); i++) {
         token *tkn = &rpn[i];
 
         if(tkn->type == WORD_TOKEN) {
@@ -176,7 +176,7 @@ int SseClient::search(string query, char** data) {
             addIntToArr(tkn.counter, (char*)*data, &pos);
 
             string word = tkn.word;
-            for (int i = 0; i < word.size(); i++)
+            for (unsigned i = 0; i < word.size(); i++)
                 addToArr(&word[i], sizeof(char), (char*)*data, &pos);
 
             char term = '\0';

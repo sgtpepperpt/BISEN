@@ -26,13 +26,20 @@ void printResults (vector<int> results) {
 int main(int argc, const char * argv[]) {
 
     setvbuf(stdout, NULL, _IONBF, 0);
+
+    SseServer server;
+    server.setup();
+
+    SseIee iee;
+
     SseClient client;
     client.setup();
-
 
     ////////////////////////////////////////////////////////////////////////////
     // SETUP ///////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
+
+    iee.f();
 
     const string base_dir = "../Test/parsed/";
     const int num_queries = 10;
@@ -51,6 +58,7 @@ int main(int argc, const char * argv[]) {
         int data_size = client.add_new_document(text, data);
 
         // TODO : CALL SERVER WITH BYTEARRAY
+        // int SseIee::f(char* data, int data_size, char* output) {
 
         // add all new words to a set, used later to generate queries
         all_words_set.insert(text.begin(), text.end());
@@ -72,6 +80,8 @@ int main(int argc, const char * argv[]) {
         // TODO : CALL SERVER WITH BYTEARRAY
         char* data;
         int data_size = client.search(query, data);
+
+
         cout << query << endl;
     }
 

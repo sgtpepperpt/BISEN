@@ -10,7 +10,6 @@
 #include "../Client/SseClient.hpp"
 #include "../Server/SseServer.hpp"
 #include "../Iee/SseIee.hpp"
-// TODO : INCLUDES
 
 void printResults (vector<int> results) {
     if(!results.size()) {
@@ -59,8 +58,8 @@ int main(int argc, const char * argv[]) {
         char* data;
         int data_size = client.add_new_document(text, data);
 
-        // TODO : CALL SERVER WITH BYTEARRAY
-        // int SseIee::f(char* data, int data_size, char* output) {
+        // int SseIee::f(char* data, int data_size, char* output)
+        output_size = iee.f(data, data_size, output);
 
         // add all new words to a set, used later to generate queries
         all_words_set.insert(text.begin(), text.end());
@@ -79,10 +78,11 @@ int main(int argc, const char * argv[]) {
     for(int i = 0; i < num_queries; i++) {
         string query = client.generate_random_query(all_words);
 
-        // TODO : CALL SERVER WITH BYTEARRAY
         char* data;
         int data_size = client.search(query, data);
 
+        // int SseIee::f(char* data, int data_size, char* output)
+        output_size = iee.f(data, data_size, output);
 
         cout << query << endl;
     }

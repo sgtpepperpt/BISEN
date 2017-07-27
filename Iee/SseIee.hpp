@@ -41,7 +41,6 @@ private:
     
     void init_pipes();
 
-    int f(char* data, int data_size, char* output);
     //int decrypt_data(char* plaintext, char* ciphertext, int ciphertext_size);
     
     void setup(char* enc_data, int enc_data_size);
@@ -53,6 +52,7 @@ public:
     SseIee();
     ~SseIee();
     
+    int f(char* data, int data_size, char* output);
     int process(char* ciphertext, int ciphertext_size, char* enc_output);
 };
 

@@ -42,7 +42,7 @@ int main(int argc, const char * argv[]) {
     ////////////////////////////////////////////////////////////////////////////
 
     char* output;
-    int output_size = iee.f(data, data_size, output);
+    int output_size = iee.f(data, data_size, &output);
 
     const string base_dir = "../Test/parsed/";
     const int num_queries = 10;
@@ -61,17 +61,15 @@ int main(int argc, const char * argv[]) {
         int data_size = client.add_new_document(text, &data);
 
         // int SseIee::f(char* data, int data_size, char* output)
-        output_size = iee.f(data, data_size, output);
+        output_size = iee.f(data, data_size, &output);
 
         // add all new words to a set, used later to generate queries
         all_words_set.insert(text.begin(), text.end());
     }
 
-
     ////////////////////////////////////////////////////////////////////////////
     // QUERIES /////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-
 
     // generate random queries
     vector<string> all_words(all_words_set.size());
@@ -79,14 +77,25 @@ int main(int argc, const char * argv[]) {
 
     for(unsigned i = 0; i < num_queries; i++) {
         string query = client.generate_random_query(all_words);
+        cout << "\n----------------------------\nquery: " << query << endl;
 
         char* data;
         int data_size = client.search(query, &data);
 
         // int SseIee::f(char* data, int data_size, char* output)
-        output_size = iee.f(data, data_size, output);
+        output_size = iee.f(data, data_size, &output);
 
-        cout << query << endl;
+        //process results
+        const int nDocs = output_size / sizeof(int);
+        cout << "number of docs: " << nDocs << endl;
+
+        vector<int> results(nDocs);
+        int pos = 0;
+        for (int i = 0; i < nDocs; i++) {
+            results[i] = readIntFromArr((char*)output, &pos);
+        }
+
+        printResults(results);
     }
 
     return 0;

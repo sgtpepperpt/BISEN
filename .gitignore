@@ -26,11 +26,13 @@ xcuserdata
 *.moved-aside
 *.xcuserstate
 
-# executables
+# Executables
 src/Client/Client
 src/Server/Server
 src/Iee/Iee
 src/Test/Test
+src/Test/main
+src/Test/server
 
 # Created by https://www.gitignore.io/api/c++,linux
 

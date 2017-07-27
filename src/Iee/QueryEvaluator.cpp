@@ -53,10 +53,10 @@ vector<int> evaluate(deque <token> rpn_expr, int nDocs) {
             vector<int> set_inter;
             set_intersection(and1.begin(), and1.end(), and2.begin(), and2.end(), back_inserter(set_inter));
 
-            printf("intersection ");
+            /*printf("intersection ");
             for(int x : set_inter)
                 printf("%i ", x);
-            printf("\n");
+            printf("\n");*/
 
             token res;
             res.type = 'r';
@@ -79,10 +79,10 @@ vector<int> evaluate(deque <token> rpn_expr, int nDocs) {
             vector<int> set_un;
             set_union(or1.begin(), or1.end(), or2.begin(), or2.end(), back_inserter(set_un));
 
-            printf("union ");
+            /*printf("union ");
             for(int x : set_un)
                 printf("%i ", x);
-            printf("\n");
+            printf("\n");*/
 
             token res;
             res.type = 'r';
@@ -100,10 +100,10 @@ vector<int> evaluate(deque <token> rpn_expr, int nDocs) {
             // difference between all docs and the docs we don't want
             vector<int> set_diff = get_not_docs(nDocs, negate);
 
-            printf("not ");
+            /*printf("not ");
             for(int x : set_diff)
                 printf("%i ", x);
-            printf("\n");
+            printf("\n");*/
 
             token res;
             res.type = 'r';

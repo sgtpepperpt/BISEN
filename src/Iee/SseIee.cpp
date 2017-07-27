@@ -47,7 +47,7 @@ SseIee::SseIee() {
 
 // ponto de entrada do IEE
 // enc_output deve ser NULL
-int SseIee::process(char* data, int data_size, char* output) {
+int SseIee::process(char* data, int data_size, char** output) {
     //char* plaintext = new char[ciphertext_size];
     //const int plaintext_size = decrypt_data(plaintext, ciphertext, ciphertext_size);
     
@@ -60,7 +60,7 @@ int SseIee::process(char* data, int data_size, char* output) {
     return output_size;
 }
 
-int SseIee::f(char* data, int data_size, char* output) {
+int SseIee::f(char* data, int data_size, char** output) {
     //setup operation
     if(data[0] == 'i')
         setup(data, data_size);
@@ -317,7 +317,7 @@ void SseIee::get_docs_from_server(deque<token> &query) {
     }
 }
 
-int SseIee::search(char* buffer, int query_size, char* output) {
+int SseIee::search(char* buffer, int query_size, char** output) {
     cout << "search!" << endl;
     deque<token> query; //TODO for boolean eval should be queue, but we have to iterate twice before that for now...
     int nDocs;
@@ -362,33 +362,16 @@ int SseIee::search(char* buffer, int query_size, char* output) {
     //send query results with kCom
     // [BP] - Instead of encrypting with kCom and sending via pipe, it must simply be returned by SseIee in plaintext.
     int output_size = response_docs.size() * sizeof(int);
-    output = new char[output_size];
+    *output = new char[output_size];
     pos = 0;
 
     for(int i = 0; i < response_docs.size(); i++) {
-        addIntToArr(response_docs[i], output, &pos);
+        //cout <<  response_docs[i] << endl;
+        addIntToArr(response_docs[i], *output, &pos);
     }
 
     printf("Finished Search!\n");
     return output_size;
-    
-    /*
-    int enc_results_size = len + crypto->symBlocksize;
-    unsigned char* enc_results = new unsigned char[enc_results_size];
-    enc_results_size = crypto->encryptSymmetric((unsigned char*)buff, len, enc_results, crypto->get_kCom());
-    delete[] buff;
-
-    //send results to client
-    //char op = '4';
-    //socketSend(writeServerPipe, &op, sizeof(char));
-
-    //buff = new char[sizeof(int)];
-    //pos = 0;
-    //addIntToArr(enc_results_size, buff, &pos);
-    //socketSend(writeServerPipe, buff, sizeof(int));
-    delete[] buff;
-
-    socketSend(writeServerPipe, (char*)enc_results, enc_results_size);*/
 }
 
 //void initServer (int newsockfd) {

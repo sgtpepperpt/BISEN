@@ -274,7 +274,7 @@ string SseClient::generate_random_query(vector<string> all_words) {
 
     // generate small segments
     queue<string> segments;
-    for(int i = 0; i < 10; i++) {
+    for(int i = 0; i < 3; i++) {
         int lone_word_rand = crypto->spc_rand_uint_range(0, 100);
 
         if(lone_word_rand < lone_word_prob) {

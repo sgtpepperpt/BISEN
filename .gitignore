@@ -61,4 +61,5 @@ Iee/Iee
 .directory
 .Trash-*
 .nfs*
+*.tar.gz
 # End of https://www.gitignore.io/api/c++,linux

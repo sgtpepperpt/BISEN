@@ -13,6 +13,7 @@
 #define SseClient_hpp
 
 #include "../Utils.h"
+#include "../vec_int.h"
 #include "EnglishAnalyzer.h"
 #include "ClientCrypt.hpp"
 #include "QueryParser.hpp"

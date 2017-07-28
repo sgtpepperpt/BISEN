@@ -1,22 +1,28 @@
-Iee : Main.o SseIee.o IeeCrypt.o QueryEvaluator.o
-	g++ ../Utils.cpp -o Iee main.o SseIee.o IeeCrypt.o QueryEvaluator.o -lcrypto -ldl -pthread
+Iee : Main.o SseIee.o IeeCrypt.o QueryEvaluator.o ../Utils.o ../vec_int.o
+	g++ -o Iee main.o SseIee.o IeeCrypt.o QueryEvaluator.o ../Utils.o ../vec_int.o -lcrypto -ldl -pthread
 
-Debug : Main.debug SseIee.debug IeeCrypt.debug QueryEvaluator.debug
+Debug : Main.debug SseIee.debug IeeCrypt.debug QueryEvaluator.debug Common
 	g++ -o Iee main.debug SseIee.debug IeeCrypt.debug QueryEvaluator.debug -lcrypto -ldl -pthread
 
 ###############################################################################
 
+../Utils.o : ../Utils.cpp
+	g++ -I.. -std=c++11 -pthread -c -o ../Utils.o ../Utils.cpp
+	
+../vec_int.o : ../vec_int.c
+	gcc -I.. -c -o ../vec_int.o ../vec_int.c
+	
 Main.o : main.cpp
-	g++ -std=c++11 -pthread -c main.cpp
+	g++ -I.. -std=c++11 -pthread -c main.cpp
 
 SseIee.o : SseIee.cpp
-	g++ -std=c++11 -pthread -c SseIee.cpp
+	g++ -I.. -std=c++11 -pthread -c SseIee.cpp
 
 IeeCrypt.o : IeeCrypt.cpp
-	g++ -std=c++11 -pthread -c IeeCrypt.cpp
+	g++ -I.. -std=c++11 -pthread -c IeeCrypt.cpp
 	
 QueryEvaluator.o : QueryEvaluator.cpp
-	g++ -std=c++11 -pthread -c QueryEvaluator.cpp
+	g++ -I.. -std=c++11 -pthread -c QueryEvaluator.cpp
 
 ###############################################################################
 

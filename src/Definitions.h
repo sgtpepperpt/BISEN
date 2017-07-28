@@ -12,7 +12,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
-#include <vector>
+#include <vector> // TODO remove for SGX
+
+#include "vec_int.h"
 
 #define pack754_32(f) (pack754((f), 32, 8))
 #define pack754_64(f) (pack754((f), 64, 11))
@@ -30,11 +32,12 @@ static const int clientPort = 9979;
 // TOKEN DEFINITIONS
 #define WORD_TOKEN 'w'
 #define META_TOKEN 'z'
+#define MAX_WORD_SIZE 32
 typedef struct token {
     char type;
     int counter;
-    std::string word;
-    std::vector<int> docs;
+    char* word;
+    vec_int docs;
 } token;
 // END TOKEN DEFINITIONS
 

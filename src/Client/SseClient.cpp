@@ -145,7 +145,7 @@ int SseClient::search(string query, char** data) {
                 tkn->counter = 0;
 
             //printf("counter %s %d\n", tkn->word.c_str(), tkn->counter);
-            data_size += sizeof(char) + sizeof(int) + (tkn->word.size() + 1);
+            data_size += sizeof(char) + sizeof(int) + (strlen(tkn->word) + 1);
         } else {
             data_size += sizeof(char);
         }
@@ -175,8 +175,8 @@ int SseClient::search(string query, char** data) {
         if(tkn.type == WORD_TOKEN) {
             addIntToArr(tkn.counter, (char*)*data, &pos);
 
-            string word = tkn.word;
-            for (unsigned i = 0; i < word.size(); i++)
+            char* word = tkn.word;
+            for (unsigned i = 0; i < strlen(word); i++)
                 addToArr(&word[i], sizeof(char), (char*)*data, &pos);
 
             char term = '\0';

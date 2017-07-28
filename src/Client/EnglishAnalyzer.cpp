@@ -24,7 +24,7 @@ void EnglishAnalyzer::increase_s() {
     s = new_s;
 }
 
-string EnglishAnalyzer::stemWord(string word) {
+char* EnglishAnalyzer::stemWord(string word) {
     char* original = (char*) word.c_str();
     string response;
 
@@ -34,7 +34,7 @@ string EnglishAnalyzer::stemWord(string word) {
 
     original[stem(original,0,strlen(original)-1)+1]  = 0; /* calls the stemmer and uses its result to zero-terminate the string in s */
 
-    return string(original);
+    return original;
 }
 
 set<string> EnglishAnalyzer::extractUniqueKeywords(string fname) {

@@ -31,7 +31,7 @@ public:
     EnglishAnalyzer();
     ~EnglishAnalyzer();
     set<string> extractUniqueKeywords(string fname);
-    string stemWord(string word);
+    char* stemWord(string word);
     bool isStopWord(string word);
     
 };

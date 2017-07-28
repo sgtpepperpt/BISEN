@@ -242,15 +242,13 @@ void SseIee::get_docs_from_server(vector<token> &query) {
         
         //cout << "counter for " << tkn->word << " is " << tkn->counter << endl;
         if(tkn->counter == 0) {
-            vector<int> dummy;
+            vec_int dummy;
             tkn->docs = dummy;
         }
 
-        const char* word_str = tkn->word.c_str();
-
         //calculate key kW
         unsigned char* kW = new unsigned char[crypto->fBlocksize];
-        crypto->f(crypto->get_kF(), (unsigned char*)word_str, strlen(word_str), kW);
+        crypto->f(crypto->get_kF(), (unsigned char*)tkn->word, strlen(tkn->word), kW);
 
         //calculate relevant index positions
         vector< vector<unsigned char> > labels (tkn->counter);
@@ -302,10 +300,12 @@ void SseIee::get_docs_from_server(vector<token> &query) {
         }
 
         const int nr_docs = len / sizeof(int);
-        vector<int> docs(nr_docs); // TODO check if this is always sorted, else has to be sorted in evaluator
+        vec_int docs; // TODO check if this is always sorted
+                      // else has to be sorted in evaluator; may not be needed for vec_int
+        init(&docs, nr_docs);
         pos = 0;
         for (int i = 0; i < nr_docs; i++) {
-            memcpy(&docs[i], buff+pos, sizeof(int));
+            memcpy(&docs.array[i], buff+pos, sizeof(int));
             pos += sizeof(int);
         }
 
@@ -362,17 +362,17 @@ int SseIee::search(char* buffer, int query_size, char** output) {
     get_docs_from_server(query);
 
     //calculate boolean formula
-    vector<int> response_docs = evaluate(query, nDocs);
+    vec_int response_docs = evaluate(query, nDocs);
 
     //send query results with kCom
     // [BP] - Instead of encrypting with kCom and sending via pipe, it must simply be returned by SseIee in plaintext.
-    int output_size = response_docs.size() * sizeof(int);
+    int output_size = size(response_docs) * sizeof(int);
     *output = new char[output_size];
     pos = 0;
 
-    for(unsigned i = 0; i < response_docs.size(); i++) {
+    for(unsigned i = 0; i < size(response_docs); i++) {
         //cout <<  response_docs[i] << endl;
-        addIntToArr(response_docs[i], *output, &pos);
+        addIntToArr(response_docs.array[i], *output, &pos);
     }
 
     #ifdef VERBOSE

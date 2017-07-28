@@ -25,7 +25,7 @@
 #include "IeeCrypt.hpp"
 #include "QueryEvaluator.hpp"
 
-#include "../sgx/stdio.h" //SGX OCALL - UNTRUSTED SYSTEM CALLS
+//#include "../sgx/stdio.h" //SGX OCALL - UNTRUSTED SYSTEM CALLS
 
 using namespace std;
 

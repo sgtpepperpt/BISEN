@@ -4,8 +4,9 @@
 
 using namespace std;
 
-SseIee sse;
+//SseIee sse;
 
+/*
 void f(
   char **out,
   size_t *outlen,
@@ -16,3 +17,4 @@ void f(
 {
   *outlen = sse.f(in, (int)inlen, out);
 }
+*/

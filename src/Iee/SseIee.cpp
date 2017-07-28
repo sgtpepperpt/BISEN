@@ -96,28 +96,31 @@ void SseIee::init_pipes() {
     if(mkdir(pipeDir, 0770) == -1)
         if(errno != EEXIST)
             pee("Failed to mkdir");
+    char pipeName[256];
 
-    //start server-iee pipe
-	char pipeName[256];
+        //start server-iee pipe
     strcpy(pipeName, pipeDir);
     strcpy(pipeName+strlen(pipeName), "server_to_iee");
-/*	//not necessary, server creates file.
-    if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
-        if(errno != EEXIST)
-            pee("Fail to mknod");
-*/
+	//not necessary, server creates file.
+    //if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
+        //if(errno != EEXIST)
+            //pee("Fail to mknod");
+    
+    printf("opening read pipe!\n");
     readServerPipe = open(pipeName, O_ASYNC | O_RDONLY);
 
     //start iee-server pipe
     bzero(pipeName,256);
     strcpy(pipeName, pipeDir);
     strcpy(pipeName+strlen(pipeName), "iee_to_server");
-/*	//not necessary, server creates file.
-    if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
-        if(errno != EEXIST)
-            pee("Fail to mknod");
-*/
+	//not necessary, server creates file.
+    //if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
+    //    if(errno != EEXIST)
+    //       pee("Fail to mknod");
+
+    printf("opening write pipe!\n");
     writeServerPipe = open(pipeName, O_ASYNC | O_WRONLY);
+    printf("donarino!\n");
 
     //start iee pipe
     // [BP] - This is no longer necessary, since requests are now inputs to SseIee.

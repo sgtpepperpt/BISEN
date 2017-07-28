@@ -2,14 +2,14 @@
 
 INC = -I../Server/ -I../Client/ -I../Iee/ -I../
 
-SRC = ../Server/SseServer.cpp ../Client/ClientCrypt.cpp ../Client/EnglishAnalyzer.cpp ../Client/QueryParser.cpp ../Client/SseClient.cpp ../Iee/IeeCrypt.cpp ../Iee/QueryEvaluator.cpp ../Iee/SseIee.cpp ../Iee/SseIeeF.cpp ../Utils.cpp ../vec_int.c ../vec_token.c
+SRC = ../Server/SseServer.cpp ../Client/ClientCrypt.cpp ../Client/EnglishAnalyzer.cpp ../Client/QueryParser.cpp ../Client/SseClient.cpp ../Iee/IeeCrypt.cpp ../Iee/QueryEvaluator.cpp ../Iee/SseIee.cpp ../Utils.cpp ../vec_int.c ../vec_token.c
 
 LIBS = -lcrypto -ldl -pthread
 
 CFLAGS = -Wno-unused-variable -Wno-unused-function -DVERBOSE
 
 main: main.cpp 
-	g++ -Ofast -Wall $(CFLAGS) -std=c++11 $(INC) -o main main.cpp $(SRC) $(LIBS)
+	g++ -g -Wall $(CFLAGS) -std=c++11 $(INC) -o main main.cpp $(SRC) ../Iee/SseIeeF.cpp $(LIBS)
 
 server: server.cpp 
 	g++ -Ofast -Wall $(CFLAGS) -std=c++11 $(INC) -o server server.cpp $(SRC) $(LIBS)

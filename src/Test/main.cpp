@@ -7,9 +7,11 @@
 //
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "../Client/SseClient.hpp"
 #include "../Server/SseServer.hpp"
 #include "../Iee/SseIee.hpp"
+//#include "../Iee/SseIeeF.hpp"
 #include "../Definitions.h"
 #include "../Utils.h"
 
@@ -26,8 +28,18 @@ void printResults (vector<int> results) {
     #endif
 }
 
-int main(int argc, const char * argv[]) {
+/*
+void f(
+  char **out,
+  size_t *outlen,
+  size_t pid,
+  char *in,
+  size_t inlen
+)
+*/
 
+int main(int argc, const char * argv[]) {
+    printf("ola\n");
     setvbuf(stdout, NULL, _IONBF, 0);
 
 //    SseServer server;
@@ -49,6 +61,7 @@ int main(int argc, const char * argv[]) {
 
     char* output;
     int output_size = iee.f(data, data_size, &output);
+    //size_t output_size; f(&output, &output_size, 0, data, data_size);
 
     const string base_dir = "../Test/parsed/";
     const int num_queries = 10000;
@@ -68,6 +81,7 @@ int main(int argc, const char * argv[]) {
 
         // int SseIee::f(char* data, int data_size, char* output)
         output_size = iee.f(data, data_size, &output);
+        //f(&output, &output_size, 0, data, data_size);
 
         // add all new words to a set, used later to generate queries
         all_words_set.insert(text.begin(), text.end());
@@ -93,7 +107,8 @@ int main(int argc, const char * argv[]) {
 
         // int SseIee::f(char* data, int data_size, char* output)
         output_size = iee.f(data, data_size, &output);
-
+        //f(&output, &output_size, 0, data, data_size);
+    
         //process results
         const int nDocs = output_size / sizeof(int);
 

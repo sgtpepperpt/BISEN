@@ -38,3 +38,9 @@ int write(int file, void *buf, unsigned int size) {
 void close(int file) {
     ocall_close(file);
 }
+
+int mknod(const char* filename, mode_t mode, dev_t dev) {
+    int ret;
+    if (ocall_mknod(&ret, filename, mode, dev) != SGX_SUCCESS) return -1;
+    return ret;
+}

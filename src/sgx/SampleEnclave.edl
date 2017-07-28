@@ -9,5 +9,6 @@ enclave {
         int ocall_read(int file, [out, size=size] void *buf, unsigned int size);
         int ocall_write(int file, [in, size=size] void *buf, unsigned int size);
         void ocall_close(int file);
+	int ocall_mknod([in, string] const char* filename, mode_t mode, dev_t dev);
     };
 };

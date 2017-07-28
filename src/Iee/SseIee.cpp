@@ -25,24 +25,6 @@ const char* SseIee::pipeDir = "/tmp/BooleanSSE/";
 SseIee::SseIee() {
     crypto = new IeeCrypt;
     init_pipes();
-
-    //start listening for client calls through bridge 
-    // [BP] - client calls are now given as input messages. No pipes or decryption necessary.
-    /*while (true) {
-        //receive data
-        char buff[sizeof(int)];
-        socketReceive(clientBridgePipe, buff, sizeof(int));
-        int pos = 0;
-        const int enc_data_size = readIntFromArr(buff, &pos);
-
-        unsigned char* enc_data = new unsigned char[enc_data_size];
-        socketReceive(clientBridgePipe, (char*)enc_data, enc_data_size);
-        
-        //process request
-        // [BP] - Kcom does not exist. This check cannot allow for requests to be processed before setup.
-        
-        delete[] enc_data;
-    }*/
 }
 
 // ponto de entrada do IEE
@@ -86,19 +68,17 @@ SseIee::~SseIee() {
     crypto->~IeeCrypt();
     close(readServerPipe);
     close(writeServerPipe);
-    // [BP] - This pipe will no longer exist
-    //close(clientBridgePipe);
 }
-
 
 void SseIee::init_pipes() {
     //init pipe directory
     if(mkdir(pipeDir, 0770) == -1)
         if(errno != EEXIST)
             pee("Failed to mkdir");
+
     char pipeName[256];
 
-        //start server-iee pipe
+    //start server-iee pipe
     strcpy(pipeName, pipeDir);
     strcpy(pipeName+strlen(pipeName), "server_to_iee");
 	//not necessary, server creates file.
@@ -121,17 +101,6 @@ void SseIee::init_pipes() {
     printf("opening write pipe!\n");
     writeServerPipe = open(pipeName, O_ASYNC | O_WRONLY);
     printf("donarino!\n");
-
-    //start iee pipe
-    // [BP] - This is no longer necessary, since requests are now inputs to SseIee.
-    /*bzero(pipeName,256);
-    strcpy(pipeName, pipeDir);
-    strcpy(pipeName+strlen(pipeName), "clientBridge");
-    if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
-        if(errno != EEXIST)
-            pee("SseServer::bridgeClientIeeThread: Fail to mknod");
-    clientBridgePipe = open(pipeName, O_ASYNC | O_RDONLY);*/
-
     printf("Finished IEE init! Gonna start listening for client requests through bridge!\n");
 }
 
@@ -149,14 +118,14 @@ void SseIee::setup(char* data, int data_size) {
 
     // read kEnc
     const int kEnc_size = (int) readIntFromArr(data, &pos);
-    unsigned char* kEnc = new unsigned char[kEnc_size];
+    unsigned char* kEnc = (unsigned char*)malloc(sizeof(unsigned char) * kEnc_size);
     readFromArr(kEnc, kEnc_size, data, &pos);
 
     // read kF
     const int kF_size = readIntFromArr(data, &pos);
-    unsigned char* kF = new unsigned char[kF_size];
+    unsigned char* kF = (unsigned char*)malloc(sizeof(unsigned char) * kF_size);
     readFromArr(kF, kF_size, data, &pos);
-    
+
     /*for(int i = 0; i < kF_size; i++)
         printf("%02x ", kF[i]);
     printf("\n");*/
@@ -167,7 +136,7 @@ void SseIee::setup(char* data, int data_size) {
     //tell server to init index I
     char op = '1';
     socketSend(writeServerPipe, &op, sizeof(char));
-    
+
     printf("Finished Setup!\n");
 }
 
@@ -182,27 +151,27 @@ void SseIee::add(char* data, int data_len) {
 
         // read word
         string word;
-        char* tmp = new char[1];
+        char* tmp = (char*)malloc(sizeof(char));
         do {
             readFromArr(tmp, 1, data, &pos);
             word += tmp[0];
         } while(tmp[0] != '\0');
-        delete[] tmp;
+        free(tmp);
 
         const char* w = word.c_str();
 
         //calculate key kW
-        unsigned char* kW = new unsigned char[crypto->fBlocksize];
+        unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * crypto->fBlocksize);
         crypto->f(crypto->get_kF(), (unsigned char*)w, strlen(w), kW);
 
         //calculate index position label
-        unsigned char* label = new unsigned char[crypto->fBlocksize];
+        unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * crypto->fBlocksize);
         crypto->f(kW, (unsigned char*)&c, sizeof(int), label);
-        delete[] kW;
+        free(kW);
 
         //calculate index value enc_data
         int enc_data_size = sizeof(int)+crypto->symBlocksize;
-        unsigned char* enc_data = new unsigned char[enc_data_size];
+        unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * enc_data_size);
         enc_data_size = crypto->encryptSymmetric((unsigned char*)&d, sizeof(int), enc_data, crypto->get_kEnc());
 
         //send label and enc_data to server
@@ -211,21 +180,21 @@ void SseIee::add(char* data, int data_len) {
         socketSend(writeServerPipe, (char*)label, crypto->fBlocksize);
         socketSend(writeServerPipe, (char*)enc_data, enc_data_size);
 
-        delete[] label;
-        delete[] enc_data;
+        free(label);
+        free(enc_data);
     }
 
     printf("Finished Add!\n");
 }
 
-void SseIee::get_docs_from_server(vector<iee_token> &query) {
+void SseIee::get_docs_from_server(vector<iee_token> &query, unsigned count_words) {
     #ifdef VERBOSE
     printf("Requesting docs from server!\n");
     #endif
 
     // initialise array to hold all tokens in random order
-    iee_token *rand[query.size()];
-    for(unsigned i = 0; i < query.size(); i++)
+    iee_token *rand[count_words];
+    for(unsigned i = 0; i < count_words; i++)
         rand[i] = NULL;
 
     // randomly fill the array with the tokens we need
@@ -234,14 +203,27 @@ void SseIee::get_docs_from_server(vector<iee_token> &query) {
         if(query[i].type != WORD_TOKEN)
             continue;
 
+        /*for(unsigned ii = 0; ii < count_words; ii++) {
+            if(rand[ii])
+                printf("%c %s\n", rand[ii]->type, rand[ii]->word);
+            else
+                printf("%d\n", rand[ii]);
+        }
+        printf("\n");*/
+
         // choose a random unoccupied position from the rand array
         int pos;
         do {
-            pos = spc_rand_uint_range(0, query.size());
+            pos = spc_rand_uint_range(0, count_words);
+            //printf("%d %lu!\n", pos, count_words);
         } while(rand[pos] != NULL);
 
         rand[pos] = &query[i];
     }
+
+    #ifdef VERBOSE
+    printf("Randomized positions!\n");
+    #endif
 
     // request the documents from the server
     for(unsigned i = 0; i < query.size(); i++) {
@@ -258,12 +240,12 @@ void SseIee::get_docs_from_server(vector<iee_token> &query) {
         }
 
         //calculate key kW
-        unsigned char* kW = new unsigned char[crypto->fBlocksize];
+        unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * crypto->fBlocksize);
         crypto->f(crypto->get_kF(), (unsigned char*)tkn->word, strlen(tkn->word), kW);
 
         //calculate relevant index positions
         vector< vector<unsigned char> > labels (tkn->counter);
-        unsigned char* l = new unsigned char[crypto->fBlocksize];
+        unsigned char* l = (unsigned char*)malloc(sizeof(unsigned char) * crypto->fBlocksize);
         for (int c = 0; c < tkn->counter; c++) {
             crypto->f(kW, (unsigned char*)&c, sizeof(int), l);
             vector<unsigned char> label (crypto->fBlocksize);
@@ -272,12 +254,12 @@ void SseIee::get_docs_from_server(vector<iee_token> &query) {
             labels[c] = label;
             bzero(l, crypto->fBlocksize);
         }
-        delete[] l;
-        delete[] kW;
+        free(l);
+        free(kW);
 
         //request index positions from server
         int len = sizeof(char) + sizeof(int) + tkn->counter * crypto->fBlocksize;
-        char* buff = new char[len];
+        char* buff = (char*)malloc(sizeof(char)* len);
         char op = '3';
         int pos = 0;
         addToArr(&op, sizeof(char), buff, &pos);
@@ -285,19 +267,20 @@ void SseIee::get_docs_from_server(vector<iee_token> &query) {
         for (int i = 0; i < tkn->counter; i++)
             for (int j = 0; j < crypto->fBlocksize; j++)
                 addToArr(&(labels[i][j]), sizeof(unsigned char), buff, &pos);
-
+cout << "aaaaaaa" << endl;
         socketSend(writeServerPipe, buff, len);
-        delete[] buff;
-
+        free(buff);
+cout << "bbbbbbb" << endl;
         //decrypt query results
         len = tkn->counter * sizeof(int);
         buff = new char[len];
-        unsigned char* enc_data = new unsigned char[crypto->symBlocksize];
-        unsigned char* data = new unsigned char[crypto->symBlocksize];
+
+        unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char)* crypto->symBlocksize);
+        unsigned char* data = (unsigned char*)malloc(sizeof(unsigned char)* crypto->symBlocksize);
         pos = 0;
         for (int i = 0; i < tkn->counter; i++) {
             socketReceive(readServerPipe, (char*)enc_data, crypto->symBlocksize);
-
+cout << "cccc" << endl;
             crypto->decryptSymmetric(data, enc_data, crypto->symBlocksize, crypto->get_kEnc());
             addToArr((char*)data, sizeof(int), buff, &pos);
             //cout << "recv ." << buff << "." << endl;
@@ -323,8 +306,8 @@ void SseIee::get_docs_from_server(vector<iee_token> &query) {
         // insert result into token's struct
         tkn->docs = docs;
 
-        delete[] enc_data;
-        delete[] data;
+        free(enc_data);
+        free(data);
     }
 }
 
@@ -335,7 +318,7 @@ int SseIee::search(char* buffer, int query_size, char** output) {
 
     vector<iee_token> query;
     int nDocs = -1;
-
+    int count_words = 0; // useful for get_docs_from_server
     //read buffer
     int pos = 1;
     while(pos < query_size) {
@@ -349,13 +332,16 @@ int SseIee::search(char* buffer, int query_size, char** output) {
         free(tmp_type);
 
         if(tkn.type == WORD_TOKEN) {
+            count_words++;
+
             // read counter
             tkn.counter = readIntFromArr(buffer, &pos);
 
             // read word
             tkn.word = (char*) malloc(sizeof(char) * MAX_WORD_SIZE);
-            char* tmp = new char[1]; // TODO could this be more efficient since we're copying from one char array to 
-                                     // another and then to a third one? (buffer->tmp->tkn.word)
+            char* tmp = (char*)malloc(sizeof(char)); // TODO could this be more efficient since we're copying from one
+                                                     // char array to another and then to a third one?
+                                                     // (buffer->tmp->tkn.word)
             int counter = 0;
             do {
                 readFromArr(tmp, 1, buffer, &pos);
@@ -382,7 +368,7 @@ int SseIee::search(char* buffer, int query_size, char** output) {
     #endif
 
     // get documents from uee
-    get_docs_from_server(query);
+    get_docs_from_server(query, count_words);
 
     //calculate boolean formula
     vec_int response_docs = evaluate(query, nDocs);

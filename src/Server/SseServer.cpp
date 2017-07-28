@@ -63,6 +63,7 @@ SseServer::SseServer() {
             }
             // add
             case '2': {
+                printf("Started Add!\n");
                 const int l_size = 20;
                 unsigned char* l = new unsigned char[l_size];
                 socketReceive(readIeePipe, (char*)l, l_size);
@@ -120,7 +121,7 @@ SseServer::SseServer() {
                 break;
             }
             default:
-                printf("SseServer unkonwn command!\n");
+                printf("SseServer unkonwn command: %02x\n", cmd);
         }
     }
 }

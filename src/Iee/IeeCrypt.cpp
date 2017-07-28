@@ -113,11 +113,11 @@ void IeeCrypt::f(unsigned char* key, unsigned char* data, int dataSize, unsigned
 }
 
 unsigned char* spc_rand(unsigned char *buf, int l) {
-
-//    if (!RAND_bytes(buf, l)) {
-//        fprintf(stderr, "The PRNG is not seeded!\n");
-//        abort(  );
-//    }
+    //TODO was commented
+    if (!RAND_bytes(buf, l)) {
+        fprintf(stderr, "The PRNG is not seeded!\n");
+        abort(  );
+    }
     
     return buf;
 }

@@ -9,7 +9,6 @@
 #ifndef SseIee_hpp
 #define SseIee_hpp
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
@@ -26,6 +25,7 @@
 #include "IeeCrypt.hpp"
 #include "QueryEvaluator.hpp"
 
+#include "../sgx/stdio.h" //SGX OCALL - UNTRUSTED SYSTEM CALLS
 
 using namespace std;
 

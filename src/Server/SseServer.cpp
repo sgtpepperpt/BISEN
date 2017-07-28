@@ -19,7 +19,7 @@ SseServer::SseServer() {
         if(errno != EEXIST)
             pee("Failed to mkdir");
     
-    //start server-iee pipe
+    //create server-iee pipe
     char pipeName[256];
     bzero(pipeName,256);
     strcpy(pipeName, pipeDir);
@@ -27,21 +27,24 @@ SseServer::SseServer() {
     if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
         if(errno != EEXIST)
             pee("Fail to mknod");
-    writeIeePipe = open(pipeName, O_ASYNC | O_WRONLY);
     
-    //start iee-server pipe
+    //create iee-server pipe
     strcpy(pipeName, pipeDir);
     strcpy(pipeName+strlen(pipeName), "iee_to_server");
     if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
         if(errno != EEXIST)
             pee("Fail to mknod");
+	
+	//start listening on pipes; must open write first as read blocks
+	writeIeePipe = open(pipeName, O_ASYNC | O_WRONLY);
     readIeePipe = open(pipeName, O_ASYNC | O_RDONLY);
     
     //launch client-iee tunnel
-    pthread_t t;
+/*	//not being used anymore, client comunicates with iee directly for testing
+	pthread_t t;
     if (pthread_create(&t, NULL, bridgeClientIeeThread, NULL) != 0)
         pee("Error: unable to create bridgeClientTeeThread");
-    
+ */   
     //start listening for iee calls
     printf("Finished Server init! Gonna start listening for IEE requests!\n");
     while (true) {
@@ -169,7 +172,7 @@ void* SseServer::bridgeClientIeeThread(void* threadData) {
         }
         close(newsockfd);
         
-        //redirect to tee
+        //redirect to iee
         socketSend(pipefd, buf, sizeof(int));
         socketSend(pipefd, bufAll, len);
         

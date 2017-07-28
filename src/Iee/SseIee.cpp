@@ -98,21 +98,25 @@ void SseIee::init_pipes() {
             pee("Failed to mkdir");
 
     //start server-iee pipe
-    char pipeName[256];
+	char pipeName[256];
     strcpy(pipeName, pipeDir);
     strcpy(pipeName+strlen(pipeName), "server_to_iee");
+/*	//not necessary, server creates file.
     if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
         if(errno != EEXIST)
             pee("Fail to mknod");
+*/
     readServerPipe = open(pipeName, O_ASYNC | O_RDONLY);
 
     //start iee-server pipe
     bzero(pipeName,256);
     strcpy(pipeName, pipeDir);
     strcpy(pipeName+strlen(pipeName), "iee_to_server");
+/*	//not necessary, server creates file.
     if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
         if(errno != EEXIST)
             pee("Fail to mknod");
+*/
     writeServerPipe = open(pipeName, O_ASYNC | O_WRONLY);
 
     //start iee pipe

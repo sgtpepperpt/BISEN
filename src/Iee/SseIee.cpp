@@ -219,6 +219,10 @@ void SseIee::add(char* data, int data_len) {
 }
 
 void SseIee::get_docs_from_server(vector<iee_token> &query) {
+    #ifdef VERBOSE
+    printf("Requesting docs from server!\n");
+    #endif
+
     // initialise array to hold all tokens in random order
     iee_token *rand[query.size()];
     for(unsigned i = 0; i < query.size(); i++)
@@ -326,7 +330,7 @@ void SseIee::get_docs_from_server(vector<iee_token> &query) {
 
 int SseIee::search(char* buffer, int query_size, char** output) {
     #ifdef VERBOSE
-    cout << "search!" << endl;
+    printf("search!\n");
     #endif
 
     vector<iee_token> query;
@@ -336,25 +340,31 @@ int SseIee::search(char* buffer, int query_size, char** output) {
     int pos = 1;
     while(pos < query_size) {
         iee_token tkn;
+        tkn.word = NULL;
 
-        char* tmp_type = new char[1];
+        char* tmp_type = (char*)malloc(sizeof(char));
         readFromArr(tmp_type, 1, buffer, &pos);
 
         tkn.type = tmp_type[0];
-        delete[] tmp_type;
+        free(tmp_type);
 
         if(tkn.type == WORD_TOKEN) {
             // read counter
             tkn.counter = readIntFromArr(buffer, &pos);
 
             // read word
-            char* tmp = new char[1];
+            tkn.word = (char*) malloc(sizeof(char) * MAX_WORD_SIZE);
+            char* tmp = new char[1]; // TODO could this be more efficient since we're copying from one char array to 
+                                     // another and then to a third one? (buffer->tmp->tkn.word)
+            int counter = 0;
             do {
                 readFromArr(tmp, 1, buffer, &pos);
-                tkn.word += tmp[0];
-            } while(tmp[0] != '\0');
-            delete[] tmp;
-            
+                tkn.word[counter++] = tmp[0];
+            } while(tmp[0] != '\0' && counter < MAX_WORD_SIZE);
+            free(tmp);
+
+            // guarantee string is terminated
+            tkn.word[MAX_WORD_SIZE - 1] = '\0';
         } else if(tkn.type == META_TOKEN) {
             nDocs = readIntFromArr(buffer, &pos);
             continue;
@@ -362,6 +372,14 @@ int SseIee::search(char* buffer, int query_size, char** output) {
 
         query.push_back(tkn);
     }
+    
+    for(iee_token x : query) {
+        printf("%c %s\n", x.type, x.word);
+    }
+    
+    #ifdef VERBOSE
+    printf("Query Parsed in IEE!\n");
+    #endif
 
     // get documents from uee
     get_docs_from_server(query);

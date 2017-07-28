@@ -17,7 +17,7 @@ int precedence(char op) {
         return -1;
 }
 
-vector<token> QueryParser::tokenize(string query) {
+vector<token> QueryParser::tokenize(char* query) {
     vector <token> result;
 
     int i = 0;
@@ -39,9 +39,11 @@ vector<token> QueryParser::tokenize(string query) {
         } else {
             // it's a word
             tkn.type = WORD_TOKEN;
+            tkn.word = (char*) malloc(sizeof(char) * MAX_WORD_SIZE);
+            int pos = 0;
 
-            while(query[i] != '\0' && query[i] != ' ' && !is_operator(query[i])){
-                tkn.word += tolower(query[i]);
+            while(query[i] != '\0' && query[i] != ' ' && !is_operator(query[i]) && pos < MAX_WORD_SIZE){
+                tkn.word[pos++] = tolower(query[i]);
                 i++;
             }
             // NULL termination is added in serialization

@@ -10,7 +10,7 @@ private:
     EnglishAnalyzer analyzer;
 
 public:
-    std::vector<token> tokenize(std::string query);
+    std::vector<token> tokenize(char* query);
     std::vector<token> shunting_yard(std::vector<token>);
 };
 

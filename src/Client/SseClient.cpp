@@ -128,7 +128,7 @@ int SseClient::add_words(int doc_id, set<string> words, char** data) {
 //boolean operands: AND, OR, NOT, (, )
 int SseClient::search(string query, char** data) {
     // parse the query into token structs and apply the shunting yard algorithm
-    vector<token> infix_query = parser->tokenize(query);
+    vector<token> infix_query = parser->tokenize((char*)query.c_str());
     vector<token> rpn = parser->shunting_yard(infix_query);
 
     int data_size = sizeof(char); // char from op
@@ -178,6 +178,8 @@ int SseClient::search(string query, char** data) {
             char* word = tkn.word;
             for (unsigned i = 0; i < strlen(word); i++)
                 addToArr(&word[i], sizeof(char), (char*)*data, &pos);
+
+            free(word); // no longer needed
 
             char term = '\0';
             addToArr(&term, sizeof(char), (char*)*data, &pos);

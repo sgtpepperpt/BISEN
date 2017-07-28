@@ -21,9 +21,11 @@
 #include <vector>
 #include <map>
 #include <string.h>
-#include "IeeUtils.h"
+//#include "IeeUtils.h"
+#include "Utils.h"
 #include "IeeCrypt.hpp"
 #include "QueryEvaluator.hpp"
+
 
 using namespace std;
 
@@ -46,7 +48,7 @@ private:
     void setup(char* enc_data, int enc_data_size);
     void add(char* data, int data_size);
     int search(char* data, int data_size, char** output);
-    void get_docs_from_server(deque<token> &query);
+    void get_docs_from_server(vector<token> &query);
     
 public:
     SseIee();

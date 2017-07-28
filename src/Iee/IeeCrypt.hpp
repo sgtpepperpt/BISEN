@@ -15,9 +15,9 @@
 #include <openssl/pem.h>
 #include <openssl/rand.h>
 #include <openssl/hmac.h>
-#include "IeeUtils.h"
+//#include "IeeUtils.h"
 
-static const char* ieePrivFile = getenv("IEE_PRIV_FILE") ? getenv("IEE_PRIV_FILE") : "Data/Client/BooleanSSE/IeePriv.pem";
+//static const char* ieePrivFile = getenv("IEE_PRIV_FILE") ? getenv("IEE_PRIV_FILE") : "Data/Client/BooleanSSE/IeePriv.pem";
 
 using namespace std;
 

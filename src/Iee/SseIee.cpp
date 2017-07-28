@@ -211,7 +211,7 @@ void SseIee::add(char* data, int data_len) {
     printf("Finished Add!\n");
 }
 
-void SseIee::get_docs_from_server(deque<token> &query) {
+void SseIee::get_docs_from_server(vector<token> &query) {
     // initialise array to hold all tokens in random order
     token *rand[query.size()];
     for(unsigned i = 0; i < query.size(); i++)
@@ -323,7 +323,8 @@ int SseIee::search(char* buffer, int query_size, char** output) {
     cout << "search!" << endl;
     #endif
 
-    deque<token> query; //TODO for boolean eval should be queue, but we have to iterate twice before that for now...
+    //deque<token> query; //TODO for boolean eval should be queue, but we have to iterate twice before that for now...
+    vector<token> query;
     int nDocs = -1;
 
     //read buffer

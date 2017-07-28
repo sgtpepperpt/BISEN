@@ -1,12 +1,22 @@
 #include "QueryEvaluator.hpp"
 
+#include <stack>
+#include <algorithm>
+#include <exception>
+#include <new>
+#include <string>
+
 using namespace std;
 
 // receives a set of docs and returns its negation in the
 // full docs set; equivalent to the set differentiation:
 // {all-docs} \ {negate}
 vector<int> get_not_docs(int nDocs, vector<int> negate){
-    int *count = new int[nDocs];
+
+    //int *count = new int[nDocs];
+    //int count[nDocs];
+    int *count = (int*) malloc(sizeof(int) * nDocs);
+    
     
     for(int i = 0; i < nDocs; i++)
         count[i] = 0;
@@ -17,30 +27,40 @@ vector<int> get_not_docs(int nDocs, vector<int> negate){
     }
 
     // all elements that have count == 0 are the negation of the set
-    vector<int> result(nDocs-negate.size());
+    //vector<int> result(nDocs - negate.size());
+    vector<int> result;
     int res_count = 0;
     for(int i = 0; i < nDocs; i++) {
         if(count[i] == 0) {
-            result[res_count++] = i;
+           //result[res_count++] = i;
+           result.push_back(i);
         }
     }
 
-    delete[] count;
+    //delete[] count;
+    free(count);
     return result;
 }
 
 // evaluates a query in reverse polish notation, returning
 // the resulting set of docs
-vector<int> evaluate(deque <token> rpn_expr, int nDocs) {
+vector<int> evaluate(vector<token> rpn_expr, int nDocs) {
+
     stack<token> eval_stack;
 
-    while (!rpn_expr.empty()) {
-        token tkn = rpn_expr.front();
-        rpn_expr.pop_front();
+//    while (!rpn_expr.empty()) {
+//        token tkn = rpn_expr.front();
+//        rpn_expr.pop_front();
+
+    token tkn;
+    for(unsigned i=0; i<rpn_expr.size(); i++)
+    {
+        tkn = rpn_expr[i];
 
         if(tkn.type == '&') {
             if (eval_stack.size() < 2)
-                throw invalid_argument("Insufficient operands for AND!");
+                printf("Insufficient operands for AND!\n");
+                //throw invalid_argument("Insufficient operands for AND!");
 
             // get both operands for AND
             vector<int> and1 = eval_stack.top().docs;
@@ -66,7 +86,8 @@ vector<int> evaluate(deque <token> rpn_expr, int nDocs) {
 
         } else if(tkn.type == '|') {
             if (eval_stack.size() < 2)
-                throw invalid_argument("Insufficient operands for OR!");
+                printf("Insufficient operands for OR!\n");
+                //throw invalid_argument("Insufficient operands for OR!");
 
             // get both operands for OR
             vector<int> or1 = eval_stack.top().docs;
@@ -92,7 +113,8 @@ vector<int> evaluate(deque <token> rpn_expr, int nDocs) {
 
         } else if(tkn.type == '!') {
             if (eval_stack.size() < 1)
-                throw invalid_argument("Insufficient operands for NOT!");
+                printf("Insufficient operands for NOT!\n");
+                //throw invalid_argument("Insufficient operands for NOT!");
 
             vector<int> negate = eval_stack.top().docs;
             eval_stack.pop();
@@ -117,8 +139,9 @@ vector<int> evaluate(deque <token> rpn_expr, int nDocs) {
     }
 
     if (eval_stack.size() != 1) {
-        string err = "Wrong number of operands left: " + eval_stack.size();
-        throw invalid_argument(err);
+        //string err = "Wrong number of operands left: " + eval_stack.size();c
+        printf("Wrong number of operands left: %lu\n", eval_stack.size());
+        //throw invalid_argument(err);
     }
 
     return eval_stack.top().docs;

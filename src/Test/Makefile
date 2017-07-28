@@ -1,17 +1,18 @@
 .PHONY : main server
 
 INC = -I../Server/ -I../Client/ -I../Iee/ -I../
+
 SRC = ../Server/SseServer.cpp ../Client/ClientCrypt.cpp ../Client/EnglishAnalyzer.cpp ../Client/QueryParser.cpp ../Client/SseClient.cpp ../Iee/IeeCrypt.cpp ../Iee/QueryEvaluator.cpp ../Iee/SseIee.cpp ../Iee/SseIeeF.cpp ../Utils.cpp ../vec_int.c ../vec_token.c
+
 LIBS = -lcrypto -ldl -pthread
 
+CFLAGS = -Wno-unused-variable -Wno-unused-function -DVERBOSE
+
 main: main.cpp 
-	g++ -Ofast -Wall -Wno-unused-variable -Wno-unused-function -std=c++11 $(INC) -o main main.cpp $(SRC) $(LIBS)
+	g++ -Ofast -Wall $(CFLAGS) -std=c++11 $(INC) -o main main.cpp $(SRC) $(LIBS)
 
 server: server.cpp 
-	g++ -Ofast -Wall -Wno-unused-variable -Wno-unused-function -std=c++11 $(INC) -o server server.cpp $(SRC) $(LIBS)
-
-
-# 
+	g++ -Ofast -Wall $(CFLAGS) -std=c++11 $(INC) -o server server.cpp $(SRC) $(LIBS)
 
 Debug : Main.debug
 	g++ -o Test main.debug -lcrypto -ldl -pthread

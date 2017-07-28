@@ -123,7 +123,7 @@ unsigned char* spc_rand(unsigned char *buf, int l) {
 }
 
 unsigned int spc_rand_uint() {
-    unsigned int res;
+    unsigned int res = -1;
     spc_rand((unsigned char *)&res, sizeof(unsigned int));
     
     return res;
@@ -131,7 +131,8 @@ unsigned int spc_rand_uint() {
 
 unsigned int spc_rand_uint_range(int min, int max) {
 //    if (max < min) abort();
-    if(max < min) return max + (spc_rand_uint() % static_cast<int>(min - max));
+    if(max < min)
+        return max + (spc_rand_uint() % static_cast<int>(min - max));
 
     return min + (spc_rand_uint() % static_cast<int>(max - min));
 }

@@ -141,7 +141,7 @@ void SseIee::setup(char* data, int data_size) {
     //vector<unsigned char> data = crypto->decryptPublic(enc_data, enc_data_size);
 
     int pos = 1;
-
+    printf("salut\n");
     // read kCom
     /*const int kCom_size = readIntFromArr(data, &pos);
     unsigned char* kCom = new unsigned char[kCom_size];

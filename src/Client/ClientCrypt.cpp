@@ -13,17 +13,22 @@ using namespace std;
 
 ClientCrypt::ClientCrypt() {
     //read IEE public key from disk
-    string keyFilename = homePath + ieePubFile;
+    char pubKeyFilename[strlen(homePath) + strlen(ieePubFile)];
+    strcpy(pubKeyFilename, homePath);
+    strcat(pubKeyFilename, ieePubFile);
 
-    FILE* f = fopen(keyFilename.c_str(), "rb");
-    printf("Check if exists: %s\n", keyFilename.c_str());
+    FILE* f = fopen(pubKeyFilename, "rb");
+    printf("Check if exists: %s\n", pubKeyFilename);
 
     IeePubK = PEM_read_RSA_PUBKEY(f, NULL, NULL, NULL);
     fclose(f);
 
     //read symmetric key from disk or generate and persist
-    keyFilename = homePath;
-    f = fopen((keyFilename+KcomFile).c_str(), "rb");
+    char kComFilename[strlen(homePath) + strlen(KcomFile)];
+    strcpy(kComFilename, homePath);
+    strcat(kComFilename, KcomFile);
+
+    f = fopen(kComFilename, "rb");
     Kcom = new unsigned char[symKsize]; //Kcom = (unsigned char*)malloc(symKsize);
     if (f != NULL)
     {
@@ -32,7 +37,7 @@ ClientCrypt::ClientCrypt() {
     }    
     else {
         spc_rand(Kcom, symKsize);
-        f = fopen((keyFilename+KcomFile).c_str(), "wb");
+        f = fopen(kComFilename, "wb");
         fwrite(Kcom, 1, symKsize, f);
     }
     fclose(f);

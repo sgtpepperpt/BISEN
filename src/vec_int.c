@@ -5,9 +5,9 @@ void init(vec_int* v, int max_size) {
     v->max_size = max_size;
 
     // allocation
-    v->array = malloc(sizeof(int) * v->max_size);
-    for(int i = 0; i < v->max_size; i++)
-        v->array[i] = 0;
+    v->array = (int*) malloc(sizeof(int) * v->max_size);
+    //for(int i = 0; i < v->max_size; i++)
+    //    v->array[i] = 0;
 }
 
 void destroy(vec_int* v) {

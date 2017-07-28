@@ -3,6 +3,7 @@
 
 #include <stdio.h> //to remove
 #include <stdlib.h> // malloc / free
+#include <Definitions.h> 
 
 typedef struct vec_token {
     token* array;
@@ -15,11 +16,11 @@ void init(vec_token* v, int max_size);
 void destroy(vec_token* v);
 
 // modifiers
-void push_back(vec_token* v, int e);
+void push_back(vec_token* v, token e);
 void pop_back(vec_token* v);
 
 // elements access
-int peek_back(vec_token v);
+token peek_back(vec_token v);
 unsigned size(vec_token v);
 
 #endif

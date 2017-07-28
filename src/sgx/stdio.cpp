@@ -2,7 +2,7 @@
 #include "stdio.h"
 #include <stdarg.h>
 #include <string.h>
-#include “SampleEnclave_t.h"
+#include "SampleEnclave_t.h"
 
 int stdin = 0, stdout = 1, stderr = 2;
 
@@ -39,8 +39,8 @@ void close(int file) {
     ocall_close(file);
 }
 
-int mknod(const char* filename, mode_t mode, dev_t dev) {
-    int ret;
-    if (ocall_mknod(&ret, filename, mode, dev) != SGX_SUCCESS) return -1;
-    return ret;
-}
+//int mknod(const char* filename, mode_t mode, dev_t dev) {
+//    int ret;
+//    if (ocall_mknod(&ret, filename, mode, dev) != SGX_SUCCESS) return -1;
+//    return ret;
+//}

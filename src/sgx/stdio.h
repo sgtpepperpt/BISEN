@@ -34,7 +34,7 @@ int open(const char* filename, int mode);
 int read(int file, void *buf, unsigned int size);
 int write(int file, void *buf, unsigned int size);
 void close(int file);
-int mknod(const char *pathname, mode_t mode, dev_t dev);
+//int mknod(const char *pathname, mode_t mode, dev_t dev);
 
 void fprintf(int file, const char* format, ...);
 

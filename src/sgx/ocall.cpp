@@ -6,7 +6,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <unistd.h>
+//#include <unistd.h>
 
 int ocall_open(const char* filename, int mode) {
     return open(filename, mode);
@@ -24,6 +24,6 @@ void ocall_close(int file) {
     close(file);
 }
 
-int ocall_mknod(const char* filename, mode_t mode, dev_t dev) {
-    return mknod(filename, mode, dev);
-}
+//int ocall_mknod(const char* filename, mode_t mode, dev_t dev) {
+//    return mknod(filename, mode, dev);
+//}

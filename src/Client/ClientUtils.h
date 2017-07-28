@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
+#include <string>
 #include <sstream>
 #include <iomanip>
 #include <sys/types.h>
@@ -41,5 +42,16 @@
 
 #include "../Definitions.h"
 #include "../Utils.h"
+
+// CLIENT TOKEN DEFINITIONS
+// client tokens do not need the doc vector, as the iee ones do
+#define WORD_TOKEN 'w'
+#define META_TOKEN 'z'
+typedef struct client_token {
+    char type;
+    int counter;
+    std::string word;
+} client_token;
+// END CLIENT TOKEN DEFINITIONS
 
 #endif /* defined(__BooleanSSE__ClientUtils__) */

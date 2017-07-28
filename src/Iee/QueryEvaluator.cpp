@@ -45,13 +45,12 @@ vec_int get_not_docs(int nDocs, vec_int negate){
 
 // evaluates a query in reverse polish notation, returning
 // the resulting set of docs
-vec_int evaluate(vector<token> rpn_expr, int nDocs) {
+vec_int evaluate(vector<iee_token> rpn_expr, int nDocs) {
 
-    stack<token> eval_stack;
+    stack<iee_token> eval_stack;
 
-    token tkn;
-    for(unsigned i=0; i<rpn_expr.size(); i++)
-    {
+    iee_token tkn;
+    for(unsigned i=0; i<rpn_expr.size(); i++) {
         tkn = rpn_expr[i];
 
         if(tkn.type == '&') {
@@ -75,7 +74,7 @@ vec_int evaluate(vector<token> rpn_expr, int nDocs) {
                 printf("%i ", x);
             printf("\n");*/
 
-            token res;
+            iee_token res;
             res.type = 'r';
             res.docs = set_inter;
 
@@ -102,7 +101,7 @@ vec_int evaluate(vector<token> rpn_expr, int nDocs) {
                 printf("%i ", x);
             printf("\n");*/
 
-            token res;
+            iee_token res;
             res.type = 'r';
             res.docs = set_un;
 
@@ -124,7 +123,7 @@ vec_int evaluate(vector<token> rpn_expr, int nDocs) {
                 printf("%i ", x);
             printf("\n");*/
 
-            token res;
+            iee_token res;
             res.type = 'r';
             res.docs = set_diff;
             

@@ -141,7 +141,7 @@ void SseIee::setup(char* data, int data_size) {
     //vector<unsigned char> data = crypto->decryptPublic(enc_data, enc_data_size);
 
     int pos = 1;
-    printf("salut\n");
+
     // read kCom
     /*const int kCom_size = readIntFromArr(data, &pos);
     unsigned char* kCom = new unsigned char[kCom_size];
@@ -218,9 +218,9 @@ void SseIee::add(char* data, int data_len) {
     printf("Finished Add!\n");
 }
 
-void SseIee::get_docs_from_server(vector<token> &query) {
+void SseIee::get_docs_from_server(vector<iee_token> &query) {
     // initialise array to hold all tokens in random order
-    token *rand[query.size()];
+    iee_token *rand[query.size()];
     for(unsigned i = 0; i < query.size(); i++)
         rand[i] = NULL;
 
@@ -241,7 +241,7 @@ void SseIee::get_docs_from_server(vector<token> &query) {
 
     // request the documents from the server
     for(unsigned i = 0; i < query.size(); i++) {
-        token *tkn = rand[i];
+        iee_token *tkn = rand[i];
 
         // ignore operators for document searching
         if(tkn == NULL)
@@ -325,19 +325,17 @@ void SseIee::get_docs_from_server(vector<token> &query) {
 }
 
 int SseIee::search(char* buffer, int query_size, char** output) {
-
     #ifdef VERBOSE
     cout << "search!" << endl;
     #endif
 
-    //deque<token> query; //TODO for boolean eval should be queue, but we have to iterate twice before that for now...
-    vector<token> query;
+    vector<iee_token> query;
     int nDocs = -1;
 
     //read buffer
     int pos = 1;
     while(pos < query_size) {
-        token tkn;
+        iee_token tkn;
 
         char* tmp_type = new char[1];
         readFromArr(tmp_type, 1, buffer, &pos);

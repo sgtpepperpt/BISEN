@@ -5,14 +5,14 @@ void init(vec_token* v, int max_size) {
     v->max_size = max_size;
 
     // allocation
-    v->array = (token*) malloc(sizeof(token) * v->max_size);
+    v->array = (iee_token*) malloc(sizeof(iee_token) * v->max_size);
 }
 
 void destroy(vec_token* v) {
     free(v->array);
 }
 
-void push_back(vec_token* v, token e) {
+void push_back(vec_token* v, iee_token e) {
     if(v->counter < v->max_size)
         v->array[v->counter++] = e;
 }
@@ -22,7 +22,7 @@ void pop_back(vec_token* v) {
         v->counter--;
 }
 
-token peek_back(vec_token v) {
+iee_token peek_back(vec_token v) {
     return v.array[v.counter - 1];
 }
 

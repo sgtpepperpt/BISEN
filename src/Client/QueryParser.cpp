@@ -17,8 +17,8 @@ int precedence(char op) {
         return -1;
 }
 
-vector<token> QueryParser::tokenize(char* query) {
-    vector <token> result;
+vector<client_token> QueryParser::tokenize(string query) {
+    vector <client_token> result;
 
     int i = 0;
     while (query[i] != '\0') {
@@ -27,7 +27,7 @@ vector<token> QueryParser::tokenize(char* query) {
             continue;
         }
 
-        token tkn;
+        client_token tkn;
         if(is_operator(query[i])) {
             tkn.type = query[i];
             
@@ -39,11 +39,9 @@ vector<token> QueryParser::tokenize(char* query) {
         } else {
             // it's a word
             tkn.type = WORD_TOKEN;
-            tkn.word = (char*) malloc(sizeof(char) * MAX_WORD_SIZE);
-            int pos = 0;
 
-            while(query[i] != '\0' && query[i] != ' ' && !is_operator(query[i]) && pos < MAX_WORD_SIZE){
-                tkn.word[pos++] = tolower(query[i]);
+            while(query[i] != '\0' && query[i] != ' ' && !is_operator(query[i])){
+                tkn.word += tolower(query[i]);
                 i++;
             }
             // NULL termination is added in serialization
@@ -57,12 +55,12 @@ vector<token> QueryParser::tokenize(char* query) {
     return result;
 }
 
-vector<token> QueryParser::shunting_yard(vector<token> infix_query) {
+vector<client_token> QueryParser::shunting_yard(vector<client_token> infix_query) {
     stack<char> operators;
-    vector<token> output;
+    vector<client_token> output;
 
     for(unsigned i = 0; i < infix_query.size(); i++) {
-        token tkn = infix_query[i];
+        client_token tkn = infix_query[i];
 
         if(tkn.type == WORD_TOKEN) {
             output.push_back(tkn);
@@ -70,7 +68,7 @@ vector<token> QueryParser::shunting_yard(vector<token> infix_query) {
             int curr_precedence = operators.empty()? -1 : precedence(operators.top());
             
             while (curr_precedence >= precedence(tkn.type)) {
-                token tkn2;
+                client_token tkn2;
                 tkn2.type = operators.top();
                 operators.pop();
                 output.push_back(tkn2);
@@ -83,10 +81,10 @@ vector<token> QueryParser::shunting_yard(vector<token> infix_query) {
             operators.push(tkn.type);
         } else if(tkn.type == ')') {
             while (operators.top() != '(') {
-                token tkn2;
+                client_token tkn2;
                 tkn2.type = operators.top();
                 operators.pop();
-                
+
                 output.push_back(tkn2);
 
                 if (operators.empty())
@@ -104,7 +102,7 @@ vector<token> QueryParser::shunting_yard(vector<token> infix_query) {
         if (top == '(' || top == ')')
             throw invalid_argument("Mismatched parenthesis!");
 
-        token tkn;
+        client_token tkn;
         tkn.type = top;
         output.push_back(tkn);
     }

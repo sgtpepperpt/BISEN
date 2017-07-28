@@ -48,7 +48,7 @@ private:
     void setup(char* enc_data, int enc_data_size);
     void add(char* data, int data_size);
     int search(char* data, int data_size, char** output);
-    void get_docs_from_server(vector<token> &query);
+    void get_docs_from_server(vector<iee_token> &query);
     
 public:
     SseIee();

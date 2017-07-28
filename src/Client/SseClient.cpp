@@ -128,14 +128,14 @@ int SseClient::add_words(int doc_id, set<string> words, char** data) {
 //boolean operands: AND, OR, NOT, (, )
 int SseClient::search(string query, char** data) {
     // parse the query into token structs and apply the shunting yard algorithm
-    vector<token> infix_query = parser->tokenize((char*)query.c_str());
-    vector<token> rpn = parser->shunting_yard(infix_query);
+    vector<client_token> infix_query = parser->tokenize(query);
+    vector<client_token> rpn = parser->shunting_yard(infix_query);
 
     int data_size = sizeof(char); // char from op
 
     // first query iteration: to get needed size and counters
     for(unsigned i = 0; i < rpn.size(); i++) {
-        token *tkn = &rpn[i];
+        client_token *tkn = &rpn[i];
 
         if(tkn->type == WORD_TOKEN) {
             map<string,int>::iterator counterIt = W->find(tkn->word);
@@ -145,14 +145,14 @@ int SseClient::search(string query, char** data) {
                 tkn->counter = 0;
 
             //printf("counter %s %d\n", tkn->word.c_str(), tkn->counter);
-            data_size += sizeof(char) + sizeof(int) + (strlen(tkn->word) + 1);
+            data_size += sizeof(char) + sizeof(int) + (tkn->word.size() + 1);
         } else {
             data_size += sizeof(char);
         }
     }
 
     // add number of documents to the data structure, needed for NOT
-    token t;
+    client_token t;
     t.type = META_TOKEN;
     t.counter = nDocs;
 
@@ -167,19 +167,18 @@ int SseClient::search(string query, char** data) {
     addToArr(&op, sizeof(char), (char*)*data, &pos);
 
     // second query iteration: to fill "data" buffer
-    for(vector<token>::iterator it = rpn.begin(); it != rpn.end(); ++it) {
-        token tkn = *it;
+    for(vector<client_token>::iterator it = rpn.begin(); it != rpn.end(); ++it) {
+        client_token tkn = *it;
 
         addToArr(&(tkn.type), sizeof(char), (char*)*data, &pos);
 
         if(tkn.type == WORD_TOKEN) {
             addIntToArr(tkn.counter, (char*)*data, &pos);
 
-            char* word = tkn.word;
-            for (unsigned i = 0; i < strlen(word); i++)
-                addToArr(&word[i], sizeof(char), (char*)*data, &pos);
+            for (unsigned i = 0; i < tkn.word.size(); i++)
+                addToArr(&tkn.word[i], sizeof(char), (char*)*data, &pos);
 
-            free(word); // no longer needed
+            //free(tkn.word); // no longer needed
 
             char term = '\0';
             addToArr(&term, sizeof(char), (char*)*data, &pos);

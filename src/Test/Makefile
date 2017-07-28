@@ -2,7 +2,7 @@
 
 INC = -I../Server/ -I../Client/ -I../Iee/ -I../
 
-SRC = ../Server/SseServer.cpp ../Client/ClientCrypt.cpp ../Client/EnglishAnalyzer.cpp ../Client/QueryParser.cpp ../Client/SseClient.cpp ../Iee/IeeCrypt.cpp ../Iee/QueryEvaluator.cpp ../Iee/SseIee.cpp ../Utils.cpp ../vec_int.c ../vec_token.c
+SRC = ../Server/SseServer.cpp ../Client/ClientCrypt.cpp ../Client/EnglishAnalyzer.cpp ../Client/QueryParser.cpp ../Client/SseClient.cpp ../Iee/IeeCrypt.cpp ../Iee/QueryEvaluator.cpp ../Iee/SseIee.cpp ../Utils.cpp ../Iee/vec_int.c ../Iee/vec_token.c
 
 LIBS = -lcrypto -ldl -pthread
 

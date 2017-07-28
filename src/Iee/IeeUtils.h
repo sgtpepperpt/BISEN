@@ -28,4 +28,16 @@
 #include "../Definitions.h"
 #include "../Utils.h"
 
+// IEE TOKEN DEFINITIONS
+#define WORD_TOKEN 'w'
+#define META_TOKEN 'z'
+#define MAX_WORD_SIZE 32
+typedef struct iee_token {
+    char type;
+    int counter;
+    char* word;
+    vec_int docs;
+} iee_token;
+// END IEE TOKEN DEFINITIONS
+
 #endif /* IeeUtils_hpp */

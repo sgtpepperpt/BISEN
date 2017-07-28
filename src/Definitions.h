@@ -29,16 +29,4 @@ static const char* serverIP = "127.0.0.1";//"54.194.253.119";
 static const int serverPort = 9978;
 static const int clientPort = 9979;
 
-// TOKEN DEFINITIONS
-#define WORD_TOKEN 'w'
-#define META_TOKEN 'z'
-#define MAX_WORD_SIZE 32
-typedef struct token {
-    char type;
-    int counter;
-    char* word;
-    vec_int docs;
-} token;
-// END TOKEN DEFINITIONS
-
 #endif /* Definitions_hpp */

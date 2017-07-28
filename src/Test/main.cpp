@@ -39,7 +39,6 @@ void f(
 */
 
 int main(int argc, const char * argv[]) {
-    printf("ola\n");
     setvbuf(stdout, NULL, _IONBF, 0);
 
 //    SseServer server;
@@ -56,7 +55,7 @@ int main(int argc, const char * argv[]) {
     ////////////////////////////////////////////////////////////////////////////
     
     #ifdef VERBOSE
-    printf("Starting IEE comm\n");
+    printf("Starting IEE communication\n");
     #endif
 
     char* output;

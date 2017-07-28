@@ -12,7 +12,7 @@ using namespace std;
 
 SseClient::SseClient() {
     // init data structures
-    openQueryResponseSocket();
+    //openQueryResponseSocket();
     analyzer = new EnglishAnalyzer;
     crypto = new ClientCrypt;   //inits kCom
     W = new map<string,int>;    /**TODO persist W*/

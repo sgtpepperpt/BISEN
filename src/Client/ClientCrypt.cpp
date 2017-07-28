@@ -13,11 +13,14 @@ using namespace std;
 
 ClientCrypt::ClientCrypt() {
     //read IEE public key from disk
-    string keyFilename = homePath;
-    FILE* f = fopen((keyFilename+ieePubFile).c_str(), "rb");
+    string keyFilename = homePath + ieePubFile;
+
+    FILE* f = fopen(keyFilename.c_str(), "rb");
+    printf("Check if exists: %s\n", keyFilename.c_str());
+
     IeePubK = PEM_read_RSA_PUBKEY(f, NULL, NULL, NULL);
     fclose(f);
-    
+
     //read symmetric key from disk or generate and persist
     keyFilename = homePath;
     f = fopen((keyFilename+KcomFile).c_str(), "rb");

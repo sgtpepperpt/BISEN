@@ -8,14 +8,14 @@ LIBS = -lcrypto -ldl -pthread
 
 CFLAGS = -Wno-unused-variable -Wno-unused-function -DVERBOSE
 
-main: main.cpp 
+main: main.cpp
 	g++ -g -Wall $(CFLAGS) -std=c++11 $(INC) -o main main.cpp $(SRC) ../Iee/SseIeeF.cpp $(LIBS)
 
-server: server.cpp 
+server: server.cpp
 	g++ -Ofast -Wall $(CFLAGS) -std=c++11 $(INC) -o server server.cpp $(SRC) $(LIBS)
 
 Debug : Main.debug
-	g++ -o Test main.debug -lcrypto -ldl -pthread
+	g++ -o Test main.debug $(LIBS)
 
 ###############################################################################
 

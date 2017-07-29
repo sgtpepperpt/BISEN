@@ -9,22 +9,20 @@
 #ifndef SseIee_hpp
 #define SseIee_hpp
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/stat.h>
 //#include <sys/types.h>
-//#include <errno.h>
+#include <errno.h>
 //#include <err.h>
 //#include <assert.h>
-//#include <vector>
-//#include <map>
 #include <string.h>
-//#include "IeeUtils.h"
-#include "../Utils.h"
+
+#include "IeeUtils.h"
 #include "IeeCrypt.hpp"
 #include "QueryEvaluator.hpp"
-#include "vec_token.h"
 
 //#include "../sgx/stdio.h" //SGX OCALL - UNTRUSTED SYSTEM CALLS
 

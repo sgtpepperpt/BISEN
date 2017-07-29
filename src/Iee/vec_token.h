@@ -1,7 +1,6 @@
 #ifndef vec_token_H
 #define vec_token_H
 
-#include <stdio.h> //to remove
 #include <stdlib.h> // malloc / free
 #include <IeeUtils.h>
 

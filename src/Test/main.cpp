@@ -64,7 +64,7 @@ int main(int argc, const char * argv[]) {
     //size_t output_size; f(&output, &output_size, 0, data, data_size);
 
     const string base_dir = "../Test/parsed/";
-    const int num_queries = 2;
+    const int num_queries = 1000;
 
     // get list of docs for test
     vector<string> doc_paths;

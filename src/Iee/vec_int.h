@@ -1,7 +1,6 @@
 #ifndef vec_int_H
 #define vec_int_H
 
-#include <stdio.h> //to remove
 #include <stdlib.h> // malloc / free
 
 typedef struct vec_int {

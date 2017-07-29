@@ -1,11 +1,7 @@
 #ifndef QueryEvaluator
 #define QueryEvaluator
 
-#include <stdio.h>
-
-#include "IeeCrypt.hpp"
 #include "IeeUtils.h"
-#include "Definitions.h"
 #include "vec_int.h"
 #include "vec_token.h"
 

@@ -9,7 +9,6 @@
 #ifndef IeeCrypt_hpp
 #define IeeCrypt_hpp
 
-#include <stdio.h>
 #include <vector>
 #include <openssl/rsa.h>
 #include <openssl/pem.h>

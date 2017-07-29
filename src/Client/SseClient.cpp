@@ -268,8 +268,8 @@ string SseClient::get_random_segment(vector<string> segments) {
 
 string SseClient::generate_random_query(vector<string> all_words) {
     const int lone_word_prob = 15;
-    const int not_prob = 50;
-    const int and_prob = 70;
+    const int not_prob = 40;
+    const int and_prob = 50;
 
     // generate small segments
     queue<string> segments;

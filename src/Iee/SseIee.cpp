@@ -153,19 +153,22 @@ void SseIee::add(char* data, int data_len) {
         const int c = readIntFromArr(data, &pos);
 
         // read word
-        string word;
+        char* word = (char*)malloc(sizeof(char) * MAX_WORD_SIZE);
         char* tmp = (char*)malloc(sizeof(char));
+        int counter = 0;
+
         do {
             readFromArr(tmp, 1, data, &pos);
-            word += tmp[0];
-        } while(tmp[0] != '\0');
+            word[counter++] = tmp[0];
+        } while(tmp[0] != '\0' && counter < MAX_WORD_SIZE);
         free(tmp);
 
-        const char* w = word.c_str();
+        // guarantee string is terminated
+        word[MAX_WORD_SIZE - 1] = '\0';
 
         //calculate key kW
         unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * crypto->fBlocksize);
-        crypto->f(crypto->get_kF(), (unsigned char*)w, strlen(w), kW);
+        crypto->f(crypto->get_kF(), (unsigned char*)word, strlen(word), kW);
 
         //calculate index position label
         unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * crypto->fBlocksize);
@@ -380,10 +383,13 @@ int SseIee::search(char* buffer, int query_size, char** output) {
     for(unsigned i = 0; i < size(query); i++) {
         iee_token x = query.array[i];
         if(x.type == WORD_TOKEN) {
-            printf("%s %d (", x.word, size(x.docs));
-            for(unsigned i = 0; i < size(x.docs); i++)
-                printf("%i,", x.docs.array[i]);
-            printf(") ");
+            printf("%s (", x.word);
+            for(unsigned i = 0; i < size(x.docs); i++) {
+                if(i < size(x.docs) - 1)
+                    printf("%i,", x.docs.array[i]);
+                else
+                    printf("%i); ", x.docs.array[i]);
+            }
         }
 
         else

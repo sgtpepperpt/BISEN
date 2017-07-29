@@ -1,11 +1,5 @@
 #include "QueryEvaluator.hpp"
 
-#include <stack>
-#include <algorithm>
-#include <exception>
-#include <new>
-#include <string>
-
 using namespace std;
 
 // receives a set of docs and returns its negation in the

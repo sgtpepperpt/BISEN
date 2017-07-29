@@ -11,10 +11,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string>
-#include <vector> // TODO remove for SGX
-
-#include "vec_int.h"
 
 #define pack754_32(f) (pack754((f), 32, 8))
 #define pack754_64(f) (pack754((f), 64, 11))

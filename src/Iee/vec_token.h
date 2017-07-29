@@ -3,8 +3,7 @@
 
 #include <stdio.h> //to remove
 #include <stdlib.h> // malloc / free
-#include <Definitions.h>
-#include <IeeUtils.h> 
+#include <IeeUtils.h>
 
 typedef struct vec_token {
     iee_token* array;
@@ -14,6 +13,7 @@ typedef struct vec_token {
 
 // initialisers
 void init(vec_token* v, int max_size);
+void grow(vec_token* v);
 void destroy(vec_token* v);
 
 // modifiers

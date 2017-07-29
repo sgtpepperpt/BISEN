@@ -1,6 +1,6 @@
 //
-//  IeeUtils.hpp
-//  BooleanSSE
+//  IeeUtils.h
+//  BISEN
 //
 //  Created by Bernardo Ferreira on 29/03/17.
 //  Copyright © 2017 Bernardo Ferreira. All rights reserved.

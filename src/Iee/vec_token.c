@@ -8,13 +8,28 @@ void init(vec_token* v, int max_size) {
     v->array = (iee_token*) malloc(sizeof(iee_token) * v->max_size);
 }
 
+void grow(vec_token* v) {
+    // allocate a new array and copy the elements
+    iee_token* n = (iee_token*) malloc(sizeof(iee_token) * v->max_size * 2);
+    for(int i = 0; i < v->max_size; i++)
+        n[i] = v->array[i];
+
+    // free the old array
+    free(v->array);
+
+    v->max_size = v->max_size * 2;
+    v->array = n;
+}
+
 void destroy(vec_token* v) {
     free(v->array);
 }
 
 void push_back(vec_token* v, iee_token e) {
-    if(v->counter < v->max_size)
-        v->array[v->counter++] = e;
+    if(v->counter == v->max_size)
+        grow(v);
+
+    v->array[v->counter++] = e;
 }
 
 void pop_back(vec_token* v) {

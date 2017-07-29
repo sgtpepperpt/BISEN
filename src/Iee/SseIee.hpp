@@ -20,35 +20,34 @@
 #include <vector>
 #include <map>
 #include <string.h>
-//#include "IeeUtils.h"
+#include "IeeUtils.h"
 #include "../Utils.h"
 #include "IeeCrypt.hpp"
 #include "QueryEvaluator.hpp"
+#include "vec_token.h"
 
 //#include "../sgx/stdio.h" //SGX OCALL - UNTRUSTED SYSTEM CALLS
 
 using namespace std;
 
-
 class SseIee {
-    
 private:
     static const char* pipeDir;
-    
+
     IeeCrypt* crypto;
-    
+
     int readServerPipe;
     int writeServerPipe;
     int clientBridgePipe;
-    
+
     void init_pipes();
 
     //int decrypt_data(char* plaintext, char* ciphertext, int ciphertext_size);
-    
+
     void setup(char* enc_data, int enc_data_size);
     void add(char* data, int data_size);
     int search(char* data, int data_size, char** output);
-    void get_docs_from_server(vector<iee_token> &query, unsigned count_words);
+    void get_docs_from_server(vec_token &query, unsigned count_words);
     
 public:
     SseIee();

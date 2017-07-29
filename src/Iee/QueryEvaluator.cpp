@@ -40,12 +40,12 @@ vec_int get_not_docs(int nDocs, vec_int negate){
 
 // evaluates a query in reverse polish notation, returning
 // the resulting set of docs
-vec_int evaluate(vector<iee_token> rpn_expr, int nDocs) {
+vec_int evaluate(vec_token rpn_expr, int nDocs) {
     stack<iee_token> eval_stack;
 
     iee_token tkn;
-    for(unsigned i = 0; i < rpn_expr.size(); i++) {
-        tkn = rpn_expr[i];
+    for(unsigned i = 0; i < size(rpn_expr); i++) {
+        tkn = rpn_expr.array[i];
 
         if(tkn.type == '&') {
             if (eval_stack.size() < 2)

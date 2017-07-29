@@ -192,7 +192,7 @@ void SseIee::add(char* data, int data_len) {
     #endif
 }
 
-void SseIee::get_docs_from_server(vector<iee_token> &query, unsigned count_words) {
+void SseIee::get_docs_from_server(vec_token &query, unsigned count_words) {
     #ifdef VERBOSE
     printf("Requesting docs from server!\n");
     #endif
@@ -203,9 +203,9 @@ void SseIee::get_docs_from_server(vector<iee_token> &query, unsigned count_words
         rand[i] = NULL;
 
     // randomly fill the array with the tokens we need
-    for(unsigned i = 0; i < query.size(); i++) {
+    for(unsigned i = 0; i < size(query); i++) {
         // ignore non-word tokens
-        if(query[i].type != WORD_TOKEN)
+        if(query.array[i].type != WORD_TOKEN)
             continue;
 
         /*for(unsigned ii = 0; ii < count_words; ii++) {
@@ -220,10 +220,9 @@ void SseIee::get_docs_from_server(vector<iee_token> &query, unsigned count_words
         int pos;
         do {
             pos = spc_rand_uint_range(0, count_words);
-            //printf("%d %lu!\n", pos, count_words);
         } while(rand[pos] != NULL);
 
-        rand[pos] = &query[i];
+        rand[pos] = &query.array[i];
     }
 
     #ifdef VERBOSE
@@ -327,7 +326,9 @@ int SseIee::search(char* buffer, int query_size, char** output) {
     printf("Search!\n");
     #endif
 
-    vector<iee_token> query;
+    vec_token query;
+    init(&query, 25);
+
     int nDocs = -1;
     int count_words = 0; // useful for get_docs_from_server
 
@@ -368,7 +369,7 @@ int SseIee::search(char* buffer, int query_size, char** output) {
             continue;
         }
 
-        query.push_back(tkn);
+        push_back(&query, tkn);
     }
 
     // get documents from uee
@@ -376,7 +377,8 @@ int SseIee::search(char* buffer, int query_size, char** output) {
 
     #ifdef VERBOSE
     printf("parsed: ");
-    for(iee_token x : query) {
+    for(unsigned i = 0; i < size(query); i++) {
+        iee_token x = query.array[i];
         if(x.type == WORD_TOKEN) {
             printf("%s %d (", x.word, size(x.docs));
             for(unsigned i = 0; i < size(x.docs); i++)
@@ -406,6 +408,8 @@ int SseIee::search(char* buffer, int query_size, char** output) {
         //cout <<  response_docs[i] << endl;
         addIntToArr(response_docs.array[i], *output, &pos);
     }
+
+    destroy(&response_docs);
 
     #ifdef VERBOSE
     printf("Finished Search!\n");

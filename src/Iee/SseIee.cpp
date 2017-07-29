@@ -327,7 +327,7 @@ int SseIee::search(char* buffer, int query_size, char** output) {
     #endif
 
     vec_token query;
-    init(&query, 25);
+    init(&query, DEFAULT_QUERY_TOKENS);
 
     int nDocs = -1;
     int count_words = 0; // useful for get_docs_from_server

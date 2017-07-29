@@ -41,23 +41,24 @@ vec_int get_not_docs(int nDocs, vec_int negate){
 // evaluates a query in reverse polish notation, returning
 // the resulting set of docs
 vec_int evaluate(vec_token rpn_expr, int nDocs) {
-    stack<iee_token> eval_stack;
+    vec_token eval_stack;
+    init(&eval_stack, DEFAULT_QUERY_TOKENS);
 
     iee_token tkn;
     for(unsigned i = 0; i < size(rpn_expr); i++) {
         tkn = rpn_expr.array[i];
 
         if(tkn.type == '&') {
-            if (eval_stack.size() < 2)
+            if (size(eval_stack) < 2)
                 printf("Insufficient operands for AND!\n");
                 //throw invalid_argument("Insufficient operands for AND!");
 
             // get both operands for AND
-            vec_int and1 = eval_stack.top().docs;
-            eval_stack.pop();
+            vec_int and1 = peek_back(eval_stack).docs;
+            pop_back(&eval_stack);
 
-            vec_int and2 = eval_stack.top().docs;
-            eval_stack.pop();
+            vec_int and2 = peek_back(eval_stack).docs;
+            pop_back(&eval_stack);
 
             // intersection of the two sets of documents
             vec_int set_inter = vec_intersection(and1, and2);
@@ -72,18 +73,18 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             res.type = 'r';
             res.docs = set_inter;
 
-            eval_stack.push(res);
+            push_back(&eval_stack, res);
         } else if(tkn.type == '|') {
-            if (eval_stack.size() < 2)
+            if (size(eval_stack) < 2)
                 printf("Insufficient operands for OR!\n");
                 //throw invalid_argument("Insufficient operands for OR!");
 
             // get both operands for OR
-            vec_int or1 = eval_stack.top().docs;
-            eval_stack.pop();
+            vec_int or1 = peek_back(eval_stack).docs;
+            pop_back(&eval_stack);
 
-            vec_int or2 = eval_stack.top().docs;
-            eval_stack.pop();
+            vec_int or2 = peek_back(eval_stack).docs;
+            pop_back(&eval_stack);
 
             // union of the two sets of documents
             vec_int set_un = vec_union(or1, or2);
@@ -98,14 +99,14 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             res.type = 'r';
             res.docs = set_un;
 
-            eval_stack.push(res);
+            push_back(&eval_stack, res);
         } else if(tkn.type == '!') {
-            if (eval_stack.size() < 1)
+            if (size(eval_stack) < 1)
                 printf("Insufficient operands for NOT!\n");
                 //throw invalid_argument("Insufficient operands for NOT!");
 
-            vec_int negate = eval_stack.top().docs;
-            eval_stack.pop();
+            vec_int negate = peek_back(eval_stack).docs;
+            pop_back(&eval_stack);
             
             // difference between all docs and the docs we don't want
             vec_int set_diff = get_not_docs(nDocs, negate);
@@ -119,17 +120,17 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             res.type = 'r';
             res.docs = set_diff;
             
-            eval_stack.push(res);
+            push_back(&eval_stack, res);
         } else {
-            eval_stack.push(tkn);
+            push_back(&eval_stack, tkn);
         }
     }
 
-    if (eval_stack.size() != 1) {
-        printf("Wrong number of operands left: %lu\n", eval_stack.size());
+    if (size(eval_stack) != 1) {
+        printf("Wrong number of operands left: %u\n", size(eval_stack));
         //string err = "Wrong number of operands left: " + eval_stack.size();c
         //throw invalid_argument(err);
     }
 
-    return eval_stack.top().docs;
+    return peek_back(eval_stack).docs;
 }

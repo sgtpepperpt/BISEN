@@ -87,24 +87,23 @@ int IeeCrypt::decryptSymmetric (unsigned char* plaintext, unsigned char* ciphert
     int plaintext_len;
 //    unsigned char* plaintext = new unsigned char[ciphertextSize];
     unsigned char iv[symBlocksize] = {0}; //for testing; should be replaced with random iv
-    
+
     if (!(ctx = EVP_CIPHER_CTX_new()))
         pee("IeeCrypt::decryptSymmetric - could not create ctx\n");
-    
+
     if(1 != EVP_DecryptInit_ex(ctx, EVP_aes_128_cbc(), NULL, key, iv))
         pee("IeeCrypt::decryptSymmetric - could not init decrypt\n");
-    
+
     if(1 != EVP_DecryptUpdate(ctx, plaintext, &len, ciphertext, ciphertextSize))
         pee("IeeCrypt::decryptSymmetric - could not decrypt update\n");
     plaintext_len = len;
-    
+
     if(1 != EVP_DecryptFinal_ex(ctx, plaintext + len, &len))
         pee("ServerUtil::decrypt - could not decrypt final\n");
     plaintext_len += len;
     EVP_CIPHER_CTX_free(ctx);
-    
+
     return plaintext_len;
-    return 0;    
 }
 
 void IeeCrypt::f(unsigned char* key, unsigned char* data, int dataSize, unsigned char* md) {

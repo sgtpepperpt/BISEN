@@ -22,6 +22,7 @@ void printResults (vector<int> results) {
         return;
     }
 
+    sort (results.begin(), results.end());
     for(unsigned i = 0; i < results.size(); i++)
         printf("%i ", results[i]);
     printf("\n");
@@ -63,7 +64,7 @@ int main(int argc, const char * argv[]) {
     //size_t output_size; f(&output, &output_size, 0, data, data_size);
 
     const string base_dir = "../Test/parsed/";
-    const int num_queries = 10000;
+    const int num_queries = 2;
 
     // get list of docs for test
     vector<string> doc_paths;
@@ -104,15 +105,24 @@ int main(int argc, const char * argv[]) {
         char* data;
         int data_size = client.search(query, &data);
 
+        #ifdef VERBOSE
+        printf("\n***** Entering IEE *****\n");
+        #endif
+
         // int SseIee::f(char* data, int data_size, char* output)
         output_size = iee.f(data, data_size, &output);
         //f(&output, &output_size, 0, data, data_size);
-    
+
+        #ifdef VERBOSE
+        printf("\n***** Leaving IEE *****\n");
+        #endif
+
         //process results
         const int nDocs = output_size / sizeof(int);
 
         #ifdef VERBOSE
-        cout << "number of docs: " << nDocs << endl;
+        printf("\n***** CLIENT RESULT *****\n");
+        printf("number of docs: %d\n", nDocs);
         #endif
 
         vector<int> results(nDocs);

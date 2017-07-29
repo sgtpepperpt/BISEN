@@ -274,7 +274,7 @@ void SseIee::get_docs_from_server(vector<iee_token> &query, unsigned count_words
 
         //decrypt query results
         len = tkn->counter * sizeof(int);
-        buff = new char[len];
+        buff = (char*)malloc(sizeof(char)* len);
 
         unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char)* crypto->symBlocksize);
         unsigned char* data = (unsigned char*)malloc(sizeof(unsigned char)* crypto->symBlocksize);
@@ -284,24 +284,30 @@ void SseIee::get_docs_from_server(vector<iee_token> &query, unsigned count_words
 
             crypto->decryptSymmetric(data, enc_data, crypto->symBlocksize, crypto->get_kEnc());
             addToArr((char*)data, sizeof(int), buff, &pos);
+
             //cout << "recv ." << buff << "." << endl;
             /** Another way of doing it
                 int d = -1;
                 memcpy(&d, data, sizeof(int));
                 addIntToArr(d, buff, &pos);
             **/
+
             bzero(enc_data, crypto->symBlocksize);
             bzero(data, crypto->symBlocksize);
         }
 
+        // generate int vector
         const int nr_docs = len / sizeof(int);
         vec_int docs; // TODO check if this is always sorted
                       // else has to be sorted in evaluator; may not be needed for vec_int
         init(&docs, nr_docs);
         pos = 0;
         for (int i = 0; i < nr_docs; i++) {
-            memcpy(&docs.array[i], buff+pos, sizeof(int));
+            int tmp = -1;
+            memcpy(&tmp, buff + pos, sizeof(int));
             pos += sizeof(int);
+
+            push_back(&docs, tmp);
         }
 
         // insert result into token's struct
@@ -312,18 +318,19 @@ void SseIee::get_docs_from_server(vector<iee_token> &query, unsigned count_words
     }
 
     #ifdef VERBOSE
-    printf("Got all docs from server!\n");
+    printf("Got all docs from server!\n\n");
     #endif
 }
 
 int SseIee::search(char* buffer, int query_size, char** output) {
     #ifdef VERBOSE
-    printf("search!\n");
+    printf("Search!\n");
     #endif
 
     vector<iee_token> query;
     int nDocs = -1;
     int count_words = 0; // useful for get_docs_from_server
+
     //read buffer
     int pos = 1;
     while(pos < query_size) {
@@ -344,8 +351,8 @@ int SseIee::search(char* buffer, int query_size, char** output) {
 
             // read word
             tkn.word = (char*) malloc(sizeof(char) * MAX_WORD_SIZE);
-            char* tmp = (char*)malloc(sizeof(char)); // TODO could this be more efficient since we're copying from one
-                                                     // char array to another and then to a third one?
+            char* tmp = (char*)malloc(sizeof(char)); // TODO could this be more efficient since we're copying from
+                                                     // one char array to another and then to a third one?
                                                      // (buffer->tmp->tkn.word)
             int counter = 0;
             do {
@@ -363,17 +370,25 @@ int SseIee::search(char* buffer, int query_size, char** output) {
 
         query.push_back(tkn);
     }
-    
-    for(iee_token x : query) {
-        printf("%c %s\n", x.type, x.word);
-    }
-    
-    #ifdef VERBOSE
-    printf("Query Parsed in IEE!\n");
-    #endif
 
     // get documents from uee
     get_docs_from_server(query, count_words);
+
+    #ifdef VERBOSE
+    printf("parsed: ");
+    for(iee_token x : query) {
+        if(x.type == WORD_TOKEN) {
+            printf("%s %d (", x.word, size(x.docs));
+            for(unsigned i = 0; i < size(x.docs); i++)
+                printf("%i,", x.docs.array[i]);
+            printf(") ");
+        }
+
+        else
+            printf("%c ", x.type);
+    }
+    printf("\n\n");
+    #endif
 
     //calculate boolean formula
     vec_int response_docs = evaluate(query, nDocs);
@@ -384,7 +399,7 @@ int SseIee::search(char* buffer, int query_size, char** output) {
 
     // return query results
     int output_size = size(response_docs) * sizeof(int);
-    *output = new char[output_size];
+    *output = (char*)malloc(sizeof(char) * output_size);
     pos = 0;
 
     for(unsigned i = 0; i < size(response_docs); i++) {

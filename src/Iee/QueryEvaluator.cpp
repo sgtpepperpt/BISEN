@@ -46,7 +46,6 @@ vec_int evaluate(vector<iee_token> rpn_expr, int nDocs) {
     iee_token tkn;
     for(unsigned i = 0; i < rpn_expr.size(); i++) {
         tkn = rpn_expr[i];
-        cout << i << endl;
 
         if(tkn.type == '&') {
             if (eval_stack.size() < 2)
@@ -65,8 +64,8 @@ vec_int evaluate(vector<iee_token> rpn_expr, int nDocs) {
             //set_intersection(and1.begin(), and1.end(), and2.begin(), and2.end(), back_inserter(set_inter));
 
             /*printf("intersection ");
-            for(int x : set_inter)
-                printf("%i ", x);
+            for(int i = 0; i < size(set_inter); i++)
+                printf("%i ", set_inter.array[i]);
             printf("\n");*/
 
             iee_token res;
@@ -74,7 +73,6 @@ vec_int evaluate(vector<iee_token> rpn_expr, int nDocs) {
             res.docs = set_inter;
 
             eval_stack.push(res);
-
         } else if(tkn.type == '|') {
             if (eval_stack.size() < 2)
                 printf("Insufficient operands for OR!\n");
@@ -92,8 +90,8 @@ vec_int evaluate(vector<iee_token> rpn_expr, int nDocs) {
             //set_union(or1.begin(), or1.end(), or2.begin(), or2.end(), back_inserter(set_un));
 
             /*printf("union ");
-            for(int x : set_un)
-                printf("%i ", x);
+            for(int i = 0; i < size(set_un); i++)
+                printf("%i ", set_un.array[i]);
             printf("\n");*/
 
             iee_token res;
@@ -101,7 +99,6 @@ vec_int evaluate(vector<iee_token> rpn_expr, int nDocs) {
             res.docs = set_un;
 
             eval_stack.push(res);
-
         } else if(tkn.type == '!') {
             if (eval_stack.size() < 1)
                 printf("Insufficient operands for NOT!\n");
@@ -114,8 +111,8 @@ vec_int evaluate(vector<iee_token> rpn_expr, int nDocs) {
             vec_int set_diff = get_not_docs(nDocs, negate);
 
             /*printf("not ");
-            for(int x : set_diff)
-                printf("%i ", x);
+            for(int i = 0; i < size(set_diff); i++)
+                printf("%i ", set_diff.array[i]);
             printf("\n");*/
 
             iee_token res;
@@ -123,15 +120,14 @@ vec_int evaluate(vector<iee_token> rpn_expr, int nDocs) {
             res.docs = set_diff;
             
             eval_stack.push(res);
-            
         } else {
             eval_stack.push(tkn);
         }
     }
 
     if (eval_stack.size() != 1) {
-        //string err = "Wrong number of operands left: " + eval_stack.size();c
         printf("Wrong number of operands left: %lu\n", eval_stack.size());
+        //string err = "Wrong number of operands left: " + eval_stack.size();c
         //throw invalid_argument(err);
     }
 

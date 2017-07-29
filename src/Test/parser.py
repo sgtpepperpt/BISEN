@@ -18,10 +18,9 @@ def process_payload(payload):
         match4 = re.match(r".*[\w\.\s]*@[\w\s]*.*", line)
         match5 = re.match(r"[\w\.]*@\w*\.\w* on \d{2}/\d{2}/\d{4} \d{2}:\d{2} [AM|PM]", line)
         match6 = re.match(r"[\w\.]*@\w*\.\w* on \d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2} [AM|PM]", line)
-        match7 = re.match(r"[\w\.]*@\w*\.\w* on \d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2} [AM|PM]", line)
-        match8 = re.match(r".*https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*).*", line)
+        match7 = re.match(r".*https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*).*", line)
         
-        if match1 or match2 or match3 or match4 or match5 or match6 or match7 or match8:
+        if (match1 or match2 or match3 or match4 or match5 or match6 or match7):
             isMetadata = True
         else:
             line = line.strip()
@@ -30,10 +29,11 @@ def process_payload(payload):
 
             # match "metadata" lines
             isValid = line and not line.startswith("---") and not line.startswith("|") and not line.startswith("PM ----") and not line.startswith("AM ----") and not line.startswith("=")
+
             hasStrangeHeaders = line.startswith("From:") or line.startswith("To:") or line.startswith("Subject:") or line.startswith("cc:") or line.startswith("Sent:") or line.startswith("Date:")
 
             # only inserts non-empty lines
-            if not hasStrangeHeaders and isValid:
+            if (not hasStrangeHeaders and isValid):
                 processed += line + "\n"
     
     return processed
@@ -52,8 +52,11 @@ def get_payload(filename):
 def iterate_folders(dir, max):
     counter = 0
     files = [os.path.join(root, name) for root, dirs, files in os.walk(dir) for name in files]
-    
-    while counter < max:
+
+    if(max < 0):
+        max = len(files)
+
+    while (counter < max):
         chosen = random.choice(files)
         mail = get_payload(chosen)
         
@@ -68,6 +71,11 @@ def iterate_folders(dir, max):
 
 if(len(sys.argv) != 2):
     print "Usage: python parser.py <number-of-docs>"
+    print "To parse full dataset (~300k files): <number-of-docs> = -1"
     sys.exit(1)
+
+# clear parsed folder
+for f in os.listdir("./parsed/"):
+    os.remove("./parsed/" + f)
 
 iterate_folders("./enron", int(sys.argv[1]))

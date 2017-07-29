@@ -12,12 +12,8 @@ using namespace std;
 // full docs set; equivalent to the set differentiation:
 // {all-docs} \ {negate}
 vec_int get_not_docs(int nDocs, vec_int negate){
-
-    //int *count = new int[nDocs];
-    //int count[nDocs];
     int *count = (int*) malloc(sizeof(int) * nDocs);
-    
-    
+
     for(int i = 0; i < nDocs; i++)
         count[i] = 0;
 
@@ -38,7 +34,6 @@ vec_int get_not_docs(int nDocs, vec_int negate){
         }
     }
 
-    //delete[] count;
     free(count);
     return result;
 }
@@ -46,12 +41,12 @@ vec_int get_not_docs(int nDocs, vec_int negate){
 // evaluates a query in reverse polish notation, returning
 // the resulting set of docs
 vec_int evaluate(vector<iee_token> rpn_expr, int nDocs) {
-
     stack<iee_token> eval_stack;
 
     iee_token tkn;
-    for(unsigned i=0; i<rpn_expr.size(); i++) {
+    for(unsigned i = 0; i < rpn_expr.size(); i++) {
         tkn = rpn_expr[i];
+        cout << i << endl;
 
         if(tkn.type == '&') {
             if (eval_stack.size() < 2)

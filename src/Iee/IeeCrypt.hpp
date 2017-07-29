@@ -15,9 +15,10 @@
 #include <openssl/pem.h>
 #include <openssl/rand.h>
 #include <openssl/hmac.h>
-//#include "IeeUtils.h"
+#include "IeeUtils.h"  //TODO TEMP_DEBUG_CRYPT
+#include <string.h>  //TODO TEMP_DEBUG_CRYPT
 
-//static const char* ieePrivFile = getenv("IEE_PRIV_FILE") ? getenv("IEE_PRIV_FILE") : "Data/Client/BooleanSSE/IeePriv.pem";
+static const char* ieePrivFile = getenv("IEE_PRIV_FILE") ? getenv("IEE_PRIV_FILE") : "Data/Client/BooleanSSE/IeePriv.pem"; //TODO TEMP_DEBUG_CRYPT
 
 using namespace std;
 

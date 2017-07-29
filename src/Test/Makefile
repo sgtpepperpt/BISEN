@@ -6,7 +6,7 @@ SRC = ../Server/SseServer.cpp ../Client/ClientCrypt.cpp ../Client/EnglishAnalyze
 
 LIBS = -lcrypto -ldl -pthread
 
-CFLAGS = -Wno-unused-variable -Wno-unused-function -DVERBOSE
+CFLAGS = -Wno-unused-variable -Wno-misleading-indentation -Wno-unused-function -DVERBOSE
 
 main: main.cpp
 	g++ -g -Wall $(CFLAGS) -std=c++11 $(INC) -o main main.cpp $(SRC) ../Iee/SseIeeF.cpp $(LIBS)
@@ -29,5 +29,5 @@ Test.debug : main.cpp
 
 clean :
 	rm -f main server main.o main.debug
-	
+
 .PHONY: run clean

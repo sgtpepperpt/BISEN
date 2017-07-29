@@ -82,6 +82,7 @@ SseServer::SseServer() {
             }
             // search - get index positions
             case '3': {
+                printf("Started Search 1st part!\n");
                 char buff[sizeof(int)];
                 socketReceive(readIeePipe, buff, sizeof(int));
                 int pos = 0;

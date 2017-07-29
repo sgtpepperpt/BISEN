@@ -140,8 +140,11 @@ void SseIee::setup(char* data, int data_size) {
     printf("Finished Setup!\n");
 }
 
-
 void SseIee::add(char* data, int data_len) {
+    #ifdef VERBOSE
+    printf("Started add in IEE!\n");
+    #endif
+
     // read buffer
     int pos = 1;
     while(pos < data_len) {
@@ -170,7 +173,7 @@ void SseIee::add(char* data, int data_len) {
         free(kW);
 
         //calculate index value enc_data
-        int enc_data_size = sizeof(int)+crypto->symBlocksize;
+        int enc_data_size = sizeof(int) + crypto->symBlocksize;
         unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * enc_data_size);
         enc_data_size = crypto->encryptSymmetric((unsigned char*)&d, sizeof(int), enc_data, crypto->get_kEnc());
 
@@ -183,8 +186,10 @@ void SseIee::add(char* data, int data_len) {
         free(label);
         free(enc_data);
     }
-
-    printf("Finished Add!\n");
+    
+    #ifdef VERBOSE
+    printf("Finished add in IEE!\n");
+    #endif
 }
 
 void SseIee::get_docs_from_server(vector<iee_token> &query, unsigned count_words) {
@@ -226,12 +231,8 @@ void SseIee::get_docs_from_server(vector<iee_token> &query, unsigned count_words
     #endif
 
     // request the documents from the server
-    for(unsigned i = 0; i < query.size(); i++) {
+    for(unsigned i = 0; i < count_words; i++) {
         iee_token *tkn = rand[i];
-
-        // ignore operators for document searching
-        if(tkn == NULL)
-            continue;
         
         //cout << "counter for " << tkn->word << " is " << tkn->counter << endl;
         if(tkn->counter == 0) {
@@ -267,10 +268,10 @@ void SseIee::get_docs_from_server(vector<iee_token> &query, unsigned count_words
         for (int i = 0; i < tkn->counter; i++)
             for (int j = 0; j < crypto->fBlocksize; j++)
                 addToArr(&(labels[i][j]), sizeof(unsigned char), buff, &pos);
-cout << "aaaaaaa" << endl;
+
         socketSend(writeServerPipe, buff, len);
         free(buff);
-cout << "bbbbbbb" << endl;
+
         //decrypt query results
         len = tkn->counter * sizeof(int);
         buff = new char[len];
@@ -280,7 +281,7 @@ cout << "bbbbbbb" << endl;
         pos = 0;
         for (int i = 0; i < tkn->counter; i++) {
             socketReceive(readServerPipe, (char*)enc_data, crypto->symBlocksize);
-cout << "cccc" << endl;
+
             crypto->decryptSymmetric(data, enc_data, crypto->symBlocksize, crypto->get_kEnc());
             addToArr((char*)data, sizeof(int), buff, &pos);
             //cout << "recv ." << buff << "." << endl;
@@ -309,6 +310,10 @@ cout << "cccc" << endl;
         free(enc_data);
         free(data);
     }
+
+    #ifdef VERBOSE
+    printf("Got all docs from server!\n");
+    #endif
 }
 
 int SseIee::search(char* buffer, int query_size, char** output) {
@@ -373,8 +378,11 @@ int SseIee::search(char* buffer, int query_size, char** output) {
     //calculate boolean formula
     vec_int response_docs = evaluate(query, nDocs);
 
-    //send query results with kCom
-    // [BP] - Instead of encrypting with kCom and sending via pipe, it must simply be returned by SseIee in plaintext.
+    #ifdef VERBOSE
+    printf("Query Evaluated in IEE!\n");
+    #endif    
+
+    // return query results
     int output_size = size(response_docs) * sizeof(int);
     *output = new char[output_size];
     pos = 0;

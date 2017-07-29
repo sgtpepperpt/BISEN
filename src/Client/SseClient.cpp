@@ -109,7 +109,7 @@ int SseClient::add_words(int doc_id, set<string> words, char** data) {
         map<string,int>::iterator it = W->find(w);
         if (it != W->end())
             c = it->second + 1;
-            
+
         // update counter c
         (*W)[w] = c;
 
@@ -177,8 +177,6 @@ int SseClient::search(string query, char** data) {
 
             for (unsigned i = 0; i < tkn.word.size(); i++)
                 addToArr(&tkn.word[i], sizeof(char), (char*)*data, &pos);
-
-            //free(tkn.word); // no longer needed
 
             char term = '\0';
             addToArr(&term, sizeof(char), (char*)*data, &pos);

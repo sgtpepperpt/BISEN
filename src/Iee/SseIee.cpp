@@ -235,7 +235,7 @@ void SseIee::get_docs_from_server(vec_token &query, unsigned count_words) {
     // request the documents from the server
     for(unsigned i = 0; i < count_words; i++) {
         iee_token *tkn = rand[i];
-        
+
         //cout << "counter for " << tkn->word << " is " << tkn->counter << endl;
         if(tkn->counter == 0) {
             vec_int dummy;
@@ -247,16 +247,19 @@ void SseIee::get_docs_from_server(vec_token &query, unsigned count_words) {
         crypto->f(crypto->get_kF(), (unsigned char*)tkn->word, strlen(tkn->word), kW);
 
         //calculate relevant index positions
-        vector< vector<unsigned char> > labels (tkn->counter);
+        unsigned char** labels = (unsigned char**)malloc(sizeof(unsigned char*) * tkn->counter);
         unsigned char* l = (unsigned char*)malloc(sizeof(unsigned char) * crypto->fBlocksize);
         for (int c = 0; c < tkn->counter; c++) {
             crypto->f(kW, (unsigned char*)&c, sizeof(int), l);
-            vector<unsigned char> label (crypto->fBlocksize);
+            unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * crypto->fBlocksize);
+
             for (int i = 0; i < crypto->fBlocksize; i++)
                 label[i] = l[i];
+
             labels[c] = label;
             bzero(l, crypto->fBlocksize);
         }
+
         free(l);
         free(kW);
 
@@ -273,6 +276,10 @@ void SseIee::get_docs_from_server(vec_token &query, unsigned count_words) {
 
         socketSend(writeServerPipe, buff, len);
         free(buff);
+
+        for (int i = 0; i < tkn->counter; i++)
+            free(labels[i]);
+        free(labels);
 
         //decrypt query results
         len = tkn->counter * sizeof(int);

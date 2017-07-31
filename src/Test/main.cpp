@@ -14,6 +14,10 @@
 //#include "../Iee/SseIeeF.hpp"
 #include "../Definitions.h"
 #include "../Utils.h"
+#include <map>
+#include <iterator>
+
+//map<int, int> f; // DEBUGGING
 
 void printResults (vector<int> results) {
     #ifdef VERBOSE
@@ -22,10 +26,12 @@ void printResults (vector<int> results) {
         return;
     }
 
-    sort (results.begin(), results.end());
+    sort(results.begin(), results.end());
     for(unsigned i = 0; i < results.size(); i++)
         printf("%i ", results[i]);
+
     printf("\n");
+    //f[results.size()]++;
     #endif
 }
 
@@ -42,9 +48,7 @@ void f(
 int main(int argc, const char * argv[]) {
     setvbuf(stdout, NULL, _IONBF, 0);
 
-//    SseServer server;
-    //server.setup();
-
+    // init iee
     SseIee iee;
 
     SseClient client;
@@ -54,7 +58,7 @@ int main(int argc, const char * argv[]) {
     ////////////////////////////////////////////////////////////////////////////
     // SETUP ///////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    
+
     #ifdef VERBOSE
     printf("Starting IEE communication\n");
     #endif
@@ -66,12 +70,21 @@ int main(int argc, const char * argv[]) {
     const string base_dir = "../Test/parsed/";
     const int num_queries = 1000;
 
+    // random query parameters
+    const int size = 3; // size will be about between [size, size * 2]
+    const int not_prob = 40;
+    const int and_prob = 50;
+
     // get list of docs for test
     vector<string> doc_paths;
     client.listTxtFiles(base_dir, doc_paths);
 
+    ////////////////////////////////////////////////////////////////////////////
+    // UPDATE //////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////
+
     // add documents from the directory
-    set<string> all_words_set;
+    set<string> all_words_set; // for client-side random query generation only
     for(string doc : doc_paths){
         set<string> text = client.extractUniqueKeywords(base_dir + doc);
 
@@ -96,7 +109,7 @@ int main(int argc, const char * argv[]) {
     copy(all_words_set.begin(), all_words_set.end(), all_words.begin());
 
     for(unsigned i = 0; i < num_queries; i++) {
-        string query = client.generate_random_query(all_words);
+        string query = client.generate_random_query(all_words, size, not_prob, and_prob);
 
         #ifdef VERBOSE
         cout << "\n----------------------------\nquery: " << query << endl;
@@ -133,6 +146,9 @@ int main(int argc, const char * argv[]) {
 
         printResults(results);
     }
+
+    /*for (auto const& x : f)
+        cout << x.first << ':' << x.second << endl;*/
 
     return 0;
 }

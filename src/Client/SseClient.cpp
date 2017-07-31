@@ -266,14 +266,13 @@ string SseClient::get_random_segment(vector<string> segments) {
     return segments[crypto->spc_rand_uint_range(0, segments.size())];
 }
 
-string SseClient::generate_random_query(vector<string> all_words) {
-    const int lone_word_prob = 15;
-    const int not_prob = 40;
-    const int and_prob = 50;
+string SseClient::generate_random_query(vector<string> all_words, const int size, const int not_prob, const int and_prob) {
+    const int lone_word_prob = 50;
+    const int par_prob = 50;
 
     // generate small segments
     queue<string> segments;
-    for(int i = 0; i < 3; i++) {
+    for(int i = 0; i < size; i++) {
         int lone_word_rand = crypto->spc_rand_uint_range(0, 100);
 
         if(lone_word_rand < lone_word_prob) {
@@ -294,8 +293,8 @@ string SseClient::generate_random_query(vector<string> all_words) {
             string op = op_prob < and_prob ? " && " : " || ";
 
             // form either a simple, parenthesis or negated segment
-            int par_prob = crypto->spc_rand_uint_range(0, 100);
-            if(par_prob < 30) {
+            int par_prob_rand = crypto->spc_rand_uint_range(0, 100);
+            if(par_prob_rand < par_prob) {
                 int not_rand = crypto->spc_rand_uint_range(0, 100);
                 if(not_rand < not_prob)
                     segments.push("!(" + word1 + op + word2 + ")");
@@ -319,8 +318,8 @@ string SseClient::generate_random_query(vector<string> all_words) {
         string op = op_prob < and_prob  ? " && " : " || ";
 
         // form either a simple, parenthesis or negated segment
-        int par_prob = crypto->spc_rand_uint_range(0, 100);
-        if(par_prob < 30) {
+        int par_prob_rand = crypto->spc_rand_uint_range(0, 100);
+        if(par_prob_rand < par_prob) {
             int not_rand = crypto->spc_rand_uint_range(0, 100);
             if(not_rand < not_prob)
                 segments.push("!(" + seg1 + op + seg2 + ")");

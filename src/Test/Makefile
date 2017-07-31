@@ -6,10 +6,10 @@ SRC = ../Server/SseServer.cpp ../Client/ClientCrypt.cpp ../Client/EnglishAnalyze
 
 LIBS = -lcrypto -ldl -pthread
 
-CFLAGS = -Wno-unused-variable -Wno-misleading-indentation -Wno-unused-function -DVERBOSE
+CFLAGS = -Wno-unused-variable -Wno-misleading-indentation -Wno-unused-function
 
 main: main.cpp
-	g++ -g -Wall $(CFLAGS) -std=c++11 $(INC) -o main main.cpp $(SRC) ../Iee/SseIeeF.cpp $(LIBS)
+	g++ -g -Wall $(CFLAGS) -DVERBOSE -std=c++11 $(INC) -o main main.cpp $(SRC) ../Iee/SseIeeF.cpp $(LIBS)
 
 server: server.cpp
 	g++ -Ofast -Wall $(CFLAGS) -std=c++11 $(INC) -o server server.cpp $(SRC) $(LIBS)

@@ -58,12 +58,16 @@ SseServer::SseServer() {
             //setup
             case '1': {
                 I = new map<vector<unsigned char>,vector<unsigned char> >;
+                #ifdef VERBOSE
                 printf("Finished Setup!\n");
+                #endif
                 break;
             }
             // add
             case '2': {
+                #ifdef VERBOSE
                 printf("Started Add!\n");
+                #endif
                 const int l_size = 20;
                 unsigned char* l = new unsigned char[l_size];
                 socketReceive(readIeePipe, (char*)l, l_size);
@@ -77,12 +81,16 @@ SseServer::SseServer() {
                 delete[] d;
                 
                 (*I)[l_vector] = d_vector;
+                #ifdef VERBOSE
                 printf("Finished Add!\n");
+                #endif
                 break;
             }
             // search - get index positions
             case '3': {
+                #ifdef VERBOSE
                 printf("Started Search 1st part!\n");
+                #endif
                 char buff[sizeof(int)];
                 socketReceive(readIeePipe, buff, sizeof(int));
                 int pos = 0;
@@ -97,7 +105,9 @@ SseServer::SseServer() {
                     for (unsigned j = 0; j < enc_d.size(); j++)
                         socketSend(writeIeePipe, (char*)&enc_d[j], sizeof(unsigned char));
                 }
+                #ifdef VERBOSE
                 printf("Finished Search 1st part!\n");
+                #endif
                 break;
             }
             // search - send response to client
@@ -118,7 +128,9 @@ SseServer::SseServer() {
                 
                 close(sockfd);
                 delete[] data;
+                #ifdef VERBOSE
                 printf("Finished Search 2nd part!\n");
+                #endif
                 break;
             }
             default:

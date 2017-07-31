@@ -9,11 +9,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../Client/SseClient.hpp"
-#include "../Server/SseServer.hpp"
 #include "../Iee/SseIee.hpp"
 //#include "../Iee/SseIeeF.hpp"
-#include "../Definitions.h"
-#include "../Utils.h"
+//#include "../Definitions.h"
+//#include "../Utils.h"
 //#include <map>
 
 //map<int, int> f; // DEBUGGING
@@ -71,8 +70,8 @@ int main(int argc, const char * argv[]) {
 
     // random query parameters
     const int size = 2; // size will be about between [size, size * 2]
-    const int not_prob = 25;
-    const int and_prob = 10;
+    const int not_prob = 5;
+    const int and_prob = 30;
 
     // get list of docs for test
     vector<string> doc_paths;

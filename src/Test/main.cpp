@@ -14,8 +14,7 @@
 //#include "../Iee/SseIeeF.hpp"
 #include "../Definitions.h"
 #include "../Utils.h"
-#include <map>
-#include <iterator>
+//#include <map>
 
 //map<int, int> f; // DEBUGGING
 
@@ -71,9 +70,9 @@ int main(int argc, const char * argv[]) {
     const int num_queries = 1000;
 
     // random query parameters
-    const int size = 3; // size will be about between [size, size * 2]
-    const int not_prob = 40;
-    const int and_prob = 50;
+    const int size = 2; // size will be about between [size, size * 2]
+    const int not_prob = 25;
+    const int and_prob = 10;
 
     // get list of docs for test
     vector<string> doc_paths;
@@ -112,7 +111,7 @@ int main(int argc, const char * argv[]) {
         string query = client.generate_random_query(all_words, size, not_prob, and_prob);
 
         #ifdef VERBOSE
-        cout << "\n----------------------------\nquery: " << query << endl;
+        cout << "\n----------------------------\nQuery: " << query << endl;
         #endif
 
         char* data;
@@ -135,7 +134,7 @@ int main(int argc, const char * argv[]) {
 
         #ifdef VERBOSE
         printf("\n***** CLIENT RESULT *****\n");
-        printf("number of docs: %d\n", nDocs);
+        printf("Number of docs: %d\n", nDocs);
         #endif
 
         vector<int> results(nDocs);
@@ -147,8 +146,8 @@ int main(int argc, const char * argv[]) {
         printResults(results);
     }
 
-    /*for (auto const& x : f)
-        cout << x.first << ':' << x.second << endl;*/
+    //for (auto const& x : f)
+    //    cout << x.first << ':' << x.second << endl;
 
     return 0;
 }

@@ -68,6 +68,10 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             res.docs = set_inter;
 
             push_back(&eval_stack, res);
+
+            // free memory
+            destroy(&and1);
+            destroy(&and2);
         } else if(tkn.type == '|') {
             if (size(eval_stack) < 2)
                 printf("Insufficient operands for OR!\n");
@@ -94,6 +98,10 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             res.docs = set_un;
 
             push_back(&eval_stack, res);
+
+            // free memory
+            destroy(&or1);
+            destroy(&or2);
         } else if(tkn.type == '!') {
             if (size(eval_stack) < 1)
                 printf("Insufficient operands for NOT!\n");
@@ -115,6 +123,9 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             res.docs = set_diff;
             
             push_back(&eval_stack, res);
+
+            // free memory
+            destroy(&negate);
         } else {
             push_back(&eval_stack, tkn);
         }

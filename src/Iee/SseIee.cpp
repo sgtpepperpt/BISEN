@@ -422,6 +422,7 @@ int SseIee::search(char* buffer, int query_size, char** output) {
         addIntToArr(response_docs.array[i], *output, &pos);
     }
 
+    destroy(&query);
     destroy(&response_docs);
 
     #ifdef VERBOSE

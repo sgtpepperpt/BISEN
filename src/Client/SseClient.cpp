@@ -13,14 +13,14 @@ using namespace std;
 SseClient::SseClient() {
     // init data structures
     //openQueryResponseSocket();
-    init_crypt();
+    client_init_crypt();
     analyzer = new EnglishAnalyzer;
     W = new map<string,int>;    /**TODO persist W*/
     nDocs = 0;
 }
 
 SseClient::~SseClient() {
-    destroy_crypt();
+    client_destroy_crypt();
     delete analyzer;
     delete W;
     close(querySocket);
@@ -29,11 +29,11 @@ SseClient::~SseClient() {
 int SseClient::setup(char** data) {
     // get keys
     //unsigned char* kCom = crypto->getKcom();
-    unsigned char* kEnc = get_kEnc();
-    unsigned char* kF = get_kF();
+    unsigned char* kEnc = client_get_kEnc();
+    unsigned char* kF = client_get_kF();
 
     // pack the keys into a buffer
-    int data_size = sizeof(char) + 2 * sizeof(int) + symBlocksize + fBlocksize;
+    int data_size = sizeof(char) + 2 * sizeof(int) + client_symBlocksize + client_fBlocksize;
     *data = new char[data_size];
     
     char op = 'i';
@@ -47,14 +47,14 @@ int SseClient::setup(char** data) {
         addToArr(&kCom[i], sizeof(unsigned char), data, &pos);*/
 
     // add kEnc to buffer
-    addIntToArr(symBlocksize, *data, &pos);
-    for (int i = 0; i < symBlocksize; i++)
-        addToArr(&kEnc[i], sizeof(unsigned char), *data, &pos);
+    addIntToArr(client_symBlocksize, *data, &pos);
+    for (int i = 0; i < client_symBlocksize; i++)
+        addToArr(&client_kEnc[i], sizeof(unsigned char), *data, &pos);
 
     // add kF to buffer
-    addIntToArr(fBlocksize, *data, &pos);
-    for (int i = 0; i < fBlocksize; i++)
-        addToArr(&kF[i], sizeof(unsigned char), *data, &pos);
+    addIntToArr(client_fBlocksize, *data, &pos);
+    for (int i = 0; i < client_fBlocksize; i++)
+        addToArr(&client_kF[i], sizeof(unsigned char), *data, &pos);
 
     return data_size;
 }
@@ -260,7 +260,7 @@ void SseClient::listTxtFiles (std::string path, std::vector<std::string>& docs) 
 }
 
 string SseClient::get_random_segment(vector<string> segments) {
-    return segments[c_random_uint_range(0, segments.size())];
+    return segments[client_c_random_uint_range(0, segments.size())];
 }
 
 string SseClient::generate_random_query(vector<string> all_words, const int size, const int not_prob, const int and_prob) {
@@ -270,12 +270,12 @@ string SseClient::generate_random_query(vector<string> all_words, const int size
     // generate small segments
     queue<string> segments;
     for(int i = 0; i < size; i++) {
-        int lone_word_rand = c_random_uint_range(0, 100);
+        int lone_word_rand = client_c_random_uint_range(0, 100);
 
         if(lone_word_rand < lone_word_prob) {
             string word = get_random_segment(all_words);
 
-            int not_rand = c_random_uint_range(0, 100);
+            int not_rand = client_c_random_uint_range(0, 100);
             if(not_rand < not_prob)
                 segments.push("!" + word);
             else
@@ -286,13 +286,13 @@ string SseClient::generate_random_query(vector<string> all_words, const int size
             string word2 = get_random_segment(all_words);
 
             // choose operator
-            int op_prob = c_random_uint_range(0, 100);
+            int op_prob = client_c_random_uint_range(0, 100);
             string op = op_prob < and_prob ? " && " : " || ";
 
             // form either a simple, parenthesis or negated segment
-            int par_prob_rand = c_random_uint_range(0, 100);
+            int par_prob_rand = client_c_random_uint_range(0, 100);
             if(par_prob_rand < par_prob) {
-                int not_rand = c_random_uint_range(0, 100);
+                int not_rand = client_c_random_uint_range(0, 100);
                 if(not_rand < not_prob)
                     segments.push("!(" + word1 + op + word2 + ")");
                 else
@@ -311,13 +311,13 @@ string SseClient::generate_random_query(vector<string> all_words, const int size
         segments.pop();
 
         // choose operator
-        int op_prob = c_random_uint_range(0, 100);
+        int op_prob = client_c_random_uint_range(0, 100);
         string op = op_prob < and_prob  ? " && " : " || ";
 
         // form either a simple, parenthesis or negated segment
-        int par_prob_rand = c_random_uint_range(0, 100);
+        int par_prob_rand = client_c_random_uint_range(0, 100);
         if(par_prob_rand < par_prob) {
-            int not_rand = c_random_uint_range(0, 100);
+            int not_rand = client_c_random_uint_range(0, 100);
             if(not_rand < not_prob)
                 segments.push("!(" + seg1 + op + seg2 + ")");
             else

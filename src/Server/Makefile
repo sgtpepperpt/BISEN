@@ -1,5 +1,5 @@
 Server : Main.o SseServer.o
-	g++ ../Utils.cpp -o Server main.o SseServer.o -lcrypto -ldl -pthread
+	g++ ../Common/Utils.cpp -o Server main.o SseServer.o -lcrypto -ldl -pthread
 
 Debug : Main.debug SseServer.debug
 	g++ -o Server main.debug SseServer.debug -lcrypto -ldl -pthread

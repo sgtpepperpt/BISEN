@@ -1,30 +1,37 @@
-.PHONY : main
+IEE_DIR=../Iee
+CLIENT_DIR=../Client
+COMMON_DIR=../Common
 
-INC = -I../Server/ -I../Client/ -I../Iee/ -I../
+C_FLAGS= -Wall -g -Wno-unused-function -Wno-unused-variable -DVERBOSE
+CPP_FLAGS= $(C_FLAGS) -std=c++11
 
-SRC = ../Server/SseServer.cpp ../Client/ClientCrypt.c ../Client/EnglishAnalyzer.cpp ../Client/QueryParser.cpp ../Client/SseClient.cpp ../Utils.cpp
+.PHONY : clean main
 
-LIBS = -lsodium -ldl -pthread
+##
 
-CFLAGS = -Wno-unused-variable -Wno-unused-function
+main: main.cpp common.a iee.a client.a
+	g++ $(CPP_FLAGS) -o main main.cpp common.a iee.a client.a -lsodium-sgx
 
-main: main.cpp
-	g++ -g -Wall $(CFLAGS) -DVERBOSE -std=c++11 $(INC) -o main main.cpp $(SRC) $(LIBS)
+iee.a: $(IEE_DIR)/*.c
+	cd $(IEE_DIR) && gcc $(C_FLAGS) -c *.c
+	cd $(IEE_DIR)/util && gcc $(C_FLAGS) -c *.c
+	ar rcs iee.a $(IEE_DIR)/*.o $(IEE_DIR)/util/*.o
 
-Debug : Main.debug
-	g++ -o Test main.debug $(LIBS)
+client.a: $(CLIENT_DIR)/*.c $(CLIENT_DIR)/*.cpp
+	cd $(CLIENT_DIR) && gcc $(C_FLAGS) -c *.c
+	cd $(CLIENT_DIR) && g++ $(CPP_FLAGS) -c *.cpp
+	ar rcs client.a $(CLIENT_DIR)/*.o
 
-###############################################################################
+common.a: $(COMMON_DIR)/*.cpp
+	cd $(COMMON_DIR) && g++ $(CPP_FLAGS) -c *.cpp
+	ar rcs common.a $(COMMON_DIR)/*.o
 
-Main.o : main.cpp
-	g++ $(INC) -std=c++11 -pthread -c main.cpp
+##
 
-###############################################################################
-
-Test.debug : main.cpp
-	g++ -std=c++11 -pthread -g -O0 -c main.cpp -o main.debug
-
-clean :
-	rm -f main server main.o main.debug
-
-.PHONY: run clean
+clean:
+	@rm -f main storage.txt
+	@find . -name "*~" -exec rm {} \;
+	@find . -name "*.a" -exec rm {} \;
+	@find $(IEE_DIR) -name "*.o" -exec rm {} \;
+	@find $(CLIENT_DIR) -name "*.o" -exec rm {} \;
+	@find $(COMMON_DIR) -name "*.o" -exec rm {} \;

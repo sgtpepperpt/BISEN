@@ -2,10 +2,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "types.h"
-#include "src/SseIee.h"
-
 #include <string.h>
+#include "types.h"
+#include "../Iee/SseIee.h"
+
 /*
 extern void f(
   bytes *out,

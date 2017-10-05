@@ -371,12 +371,12 @@ int search(char* buffer, int query_size, char** output) {
 
     #ifdef VERBOSE
     printf("parsed: ");
-    for(unsigned i = 0; i < size(query); i++) {
+    for(unsigned i = 0; i < vt_size(query); i++) {
         iee_token x = query.array[i];
         if(x.type == WORD_TOKEN) {
             printf("%s (", x.word);
-            for(unsigned i = 0; i < size(x.docs); i++) {
-                if(i < size(x.docs) - 1)
+            for(unsigned i = 0; i < vi_size(x.docs); i++) {
+                if(i < vi_size(x.docs) - 1)
                     printf("%i,", x.docs.array[i]);
                 else
                     printf("%i); ", x.docs.array[i]);

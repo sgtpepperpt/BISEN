@@ -2,8 +2,8 @@
 #define QueryParser_hpp
 
 #include "EnglishAnalyzer.h"
-#include "../Utils.h"
-#include "../Definitions.h"
+#include "../Common/Utils.h"
+#include "../Common/Definitions.h"
 
 class QueryParser {
 private:

@@ -8,46 +8,46 @@
 
 #include "ClientCrypt.h"
 
-void init_crypt() {
+void client_init_crypt() {
     // generate kF and Kenc
-    kEnc = new unsigned char[symBlocksize];
-    c_random(kEnc, symBlocksize);
+    client_kEnc = (unsigned char *)malloc(client_symBlocksize * sizeof(unsigned char *));
+    client_c_random(client_kEnc, client_symBlocksize);
 
-    kF = new unsigned char[fBlocksize];
-    c_random(kF, fBlocksize);
+    client_kF = (unsigned char *)malloc(client_fBlocksize * sizeof(unsigned char *));
+    client_c_random(client_kF, client_fBlocksize);
 }
 
-void destroy_crypt() {
-    free(kEnc);
-    free(kF);
+void client_destroy_crypt() {
+    free(client_kEnc);
+    free(client_kF);
 }
 
-unsigned char* get_kF() {
-    return kF;
+unsigned char* client_get_kF() {
+    return client_kF;
 }
 
-unsigned char* get_kEnc() {
-    return kEnc;
+unsigned char* client_get_kEnc() {
+    return client_kEnc;
 }
 
-void c_random(unsigned char *buf, unsigned long long len)
+void client_c_random(unsigned char *buf, unsigned long long len)
 {
     randombytes_buf(buf, sizeof(unsigned char)*len);
 }
 
-unsigned int c_random_uint() {
+unsigned int client_c_random_uint() {
     return randombytes_random();
 }
 
-unsigned int c_random_uint_range(int min, int max) {
+unsigned int client_c_random_uint_range(int min, int max) {
     if(max < min)
-        return max + (c_random_uint() % (int)(min - max));
+        return max + (client_c_random_uint() % (int)(min - max));
 
-    return min + (c_random_uint() % (int)(max - min));
+    return min + (client_c_random_uint() % (int)(max - min));
 }
 
 // -1 failure, 0 ok
-int c_encrypt(
+int client_c_encrypt(
   unsigned char *ciphertext, // message_len + C_EXPBYTES
   const unsigned char *message, // message_len
   unsigned long long message_len,
@@ -61,7 +61,7 @@ int c_encrypt(
 }
 
 // -1 failure, 0 ok
-int c_decrypt(
+int client_c_decrypt(
   unsigned char *decrypted, // ciphertext_len - C_EXPBYTES
   const unsigned char *ciphertext, // ciphertext_len
   unsigned long long ciphertext_len,
@@ -75,7 +75,7 @@ int c_decrypt(
 }
 
 // -1 failure, 0 ok
-int c_hmac(
+int client_c_hmac(
   unsigned char *out, // H_BYTES
   const unsigned char *in, // inlen
   unsigned long long inlen,
@@ -86,7 +86,7 @@ int c_hmac(
 }
 
 // -1 failure, 0 ok
-int c_hmac_verify(const unsigned char *h, const unsigned char *in, unsigned long long inlen, const unsigned char *k)
+int client_c_hmac_verify(const unsigned char *h, const unsigned char *in, unsigned long long inlen, const unsigned char *k)
 {
   return crypto_auth_hmacsha256_verify(h, in, inlen, k);
 }

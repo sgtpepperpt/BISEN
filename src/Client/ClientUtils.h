@@ -40,8 +40,8 @@
 #include <mach/mach.h>
 #endif
 
-#include "../Definitions.h"
-#include "../Utils.h"
+#include "../Common/Definitions.h"
+#include "../Common/Utils.h"
 
 // CLIENT TOKEN DEFINITIONS
 // client tokens do not need the doc vector, as the iee ones do

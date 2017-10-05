@@ -18,7 +18,7 @@
 #include <netdb.h>
 #include <string.h>
 
-#include "../Definitions.h"
-#include "../Utils.h"
+#include "../Common/Definitions.h"
+#include "../Common/Utils.h"
 
 #endif /* ServerUtils_hpp */

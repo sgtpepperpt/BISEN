@@ -18,28 +18,33 @@
 #define H_KEYSIZE crypto_auth_hmacsha256_KEYBYTES
 #define H_BYTES crypto_auth_hmacsha256_BYTES
 
-const int symBlocksize = 16;
-const int fBlocksize = 32;
+#ifdef _cplusplus
+extern "C" {
+#error
+#endif
+
+const int client_symBlocksize = 16;
+const int client_fBlocksize = 32;
 
 // keys sent by the client
-static unsigned char* kEnc;
-static unsigned char* kF;
+static unsigned char* client_kEnc;
+static unsigned char* client_kF;
 
-void init_crypt();
-void destroy_crypt();
+void client_init_crypt();
+void client_destroy_crypt();
 
-unsigned char* get_kF();
-unsigned char* get_kEnc();
+unsigned char* client_get_kF();
+unsigned char* client_get_kEnc();
 
 // RANDOM FUNCTIONS
-void c_random(unsigned char *buf, unsigned long long len);
-unsigned int c_random_uint();
-unsigned int c_random_uint_range(int min, int max);
+void client_c_random(unsigned char *buf, unsigned long long len);
+unsigned int client_c_random_uint();
+unsigned int client_c_random_uint_range(int min, int max);
 
 // CRYPTO FUNCTIONS
 // -1 failure, 0 ok
 
-int c_encrypt(
+int client_c_encrypt(
   unsigned char *ciphertext, // message_len + C_EXPBYTES
   const unsigned char *message, // message_len
   unsigned long long message_len,
@@ -47,7 +52,7 @@ int c_encrypt(
   const unsigned char *key // C_KEYSIZE
 );
 
-int c_decrypt(
+int client_c_decrypt(
   unsigned char *decrypted, // ciphertext_len - C_EXPBYTES
   const unsigned char *ciphertext, // ciphertext_len
   unsigned long long ciphertext_len,
@@ -55,18 +60,22 @@ int c_decrypt(
   const unsigned char *key // C_KEYSIZE
 );
 
-int c_hmac(
+int client_c_hmac(
   unsigned char *out, // H_BYTES
   const unsigned char *in, // inlen
   unsigned long long inlen,
   const unsigned char *k // H_KEYSIZE
 );
 
-int c_hmac_verify(
+int client_c_hmac_verify(
   const unsigned char *h, // H_BYTES
   const unsigned char *in, // inlen
   unsigned long long inlen,
   const unsigned char *k // H_KEYSIZE
 );
+
+#ifdef _cplusplus
+}
+# endif
 
 #endif /* ClientCrypt_h */

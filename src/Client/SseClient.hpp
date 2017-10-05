@@ -12,10 +12,14 @@
 #ifndef SseClient_hpp
 #define SseClient_hpp
 
-#include "../Utils.h"
+#include "../Common/Utils.h"
+#include "../Common/Definitions.h"
 #include "EnglishAnalyzer.h"
-#include "ClientCrypt.h"
 #include "QueryParser.hpp"
+
+extern "C" {
+    #include "ClientCrypt.h"
+}
 
 using namespace std;
 

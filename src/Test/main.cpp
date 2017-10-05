@@ -1,21 +1,27 @@
 //
 //  main.cpp
-//  BooleanSSE (it's BISEN now)
+//  BISEN
 //
-//  Created by Bernardo Ferreira on 16/11/16.
+//  Created by Bernardo Ferreira and Guilherme Borges.
 //  Copyright © 2016 Bernardo Ferreira. All rights reserved.
 //
 
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
-#include "../Client/SseClient.hpp"
-//#include "../Iee/SseIee.hpp"
-//#include "../Iee/SseIeeF.hpp"
-//#include "../Definitions.h"
-//#include "../Utils.h"
-//#include <map>
+#include <assert.h>
+#include <string.h>
 
-//map<int, int> f; // DEBUGGING
+#include "types.h"
+#include "../Common/Utils.h"
+extern "C" {
+#include "../Iee/SseIee.h"
+}
+#include "../Client/SseClient.hpp"
+
+// DEBUGGING
+//#include <map>
+//map<int, int> f;
 
 void printResults (vector<int> results) {
     #ifdef VERBOSE
@@ -47,7 +53,7 @@ int main(int argc, const char * argv[]) {
     setvbuf(stdout, NULL, _IONBF, 0);
 
     // init iee
-    //SseIee iee;
+    init_pipes();
 
     SseClient client;
     char* data;

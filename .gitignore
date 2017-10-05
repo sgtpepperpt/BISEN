@@ -1,5 +1,7 @@
-src/Test/enron
-src/Test/parsed
+src/Data/enron
+src/Data/parsed
+
+!.gitkeep
 
 # Xcode
 #
@@ -30,6 +32,7 @@ xcuserdata
 src/Client/Client
 src/Server/Server
 src/Iee/Iee
+src/Iee/main
 src/Test/Test
 src/Test/main
 src/Test/server

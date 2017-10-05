@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../Client/SseClient.hpp"
-#include "../Iee/SseIee.hpp"
+//#include "../Iee/SseIee.hpp"
 //#include "../Iee/SseIeeF.hpp"
 //#include "../Definitions.h"
 //#include "../Utils.h"
@@ -47,7 +47,7 @@ int main(int argc, const char * argv[]) {
     setvbuf(stdout, NULL, _IONBF, 0);
 
     // init iee
-    SseIee iee;
+    //SseIee iee;
 
     SseClient client;
     char* data;
@@ -62,10 +62,10 @@ int main(int argc, const char * argv[]) {
     #endif
 
     char* output;
-    int output_size = iee.f(data, data_size, &output);
+    int output_size = 0;//iee.f(data, data_size, &output);
     //size_t output_size; f(&output, &output_size, 0, data, data_size);
 
-    const string base_dir = "../Test/parsed/";
+    const string base_dir = "../Data/parsed/";
     const int num_queries = 1000;
 
     // random query parameters
@@ -91,7 +91,7 @@ int main(int argc, const char * argv[]) {
         int data_size = client.add_new_document(text, &data);
 
         // int SseIee::f(char* data, int data_size, char* output)
-        output_size = iee.f(data, data_size, &output);
+        output_size = 0;//iee.f(data, data_size, &output);
         //f(&output, &output_size, 0, data, data_size);
 
         // add all new words to a set, used later to generate queries
@@ -121,7 +121,7 @@ int main(int argc, const char * argv[]) {
         #endif
 
         // int SseIee::f(char* data, int data_size, char* output)
-        output_size = iee.f(data, data_size, &output);
+        output_size = 0;//iee.f(data, data_size, &output);
         //f(&output, &output_size, 0, data, data_size);
 
         #ifdef VERBOSE

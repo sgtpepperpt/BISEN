@@ -1,6 +1,6 @@
 #include "vec_token.h"
 
-void init(vec_token* v, int max_size) {
+void vt_init(vec_token* v, int max_size) {
     v->counter = 0;
     v->max_size = max_size;
 
@@ -8,7 +8,7 @@ void init(vec_token* v, int max_size) {
     v->array = (iee_token*) malloc(sizeof(iee_token) * v->max_size);
 }
 
-void grow(vec_token* v) {
+void vt_grow(vec_token* v) {
     // allocate a new array and copy the elements
     iee_token* n = (iee_token*) malloc(sizeof(iee_token) * v->max_size * 2);
     for(int i = 0; i < v->max_size; i++)
@@ -21,27 +21,27 @@ void grow(vec_token* v) {
     v->array = n;
 }
 
-void destroy(vec_token* v) {
+void vt_destroy(vec_token* v) {
     free(v->array);
 }
 
-void push_back(vec_token* v, iee_token e) {
+void vt_push_back(vec_token* v, iee_token e) {
     if(v->counter == v->max_size)
-        grow(v);
+        vt_grow(v);
 
     v->array[v->counter++] = e;
 }
 
-void pop_back(vec_token* v) {
+void vt_pop_back(vec_token* v) {
     if(v->counter > 0)
         v->counter--;
 }
 
-iee_token peek_back(vec_token v) {
+iee_token vt_peek_back(vec_token v) {
     return v.array[v.counter - 1];
 }
 
-unsigned size(vec_token v) {
+unsigned vt_size(vec_token v) {
     return v.counter;
 }
 

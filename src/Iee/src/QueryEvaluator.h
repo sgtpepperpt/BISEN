@@ -1,9 +1,8 @@
 #ifndef QueryEvaluator
 #define QueryEvaluator
 
-#include "IeeUtils.h"
-#include "vec_int.h"
-#include "vec_token.h"
+#include "util/vec_int.h"
+#include "util/vec_token.h"
 
 // this function takes a reverse-polish notation boolean expression
 // of text documents and evaluates it, returning the set of documents

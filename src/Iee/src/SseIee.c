@@ -16,61 +16,11 @@
  -> Pipe connections will thus only be required for Iee->Server and Server->Iee. 
 */
 
-#include "SseIee.hpp"
+#include "SseIee.h"
 
-using namespace std;
+const char* pipeDir = "/tmp/BooleanSSE/";
 
-const char* SseIee::pipeDir = "/tmp/BooleanSSE/";
-// [BP] - Must receive a message, which will be either two keys (for the setup), or an Add/Search command.
-SseIee::SseIee() {
-    crypto = new IeeCrypt;
-    init_pipes();
-}
-
-// ponto de entrada do IEE
-// enc_output deve ser NULL
-int SseIee::process(char* data, int data_size, char** output) {
-    //char* plaintext = new char[ciphertext_size];
-    //const int plaintext_size = decrypt_data(plaintext, ciphertext, ciphertext_size);
-    
-    const int output_size = f(data, data_size, output);
-    //delete[] plaintext;
-    
-    /*const int enc_output_size = output_size + crypto->symBlocksize;
-    enc_output = new char[enc_output_size];
-    return crypto->encryptSymmetric((unsigned char*)output, output_size, (unsigned char*)enc_output, crypto->get_kCom());*/
-    return output_size;
-}
-
-int SseIee::f(char* data, int data_size, char** output) {
-    //setup operation
-    if(data[0] == 'i')
-        setup(data, data_size);
-    //add / update operation
-    else if (data[0] == 'a')
-        add(data, data_size);
-    //search operation
-    else if (data[0] == 's')
-        return search(data, data_size, output);
-        
-    return -1;
-}
-
-/*int SseIee::decrypt_data(char* plaintext, char* ciphertext, int ciphertext_size) {
-    if(crypto->hasStoredKcom()) {
-        return crypto->decryptSymmetric((unsigned char*)plaintext, (unsigned char*)ciphertext, ciphertext_size, crypto->get_kCom());
-    } else {
-        return crypto->decryptPublic((unsigned char*)plaintext, (unsigned char*)ciphertext, ciphertext_size);
-    }
-}*/
-
-SseIee::~SseIee() {
-    crypto->~IeeCrypt();
-    close(readServerPipe);
-    close(writeServerPipe);
-}
-
-void SseIee::init_pipes() {
+void init_pipes() {
     //init pipe directory
     if(mkdir(pipeDir, 0770) == -1)
         if(errno != EEXIST)
@@ -104,11 +54,38 @@ void SseIee::init_pipes() {
     printf("Finished IEE init! Gonna start listening for client requests through bridge!\n");
 }
 
+void destroy_pipes() {
+    close(readServerPipe);
+    close(writeServerPipe);
+}
 
-void SseIee::setup(char* data, int data_size) {
-    // [BP] - Decryption is no longer necessary, neither is storeKcom.
-    //vector<unsigned char> data = crypto->decryptPublic(enc_data, enc_data_size);
+// ponto de entrada do IEE
+// enc_output deve ser NULL
+int process(char* data, int data_size, char** output) {
+    //char* plaintext = new char[ciphertext_size];
+    //const int plaintext_size = decrypt_data(plaintext, ciphertext, ciphertext_size);
+    
+    const int output_size = f(data, data_size, output);
+    //delete[] plaintext;
 
+    return output_size;
+}
+
+int f(char* data, int data_size, char** output) {
+    //setup operation
+    if(data[0] == 'i')
+        setup(data, data_size);
+    //add / update operation
+    else if (data[0] == 'a')
+        add(data, data_size);
+    //search operation
+    else if (data[0] == 's')
+        return search(data, data_size, output);
+
+    return -1;
+}
+
+void setup(char* data, int data_size) {
     int pos = 1;
 
     // read kCom
@@ -131,7 +108,7 @@ void SseIee::setup(char* data, int data_size) {
     printf("\n");*/
 
     // [BP] - Keys will be given by the client (as input message)
-    crypto->setKeys(kEnc, kF);
+    setKeys(kEnc, kF);
 
     //tell server to init index I
     char op = '1';
@@ -140,7 +117,7 @@ void SseIee::setup(char* data, int data_size) {
     printf("Finished Setup!\n");
 }
 
-void SseIee::add(char* data, int data_len) {
+void add(char* data, int data_len) {
     #ifdef VERBOSE
     printf("Started add in IEE!\n");
     #endif
@@ -166,36 +143,40 @@ void SseIee::add(char* data, int data_len) {
         // guarantee string is terminated
         word[MAX_WORD_SIZE - 1] = '\0';
 
-        //calculate key kW
-        unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * crypto->fBlocksize);
-        crypto->f(crypto->get_kF(), (unsigned char*)word, strlen(word), kW);
+        //calculate key kW (with hmac sha256)
+        unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * fBlocksize);
+        c_hmac(kW, (unsigned char*)word, strlen(word), get_kF());
 
         //calculate index position label
-        unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * crypto->fBlocksize);
-        crypto->f(kW, (unsigned char*)&c, sizeof(int), label);
+        unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * fBlocksize);
+        c_hmac(label, (unsigned char*)&c, sizeof(int), kW);
         free(kW);
 
         //calculate index value enc_data
-        int enc_data_size = sizeof(int) + crypto->symBlocksize;
+        int enc_data_size = sizeof(int) + crypto_secretbox_MACBYTES;
+
+        unsigned char* nonce = (unsigned char*)malloc(sizeof(char)*C_NONCESIZE);
+        for(int i= 0; i < C_NONCESIZE; i++) nonce[i] = 0x00;
+
         unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * enc_data_size);
-        enc_data_size = crypto->encryptSymmetric((unsigned char*)&d, sizeof(int), enc_data, crypto->get_kEnc());
+        /*enc_data_size = */c_encrypt(enc_data, (unsigned char*)&d, sizeof(int), nonce, get_kEnc());
 
         //send label and enc_data to server
         char op = '2';
         socketSend(writeServerPipe, &op, sizeof(char));
-        socketSend(writeServerPipe, (char*)label, crypto->fBlocksize);
+        socketSend(writeServerPipe, (char*)label, fBlocksize);
         socketSend(writeServerPipe, (char*)enc_data, enc_data_size);
 
         free(label);
         free(enc_data);
     }
-    
+
     #ifdef VERBOSE
     printf("Finished add in IEE!\n");
     #endif
 }
 
-void SseIee::get_docs_from_server(vec_token &query, unsigned count_words) {
+void get_docs_from_server(vec_token *query, unsigned count_words) {
     #ifdef VERBOSE
     printf("Requesting docs from server!\n");
     #endif
@@ -206,9 +187,9 @@ void SseIee::get_docs_from_server(vec_token &query, unsigned count_words) {
         rand[i] = NULL;
 
     // randomly fill the array with the tokens we need
-    for(unsigned i = 0; i < size(query); i++) {
+    for(unsigned i = 0; i < vt_size(*query); i++) {
         // ignore non-word tokens
-        if(query.array[i].type != WORD_TOKEN)
+        if(query->array[i].type != WORD_TOKEN)
             continue;
 
         /*for(unsigned ii = 0; ii < count_words; ii++) {
@@ -222,10 +203,10 @@ void SseIee::get_docs_from_server(vec_token &query, unsigned count_words) {
         // choose a random unoccupied position from the rand array
         int pos;
         do {
-            pos = spc_rand_uint_range(0, count_words);
+            pos = c_random_uint_range(0, count_words);
         } while(rand[pos] != NULL);
 
-        rand[pos] = &query.array[i];
+        rand[pos] = &(*query).array[i];
     }
 
     #ifdef VERBOSE
@@ -243,35 +224,35 @@ void SseIee::get_docs_from_server(vec_token &query, unsigned count_words) {
         }
 
         //calculate key kW
-        unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * crypto->fBlocksize);
-        crypto->f(crypto->get_kF(), (unsigned char*)tkn->word, strlen(tkn->word), kW);
+        unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * fBlocksize);
+        c_hmac(kW, (unsigned char*)tkn->word, strlen(tkn->word), get_kF());
 
         //calculate relevant index positions
         unsigned char** labels = (unsigned char**)malloc(sizeof(unsigned char*) * tkn->counter);
-        unsigned char* l = (unsigned char*)malloc(sizeof(unsigned char) * crypto->fBlocksize);
+        unsigned char* l = (unsigned char*)malloc(sizeof(unsigned char) * fBlocksize);
         for (int c = 0; c < tkn->counter; c++) {
-            crypto->f(kW, (unsigned char*)&c, sizeof(int), l);
-            unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * crypto->fBlocksize);
+            c_hmac(kW, (unsigned char*)&c, sizeof(int), l);
+            unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * fBlocksize);
 
-            for (int i = 0; i < crypto->fBlocksize; i++)
+            for (int i = 0; i < fBlocksize; i++)
                 label[i] = l[i];
 
             labels[c] = label;
-            bzero(l, crypto->fBlocksize);
+            bzero(l, fBlocksize);
         }
 
         free(l);
         free(kW);
 
         //request index positions from server
-        int len = sizeof(char) + sizeof(int) + tkn->counter * crypto->fBlocksize;
+        int len = sizeof(char) + sizeof(int) + tkn->counter * fBlocksize;
         char* buff = (char*)malloc(sizeof(char)* len);
         char op = '3';
         int pos = 0;
         addToArr(&op, sizeof(char), buff, &pos);
         addIntToArr(tkn->counter, buff, &pos);
         for (int i = 0; i < tkn->counter; i++)
-            for (int j = 0; j < crypto->fBlocksize; j++)
+            for (int j = 0; j < fBlocksize; j++)
                 addToArr(&(labels[i][j]), sizeof(unsigned char), buff, &pos);
 
         socketSend(writeServerPipe, buff, len);
@@ -285,13 +266,16 @@ void SseIee::get_docs_from_server(vec_token &query, unsigned count_words) {
         len = tkn->counter * sizeof(int);
         buff = (char*)malloc(sizeof(char)* len);
 
-        unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char)* crypto->symBlocksize);
-        unsigned char* data = (unsigned char*)malloc(sizeof(unsigned char)* crypto->symBlocksize);
+        unsigned char* nonce = (unsigned char*)malloc(sizeof(char)*C_NONCESIZE);
+        for(int i= 0; i < C_NONCESIZE; i++) nonce[i] = 0x00;
+
+        unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char)* symBlocksize);
+        unsigned char* data = (unsigned char*)malloc(sizeof(unsigned char)* symBlocksize);
         pos = 0;
         for (int i = 0; i < tkn->counter; i++) {
-            socketReceive(readServerPipe, (char*)enc_data, crypto->symBlocksize);
+            socketReceive(readServerPipe, (char*)enc_data, symBlocksize);
 
-            crypto->decryptSymmetric(data, enc_data, crypto->symBlocksize, crypto->get_kEnc());
+            c_decrypt(data, enc_data, symBlocksize, nonce, get_kEnc());
             addToArr((char*)data, sizeof(int), buff, &pos);
 
             //cout << "recv ." << buff << "." << endl;
@@ -301,22 +285,22 @@ void SseIee::get_docs_from_server(vec_token &query, unsigned count_words) {
                 addIntToArr(d, buff, &pos);
             **/
 
-            bzero(enc_data, crypto->symBlocksize);
-            bzero(data, crypto->symBlocksize);
+            bzero(enc_data, symBlocksize);
+            bzero(data, symBlocksize);
         }
 
         // generate int vector
         const int nr_docs = len / sizeof(int);
         vec_int docs; // TODO check if this is always sorted
                       // else has to be sorted in evaluator; may not be needed for vec_int
-        init(&docs, nr_docs);
+        vi_init(&docs, nr_docs);
         pos = 0;
         for (int i = 0; i < nr_docs; i++) {
             int tmp = -1;
             memcpy(&tmp, buff + pos, sizeof(int));
             pos += sizeof(int);
 
-            push_back(&docs, tmp);
+            vi_push_back(&docs, tmp);
         }
 
         // insert result into token's struct
@@ -331,13 +315,13 @@ void SseIee::get_docs_from_server(vec_token &query, unsigned count_words) {
     #endif
 }
 
-int SseIee::search(char* buffer, int query_size, char** output) {
+int search(char* buffer, int query_size, char** output) {
     #ifdef VERBOSE
     printf("Search!\n");
     #endif
 
     vec_token query;
-    init(&query, DEFAULT_QUERY_TOKENS);
+    vt_init(&query, DEFAULT_QUERY_TOKENS);
 
     int nDocs = -1;
     int count_words = 0; // useful for get_docs_from_server
@@ -379,11 +363,11 @@ int SseIee::search(char* buffer, int query_size, char** output) {
             continue;
         }
 
-        push_back(&query, tkn);
+        vt_push_back(&query, tkn);
     }
 
     // get documents from uee
-    get_docs_from_server(query, count_words);
+    get_docs_from_server(&query, count_words);
 
     #ifdef VERBOSE
     printf("parsed: ");
@@ -397,10 +381,9 @@ int SseIee::search(char* buffer, int query_size, char** output) {
                 else
                     printf("%i); ", x.docs.array[i]);
             }
-        }
-
-        else
+        } else {
             printf("%c ", x.type);
+        }
     }
     printf("\n\n");
     #endif
@@ -413,91 +396,20 @@ int SseIee::search(char* buffer, int query_size, char** output) {
     #endif    
 
     // return query results
-    int output_size = size(response_docs) * sizeof(int);
+    int output_size = vi_size(response_docs) * sizeof(int);
     *output = (char*)malloc(sizeof(char) * output_size);
     pos = 0;
 
-    for(unsigned i = 0; i < size(response_docs); i++) {
+    for(unsigned i = 0; i < vi_size(response_docs); i++) {
         //cout <<  response_docs[i] << endl;
         addIntToArr(response_docs.array[i], *output, &pos);
     }
 
-    destroy(&query);
-    destroy(&response_docs);
+    vt_destroy(&query);
+    vi_destroy(&response_docs);
 
     #ifdef VERBOSE
     printf("Finished Search!\n");
     #endif
     return output_size;
 }
-
-//void initServer (int newsockfd) {
-//    int port = 5566;
-//    int srvr_fd;
-//    int clnt_fd;
-//    char buf[1];
-//    struct sockaddr_in addr;
-//
-//    srvr_fd = socket(PF_INET, SOCK_STREAM, 0);
-//
-//    if (srvr_fd == -1) {
-//        sgx_exit(NULL);
-//    }
-//
-//    memset(&addr, 0, sizeof(addr));
-//    addr.sin_family = AF_INET;
-//    addr.sin_port = htons(port);
-//    addr.sin_addr.s_addr = INADDR_ANY;
-//
-//    if (bind(srvr_fd, (struct sockaddr *)&addr, sizeof(addr)) != 0) {
-//        sgx_exit(NULL);
-//    }
-//
-//    if (listen(srvr_fd, 10) != 0) {
-//        sgx_exit(NULL);
-//    }
-//
-//    while (1) {
-//        struct sockaddr_in addr;
-//        socklen_t len = sizeof(addr);
-//        clnt_fd = accept(srvr_fd, (struct sockaddr *)&addr, &len);
-//        if (clnt_fd < 0) {
-//            puts("ERROR on accept\n");
-//            continue;
-//        }
-//
-//        memset(buf, 0, 1);
-//        //int n = sgx_read(clnt_fd, buf, 255);
-//        int n = recv(clnt_fd, buf, 1, 0);
-//        if (n < 0)
-//            puts("ERROR on read\n");
-//
-//        //puts(buf);
-//        switch (buf[0]) {
-//            case 'i':
-//                initServer(newsockfd);
-//                break;
-//            case 'a':
-//                receiveDocs(newsockfd);
-//                break;
-//            case 's':
-//                this->search(newsockfd);
-//                break;
-//            default:
-//                printf("unkonwn command!\n");
-//        }
-//
-//
-//        //n = sgx_write(clnt_fd, "Successfully received", 21);
-//        n = send(clnt_fd, "Successfully received", 21, 0);
-//        if (n < 0)
-//            puts("ERROR on write\n");
-//
-//        close(clnt_fd);
-//    }
-//
-//    close(srvr_fd);
-//
-//    sgx_exit(NULL);
-//}
-

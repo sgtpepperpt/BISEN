@@ -1,18 +1,15 @@
-.PHONY : main server
+.PHONY : main
 
 INC = -I../Server/ -I../Client/ -I../Iee/ -I../
 
-SRC = ../Server/SseServer.cpp ../Client/ClientCrypt.cpp ../Client/EnglishAnalyzer.cpp ../Client/QueryParser.cpp ../Client/SseClient.cpp ../Iee/IeeCrypt.cpp ../Iee/QueryEvaluator.cpp ../Iee/SseIee.cpp ../Utils.cpp ../Iee/vec_int.c ../Iee/vec_token.c
+SRC = ../Server/SseServer.cpp ../Client/ClientCrypt.c ../Client/EnglishAnalyzer.cpp ../Client/QueryParser.cpp ../Client/SseClient.cpp ../Utils.cpp
 
-LIBS = -lcrypto -ldl -pthread
+LIBS = -lsodium -ldl -pthread
 
-CFLAGS = -Wno-unused-variable -Wno-misleading-indentation -Wno-unused-function
+CFLAGS = -Wno-unused-variable -Wno-unused-function
 
 main: main.cpp
-	g++ -g -Wall $(CFLAGS) -DVERBOSE -std=c++11 $(INC) -o main main.cpp $(SRC) ../Iee/SseIeeF.cpp $(LIBS)
-
-server: server.cpp
-	g++ -Ofast -Wall $(CFLAGS) -std=c++11 $(INC) -o server server.cpp $(SRC) $(LIBS)
+	g++ -g -Wall $(CFLAGS) -DVERBOSE -std=c++11 $(INC) -o main main.cpp $(SRC) $(LIBS)
 
 Debug : Main.debug
 	g++ -o Test main.debug $(LIBS)

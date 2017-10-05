@@ -14,7 +14,7 @@
 
 #include "../Utils.h"
 #include "EnglishAnalyzer.h"
-#include "ClientCrypt.hpp"
+#include "ClientCrypt.h"
 #include "QueryParser.hpp"
 
 using namespace std;
@@ -23,7 +23,6 @@ class SseClient {
 
 protected:
     EnglishAnalyzer* analyzer;
-    ClientCrypt* crypto;
     QueryParser* parser;
     map<string,int>* W;
     int querySocket;

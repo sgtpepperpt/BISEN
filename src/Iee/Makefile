@@ -1,46 +1,20 @@
-Iee : Main.o SseIee.o IeeCrypt.o QueryEvaluator.o ../Utils.o ../vec_int.o
-	g++ -o Iee main.o SseIee.o IeeCrypt.o QueryEvaluator.o ../Utils.o ../vec_int.o -lcrypto -ldl -pthread
+.PHONY : clean
 
-Debug : Main.debug SseIee.debug IeeCrypt.debug QueryEvaluator.debug Common
-	g++ -o Iee main.debug SseIee.debug IeeCrypt.debug QueryEvaluator.debug -lcrypto -ldl -pthread
+##
 
-###############################################################################
+main1: main.c iee.a
+	gcc -Wall -g -o main main.c iee.a -lsodium-sgx
 
-../Utils.o : ../Utils.cpp
-	g++ -I.. -std=c++11 -pthread -c -o ../Utils.o ../Utils.cpp
-	
-../vec_int.o : ../vec_int.c
-	gcc -I.. -c -o ../vec_int.o ../vec_int.c
-	
-Main.o : main.cpp
-	g++ -I.. -std=c++11 -pthread -c main.cpp
+iee.a: src/*.c
+	cd src && gcc -Wall -g -I.. -c *.c
+	cd src/util && gcc -Wall -g -I../.. -c *.c
+	ar rcs iee.a src/*.o src/util/*.o
 
-SseIee.o : SseIee.cpp
-	g++ -I.. -std=c++11 -pthread -c SseIee.cpp
+##
 
-IeeCrypt.o : IeeCrypt.cpp
-	g++ -I.. -std=c++11 -pthread -c IeeCrypt.cpp
-	
-QueryEvaluator.o : QueryEvaluator.cpp
-	g++ -I.. -std=c++11 -pthread -c QueryEvaluator.cpp
+clean:
+	@rm -f main storage.txt
+	@find . -name "*~" -exec rm {} \;
+	@find . -name "*.o" -exec rm {} \;
+	@find . -name "*.a" -exec rm {} \;
 
-###############################################################################
-
-Main.debug : main.cpp
-	g++ -std=c++11 -pthread -g -O0 -c main.cpp -o main.debug
-
-SseIee.debug : SseIee.cpp
-	g++ -std=c++11 -pthread -g -O0 -c SseIee.cpp -o SseIee.debug
-
-IeeCrypt.debug : IeeCrypt.cpp
-	g++ -std=c++11 -pthread -g -O0 -c IeeCrypt.cpp -o IeeCrypt.debug
-	
-QueryEvaluator.debug : QueryEvaluator.debug
-	g++ -std=c++11 -pthread -g -O0 -c QueryEvaluator.cpp -o QueryEvaluator.debug
-
-###############################################################################
-
-clean :
-	rm -f Iee main.o SseIee.o IeeCrypt.o QueryEvaluator.o main.debug SseIee.debug IeeCrypt.debug QueryEvaluator.debug
-	
-.PHONY: run clean

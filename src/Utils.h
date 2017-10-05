@@ -45,10 +45,6 @@
 
 #define  LOGI(...)  fprintf(stdout,__VA_ARGS__)
 
-uint64_t pack754(long double f, unsigned bits, unsigned expbits);
-
-long double unpack754(uint64_t i, unsigned bits, unsigned expbits);
-
 struct timespec getTime();
 
 struct timespec diff(struct timespec start, struct timespec end);
@@ -59,30 +55,20 @@ std::string getHexRepresentation(const unsigned char * Bytes, size_t Length);
 
 void pee(const char *msg);
 
-int sendall(int s, char *buf, long len);
+int sendAll(int s, char *buf, long len);
+int receiveAll (int s, char* buff, long len);
 
 int connectAndSend (char* buff, long size);
 
 void socketSend (int sockfd, char* buff, long size);
-
 void socketReceive(int sockfd, char* buff, long size);
 
 //void socketReceiveAck(int sockfd);
 
-int receiveAll (int s, char* buff, long len);
-
 void addToArr (void* val, int size, char* arr, int* pos);
-
-void addIntToArr (int val, char* arr, int* pos);
-
-void addFloatToArr (float val, char* arr, int* pos);
-
 void readFromArr (void* val, int size, char* arr, int* pos);
 
+void addIntToArr (int val, char* arr, int* pos);
 int readIntFromArr (char* arr, int* pos);
-
-float readFloatFromArr (char* arr, int* pos);
-
-double readDoubleFromArr (char* arr, int* pos);
 
 #endif /* defined(__BooleanSSE__ClientUtils__) */

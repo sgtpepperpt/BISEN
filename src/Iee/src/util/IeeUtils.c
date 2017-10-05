@@ -12,28 +12,19 @@ void pee(const char *msg)
 {
     perror(msg);
     exit(0);
-}
+    /*unsigned char * m = (unsigned char *)malloc(32 * sizeof(char));
+    for(int i = 1; i < 32; i++)
+        m[i] = msg[i];
 
-int connectAndSend (char* buff, long size) {
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    struct hostent *server = gethostbyname(serverIP);
-    struct sockaddr_in serv_addr;
-    bzero((char *) &serv_addr, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    bcopy((char *)server->h_addr,(char*)&serv_addr.sin_addr.s_addr,server->h_length);
-    serv_addr.sin_port = htons(serverPort);
-    if (connect(sockfd,(struct sockaddr*) &serv_addr,sizeof(serv_addr)) < 0)
-        pee("ERROR connecting");
-    socketSend (sockfd, buff, size);
-    return sockfd;
+    fserver(NULL, 0,m, 32);*/
 }
 
 void socketSend (int sockfd, char* buff, long size) {
-    if (sendall(sockfd, buff, size) < 0)
+    if (sendAll(sockfd, buff, size) < 0)
         pee("ERROR writing to socket");
 }
 
-int sendall(int s, char *buf, long len)
+int sendAll(int s, char *buf, long len)
 {
     long total = 0;        // how many bytes we've sent
     long bytesleft = len; // how many we have left to send
@@ -70,13 +61,12 @@ void addToArr (void* val, int size, char* arr, int* pos) {
 }
 
 void addIntToArr (int val, char* arr, int* pos) {
-    uint32_t x = htonl(val);
-    addToArr (&x, sizeof(uint32_t), arr, pos);
+    addToArr (&val, sizeof(int), arr, pos);
 }
 
 void addFloatToArr (float val, char* arr, int* pos) {
-    uint64_t x = pack754_32(val);
-    addToArr (&x, sizeof(uint64_t), arr, pos);
+    long x = (long)val;
+    addToArr (&x, sizeof(long), arr, pos);
 }
 
 void readFromArr (void* val, int size, char* arr, int* pos) {
@@ -85,7 +75,17 @@ void readFromArr (void* val, int size, char* arr, int* pos) {
 }
 
 int readIntFromArr (char* arr, int* pos) {
-    uint32_t x;
-    readFromArr(&x, sizeof(uint32_t), arr, pos);
-    return ntohl(x);
+    int x;
+    readFromArr(&x, sizeof(int), arr, pos);
+    return x;
+}
+
+void *memcpy(void *dest, const void *src, size_t n)
+{
+    //http://clc-wiki.net/wiki/C_standard_library:string.h:memcpy#Implementation
+    char *dp = dest;
+    const char *sp = src;
+    while (n--)
+        *dp++ = *sp++;
+    return dest;
 }

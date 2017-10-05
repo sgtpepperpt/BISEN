@@ -1,6 +1,4 @@
-#include "QueryEvaluator.hpp"
-
-using namespace std;
+#include "QueryEvaluator.h"
 
 // receives a set of docs and returns its negation in the
 // full docs set; equivalent to the set differentiation:
@@ -12,19 +10,19 @@ vec_int get_not_docs(int nDocs, vec_int negate){
         count[i] = 0;
 
     // increase the count for elems in the original vector
-    for(unsigned i = 0; i < size(negate); i++) {
+    for(unsigned i = 0; i < vi_size(negate); i++) {
         count[negate.array[i]]++;
     }
 
     // all elements that have count == 0 are the negation of the set
     //vector<int> result(nDocs - negate.size());
     vec_int result;
-    init(&result, nDocs);
+    vi_init(&result, nDocs);
 
-    int res_count = 0;
+    //int res_count = 0;
     for(int i = 0; i < nDocs; i++) {
         if(count[i] == 0) {
-           push_back(&result, i);
+           vi_push_back(&result, i);
         }
     }
 
@@ -36,26 +34,26 @@ vec_int get_not_docs(int nDocs, vec_int negate){
 // the resulting set of docs
 vec_int evaluate(vec_token rpn_expr, int nDocs) {
     vec_token eval_stack;
-    init(&eval_stack, DEFAULT_QUERY_TOKENS);
+    vt_init(&eval_stack, DEFAULT_QUERY_TOKENS);
 
     iee_token tkn;
-    for(unsigned i = 0; i < size(rpn_expr); i++) {
+    for(unsigned i = 0; i < vt_size(rpn_expr); i++) {
         tkn = rpn_expr.array[i];
 
         if(tkn.type == '&') {
-            if (size(eval_stack) < 2)
+            if (vt_size(eval_stack) < 2)
                 printf("Insufficient operands for AND!\n");
                 //throw invalid_argument("Insufficient operands for AND!");
 
             // get both operands for AND
-            vec_int and1 = peek_back(eval_stack).docs;
-            pop_back(&eval_stack);
+            vec_int and1 = vt_peek_back(eval_stack).docs;
+            vt_pop_back(&eval_stack);
 
-            vec_int and2 = peek_back(eval_stack).docs;
-            pop_back(&eval_stack);
+            vec_int and2 = vt_peek_back(eval_stack).docs;
+            vt_pop_back(&eval_stack);
 
             // intersection of the two sets of documents
-            vec_int set_inter = vec_intersection(and1, and2);
+            vec_int set_inter = vi_vec_intersection(and1, and2);
             //set_intersection(and1.begin(), and1.end(), and2.begin(), and2.end(), back_inserter(set_inter));
 
             /*printf("intersection ");
@@ -67,25 +65,25 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             res.type = 'r';
             res.docs = set_inter;
 
-            push_back(&eval_stack, res);
+            vt_push_back(&eval_stack, res);
 
             // free memory
-            destroy(&and1);
-            destroy(&and2);
+            vi_destroy(&and1);
+            vi_destroy(&and2);
         } else if(tkn.type == '|') {
-            if (size(eval_stack) < 2)
+            if (vt_size(eval_stack) < 2)
                 printf("Insufficient operands for OR!\n");
                 //throw invalid_argument("Insufficient operands for OR!");
 
             // get both operands for OR
-            vec_int or1 = peek_back(eval_stack).docs;
-            pop_back(&eval_stack);
+            vec_int or1 = vt_peek_back(eval_stack).docs;
+            vt_pop_back(&eval_stack);
 
-            vec_int or2 = peek_back(eval_stack).docs;
-            pop_back(&eval_stack);
+            vec_int or2 = vt_peek_back(eval_stack).docs;
+            vt_pop_back(&eval_stack);
 
             // union of the two sets of documents
-            vec_int set_un = vec_union(or1, or2);
+            vec_int set_un = vi_vec_union(or1, or2);
             //set_union(or1.begin(), or1.end(), or2.begin(), or2.end(), back_inserter(set_un));
 
             /*printf("union ");
@@ -97,18 +95,18 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             res.type = 'r';
             res.docs = set_un;
 
-            push_back(&eval_stack, res);
+            vt_push_back(&eval_stack, res);
 
             // free memory
-            destroy(&or1);
-            destroy(&or2);
+            vi_destroy(&or1);
+            vi_destroy(&or2);
         } else if(tkn.type == '!') {
-            if (size(eval_stack) < 1)
+            if (vt_size(eval_stack) < 1)
                 printf("Insufficient operands for NOT!\n");
                 //throw invalid_argument("Insufficient operands for NOT!");
 
-            vec_int negate = peek_back(eval_stack).docs;
-            pop_back(&eval_stack);
+            vec_int negate = vt_peek_back(eval_stack).docs;
+            vt_pop_back(&eval_stack);
             
             // difference between all docs and the docs we don't want
             vec_int set_diff = get_not_docs(nDocs, negate);
@@ -122,20 +120,20 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             res.type = 'r';
             res.docs = set_diff;
             
-            push_back(&eval_stack, res);
+            vt_push_back(&eval_stack, res);
 
             // free memory
-            destroy(&negate);
+            vi_destroy(&negate);
         } else {
-            push_back(&eval_stack, tkn);
+            vt_push_back(&eval_stack, tkn);
         }
     }
 
-    if (size(eval_stack) != 1) {
-        printf("Wrong number of operands left: %u\n", size(eval_stack));
+    if (vt_size(eval_stack) != 1) {
+        printf("Wrong number of operands left: %u\n", vt_size(eval_stack));
         //string err = "Wrong number of operands left: " + eval_stack.size();c
         //throw invalid_argument(err);
     }
 
-    return peek_back(eval_stack).docs;
+    return vt_peek_back(eval_stack).docs;
 }

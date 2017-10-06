@@ -5,12 +5,14 @@ COMMON_DIR=../Common
 C_FLAGS= -Wall -g -Wno-unused-function -Wno-unused-variable -DVERBOSE
 CPP_FLAGS= $(C_FLAGS) -std=c++11
 
+LIBS= -lsodium-sgx
+
 .PHONY : clean main
 
 ##
 
 main: main.cpp common.a iee.a client.a
-	g++ $(CPP_FLAGS) -o main main.cpp common.a iee.a client.a -lsodium-sgx
+	g++ $(CPP_FLAGS) -o main main.cpp common.a iee.a client.a $(LIBS)
 
 iee.a: $(IEE_DIR)/*.c
 	cd $(IEE_DIR) && gcc $(C_FLAGS) -c *.c

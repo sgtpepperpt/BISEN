@@ -49,12 +49,12 @@ int SseClient::setup(char** data) {
     // add kEnc to buffer
     addIntToArr(client_symBlocksize, *data, &pos);
     for (int i = 0; i < client_symBlocksize; i++)
-        addToArr(&client_kEnc[i], sizeof(unsigned char), *data, &pos);
+        addToArr(&kEnc[i], sizeof(unsigned char), *data, &pos);
 
     // add kF to buffer
     addIntToArr(client_fBlocksize, *data, &pos);
     for (int i = 0; i < client_fBlocksize; i++)
-        addToArr(&client_kF[i], sizeof(unsigned char), *data, &pos);
+        addToArr(&kF[i], sizeof(unsigned char), *data, &pos);
 
     return data_size;
 }

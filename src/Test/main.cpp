@@ -23,6 +23,21 @@ extern "C" {
 //#include <map>
 //map<int, int> f;
 
+/*
+extern void f(
+  bytes *out,
+  size *out_len,
+  const label pid,
+  const bytes in,
+  const size in_len
+);
+*/
+extern int f_assert(
+  size test_index,
+  bytes out,
+  size outlen
+);
+
 void printResults (vector<int> results) {
     #ifdef VERBOSE
     if(!results.size()) {
@@ -38,16 +53,6 @@ void printResults (vector<int> results) {
     //f[results.size()]++;
     #endif
 }
-
-/*
-void f(
-  char **out,
-  size_t *outlen,
-  size_t pid,
-  char *in,
-  size_t inlen
-)
-*/
 
 int main(int argc, const char * argv[]) {
     setvbuf(stdout, NULL, _IONBF, 0);
@@ -67,9 +72,12 @@ int main(int argc, const char * argv[]) {
     printf("Starting IEE communication\n");
     #endif
 
-    char* output;
-    int output_size = 0;//iee.f(data, data_size, &output);
-    //size_t output_size; f(&output, &output_size, 0, data, data_size);
+    unsigned char ** output;
+    unsigned long long * output_size;printf("HI\n");
+    f(output, output_size, 0, (const unsigned char*) data, data_size);
+    for(unsigned long long i = 0; i < *output_size; i++)
+        printf("%02x", (*output)[i]);
+    printf("\n");
 
     const string base_dir = "../Data/parsed/";
     const int num_queries = 1000;
@@ -135,7 +143,7 @@ int main(int argc, const char * argv[]) {
         #endif
 
         //process results
-        const int nDocs = output_size / sizeof(int);
+        const int nDocs = (*output_size) / sizeof(int);
 
         #ifdef VERBOSE
         printf("\n***** CLIENT RESULT *****\n");

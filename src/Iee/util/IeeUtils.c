@@ -8,7 +8,7 @@
 
 #include "IeeUtils.h"
 
-void pee(const char *msg)
+void iee_pee(const char *msg)
 {
     perror(msg);
     exit(0);
@@ -19,12 +19,12 @@ void pee(const char *msg)
     fserver(NULL, 0,m, 32);*/
 }
 
-void socketSend (int sockfd, char* buff, long size) {
-    if (sendAll(sockfd, buff, size) < 0)
-        pee("ERROR writing to socket");
+void iee_socketSend (int sockfd, unsigned char* buff, long size) {
+    if (iee_sendAll(sockfd, buff, size) < 0)
+        iee_pee("ERROR writing to socket");
 }
 
-int sendAll(int s, char *buf, long len)
+int iee_sendAll(int s, unsigned char *buf, long len)
 {
     long total = 0;        // how many bytes we've sent
     long bytesleft = len; // how many we have left to send
@@ -40,47 +40,42 @@ int sendAll(int s, char *buf, long len)
     return n==-1||total!=len ? -1 : 0; // return -1 on failure, 0 on success
 }
 
-void socketReceive(int sockfd, char* buff, long size) {
-    if (receiveAll(sockfd, buff, size) < 0)
-        pee("ERROR reading from socket");
+void iee_socketReceive(int sockfd, unsigned char* buff, long size) {
+    if (iee_receiveAll(sockfd, buff, size) < 0)
+        iee_pee("ERROR reading from socket");
 }
 
-int receiveAll (int socket, char* buff, long len) {
+int iee_receiveAll (int socket, unsigned char* buff, long len) {
     int r = 0;
     while (r < len) {
         ssize_t n = read(socket,&buff[r],len-r);
-        if (n < 0) pee("ERROR reading from socket");
+        if (n < 0) iee_pee("ERROR reading from socket");
         r+=n;
     }
     return r;
 }
 
-void addToArr (void* val, int size, char* arr, int* pos) {
-    memcpy(&arr[*pos], val, size);
+void iee_addToArr (void* val, int size, unsigned char* arr, int* pos) {
+    iee_memcpy(&arr[*pos], val, size);
     *pos += size;
 }
 
-void addIntToArr (int val, char* arr, int* pos) {
-    addToArr (&val, sizeof(int), arr, pos);
+void iee_addIntToArr (int val, unsigned char* arr, int* pos) {
+    iee_addToArr (&val, sizeof(int), arr, pos);
 }
 
-void addFloatToArr (float val, char* arr, int* pos) {
-    long x = (long)val;
-    addToArr (&x, sizeof(long), arr, pos);
-}
-
-void readFromArr (void* val, int size, char* arr, int* pos) {
-    memcpy(val, &arr[*pos], size);
+void iee_readFromArr (void* val, int size, const unsigned char * arr, int* pos) {
+    iee_memcpy(val, &arr[*pos], size);
     *pos += size;
 }
 
-int readIntFromArr (char* arr, int* pos) {
+int iee_readIntFromArr (const unsigned char * arr, int* pos) {
     int x;
-    readFromArr(&x, sizeof(int), arr, pos);
+    iee_readFromArr(&x, sizeof(int), arr, pos);
     return x;
 }
 
-void *memcpy(void *dest, const void *src, size_t n)
+void *iee_memcpy(void *dest, const void *src, size_t n)
 {
     //http://clc-wiki.net/wiki/C_standard_library:string.h:memcpy#Implementation
     char *dp = dest;

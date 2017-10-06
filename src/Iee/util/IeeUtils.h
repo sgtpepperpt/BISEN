@@ -28,20 +28,20 @@ typedef struct iee_token {
 } iee_token;
 // END IEE TOKEN DEFINITIONS
 
-void pee(const char *msg);
+void iee_pee(const char *msg);
 
-void socketSend(int sockfd, char* buff, long size);
-int sendAll(int s, char *buf, long len);
+void iee_socketSend(int sockfd, unsigned char* buff, long size);
+int iee_sendAll(int s, unsigned char *buf, long len);
 
-void socketReceive(int sockfd, char* buff, long size);
-int receiveAll (int s, char* buff, long len);
+void iee_socketReceive(int sockfd, unsigned char* buff, long size);
+int iee_receiveAll (int s, unsigned char* buff, long len);
 
-void addToArr (void* val, int size, char* arr, int* pos);
-void readFromArr (void* val, int size, char* arr, int* pos);
+void iee_addToArr (void* val, int size, unsigned char* arr, int* pos);
+void iee_readFromArr (void* val, int size, const unsigned char * arr, int* pos);
 
-void addIntToArr (int val, char* arr, int* pos);
-int readIntFromArr (char* arr, int* pos);
+void iee_addIntToArr (int val, unsigned char* arr, int* pos);
+int iee_readIntFromArr (const unsigned char * arr, int* pos);
 
-void *memcpy(void *dest, const void *src, size_t n);
+void *iee_memcpy(void *dest, const void *src, size_t n);
 
 #endif /* IeeUtils_h */

@@ -1,6 +1,6 @@
 //
-//  MainTEE.cpp
-//  BooleanSSE
+//  SseIee.cpp
+//  BISEN
 //
 //  Created by Bernardo Ferreira on 15/11/16.
 //  Copyright © 2016 Bernardo Ferreira. All rights reserved.
@@ -24,7 +24,7 @@ void init_pipes() {
     //init pipe directory
     if(mkdir(pipeDir, 0770) == -1)
         if(errno != EEXIST)
-            pee("Failed to mkdir");
+            iee_pee("Failed to mkdir");
 
     char pipeName[256];
 
@@ -34,7 +34,7 @@ void init_pipes() {
 	//not necessary, server creates file.
     //if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
         //if(errno != EEXIST)
-            //pee("Fail to mknod");
+            //iee_pee("Fail to mknod");
     
     printf("opening read pipe!\n");
     readServerPipe = open(pipeName, O_ASYNC | O_RDONLY);
@@ -46,7 +46,7 @@ void init_pipes() {
 	//not necessary, server creates file.
     //if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
     //    if(errno != EEXIST)
-    //       pee("Fail to mknod");
+    //       iee_pee("Fail to mknod");
 
     printf("opening write pipe!\n");
     writeServerPipe = open(pipeName, O_ASYNC | O_WRONLY);
@@ -59,49 +59,40 @@ void destroy_pipes() {
     close(writeServerPipe);
 }
 
-// ponto de entrada do IEE
-// enc_output deve ser NULL
-int process(char* data, int data_size, char** output) {
-    //char* plaintext = new char[ciphertext_size];
-    //const int plaintext_size = decrypt_data(plaintext, ciphertext, ciphertext_size);
+// IEE entry point
+void f(unsigned char **out, unsigned long long *out_len, const unsigned long long pid, const unsigned char * in, const unsigned long long in_len) {
+    // set out variables
+    *out = NULL;
+    *out_len = 0;
     
-    const int output_size = f(data, data_size, output);
-    //delete[] plaintext;
-
-    return output_size;
-}
-
-int f(char* data, int data_size, char** output) {
     //setup operation
-    if(data[0] == 'i')
-        setup(data, data_size);
+    if(in[0] == 'i')
+        setup(out, out_len, in, in_len);
     //add / update operation
-    else if (data[0] == 'a')
-        add(data, data_size);
+    else if (in[0] == 'a')
+        add(out, out_len, in, in_len);
     //search operation
-    else if (data[0] == 's')
-        return search(data, data_size, output);
-
-    return -1;
+    else if (in[0] == 's')
+        search(out, out_len, in, in_len);
 }
 
-void setup(char* data, int data_size) {
+void setup(unsigned char **out, unsigned long long *out_len, const unsigned char* in, const unsigned long long in_len) {
     int pos = 1;
 
     // read kCom
-    /*const int kCom_size = readIntFromArr(data, &pos);
+    /*const int kCom_size = iee_readIntFromArr(in, &pos);
     unsigned char* kCom = new unsigned char[kCom_size];
-    readFromArr(kCom, kCom_size, data, &pos);*/
+    readFromArr(kCom, kCom_size, in, &pos);*/
 
     // read kEnc
-    const int kEnc_size = (int) readIntFromArr(data, &pos);
+    const int kEnc_size = (int) iee_readIntFromArr(in, &pos);
     unsigned char* kEnc = (unsigned char*)malloc(sizeof(unsigned char) * kEnc_size);
-    readFromArr(kEnc, kEnc_size, data, &pos);
+    iee_readFromArr(kEnc, kEnc_size, in, &pos);
 
     // read kF
-    const int kF_size = readIntFromArr(data, &pos);
+    const int kF_size = iee_readIntFromArr(in, &pos);
     unsigned char* kF = (unsigned char*)malloc(sizeof(unsigned char) * kF_size);
-    readFromArr(kF, kF_size, data, &pos);
+    iee_readFromArr(kF, kF_size, in, &pos);
 
     /*for(int i = 0; i < kF_size; i++)
         printf("%02x ", kF[i]);
@@ -111,23 +102,32 @@ void setup(char* data, int data_size) {
     setKeys(kEnc, kF);
 
     //tell server to init index I
-    char op = '1';
-    socketSend(writeServerPipe, &op, sizeof(char));
+    unsigned char op = '1';
+    iee_socketSend(writeServerPipe, &op, sizeof(char));
 
     printf("Finished Setup!\n");
+
+    // output message
+    *out_len = 1;
+    *out = (unsigned char*)malloc(sizeof(unsigned char));
+    // TODO ok confirmation char
 }
 
-void add(char* data, int data_len) {
+void add(unsigned char **out, unsigned long long *out_len, const unsigned char* in, const unsigned long long in_len) {
+    // set out variables
+    *out = NULL;
+    *out_len = 0;
+
     #ifdef VERBOSE
     printf("Started add in IEE!\n");
     #endif
 
     // read buffer
     int pos = 1;
-    while(pos < data_len) {
+    while(pos < in_len) {
         //get d,c,w from array
-        const int d = readIntFromArr(data, &pos);
-        const int c = readIntFromArr(data, &pos);
+        const int d = iee_readIntFromArr(in, &pos);
+        const int c = iee_readIntFromArr(in, &pos);
 
         // read word
         char* word = (char*)malloc(sizeof(char) * MAX_WORD_SIZE);
@@ -135,7 +135,7 @@ void add(char* data, int data_len) {
         int counter = 0;
 
         do {
-            readFromArr(tmp, 1, data, &pos);
+            iee_readFromArr(tmp, 1, in, &pos);
             word[counter++] = tmp[0];
         } while(tmp[0] != '\0' && counter < MAX_WORD_SIZE);
         free(tmp);
@@ -162,10 +162,10 @@ void add(char* data, int data_len) {
         /*enc_data_size = */c_encrypt(enc_data, (unsigned char*)&d, sizeof(int), nonce, get_kEnc());
 
         //send label and enc_data to server
-        char op = '2';
-        socketSend(writeServerPipe, &op, sizeof(char));
-        socketSend(writeServerPipe, (char*)label, fBlocksize);
-        socketSend(writeServerPipe, (char*)enc_data, enc_data_size);
+        unsigned char op = '2';
+        iee_socketSend(writeServerPipe, &op, sizeof(unsigned char));
+        iee_socketSend(writeServerPipe, (unsigned char*)label, fBlocksize);
+        iee_socketSend(writeServerPipe, (unsigned char*)enc_data, enc_data_size);
 
         free(label);
         free(enc_data);
@@ -174,6 +174,11 @@ void add(char* data, int data_len) {
     #ifdef VERBOSE
     printf("Finished add in IEE!\n");
     #endif
+
+    // output message
+    *out_len = 1;
+    *out = (unsigned char*)malloc(sizeof(unsigned char));
+    // TODO ok confirmation char
 }
 
 void get_docs_from_server(vec_token *query, unsigned count_words) {
@@ -246,16 +251,16 @@ void get_docs_from_server(vec_token *query, unsigned count_words) {
 
         //request index positions from server
         int len = sizeof(char) + sizeof(int) + tkn->counter * fBlocksize;
-        char* buff = (char*)malloc(sizeof(char)* len);
+        unsigned char* buff = (unsigned char*)malloc(sizeof(unsigned char)* len);
         char op = '3';
         int pos = 0;
-        addToArr(&op, sizeof(char), buff, &pos);
-        addIntToArr(tkn->counter, buff, &pos);
+        iee_addToArr(&op, sizeof(unsigned char), buff, &pos);
+        iee_addIntToArr(tkn->counter, buff, &pos);
         for (int i = 0; i < tkn->counter; i++)
             for (int j = 0; j < fBlocksize; j++)
-                addToArr(&(labels[i][j]), sizeof(unsigned char), buff, &pos);
+                iee_addToArr(&(labels[i][j]), sizeof(unsigned char), buff, &pos);
 
-        socketSend(writeServerPipe, buff, len);
+        iee_socketSend(writeServerPipe, buff, len);
         free(buff);
 
         for (int i = 0; i < tkn->counter; i++)
@@ -264,7 +269,7 @@ void get_docs_from_server(vec_token *query, unsigned count_words) {
 
         //decrypt query results
         len = tkn->counter * sizeof(int);
-        buff = (char*)malloc(sizeof(char)* len);
+        buff = (unsigned char*)malloc(sizeof(unsigned char)* len);
 
         unsigned char* nonce = (unsigned char*)malloc(sizeof(char)*C_NONCESIZE);
         for(int i= 0; i < C_NONCESIZE; i++) nonce[i] = 0x00;
@@ -273,16 +278,16 @@ void get_docs_from_server(vec_token *query, unsigned count_words) {
         unsigned char* data = (unsigned char*)malloc(sizeof(unsigned char)* symBlocksize);
         pos = 0;
         for (int i = 0; i < tkn->counter; i++) {
-            socketReceive(readServerPipe, (char*)enc_data, symBlocksize);
+            iee_socketReceive(readServerPipe, (unsigned char*)enc_data, symBlocksize);
 
             c_decrypt(data, enc_data, symBlocksize, nonce, get_kEnc());
-            addToArr((char*)data, sizeof(int), buff, &pos);
+            iee_addToArr((char*)data, sizeof(int), buff, &pos);
 
             //cout << "recv ." << buff << "." << endl;
             /** Another way of doing it
                 int d = -1;
                 memcpy(&d, data, sizeof(int));
-                addIntToArr(d, buff, &pos);
+                iee_addIntToArr(d, buff, &pos);
             **/
 
             bzero(enc_data, symBlocksize);
@@ -297,7 +302,7 @@ void get_docs_from_server(vec_token *query, unsigned count_words) {
         pos = 0;
         for (int i = 0; i < nr_docs; i++) {
             int tmp = -1;
-            memcpy(&tmp, buff + pos, sizeof(int));
+            iee_memcpy(&tmp, buff + pos, sizeof(int));
             pos += sizeof(int);
 
             vi_push_back(&docs, tmp);
@@ -315,7 +320,7 @@ void get_docs_from_server(vec_token *query, unsigned count_words) {
     #endif
 }
 
-int search(char* buffer, int query_size, char** output) {
+void search(unsigned char **output, unsigned long long *out_len, const unsigned char* in, const unsigned long long in_len) {
     #ifdef VERBOSE
     printf("Search!\n");
     #endif
@@ -326,14 +331,14 @@ int search(char* buffer, int query_size, char** output) {
     int nDocs = -1;
     int count_words = 0; // useful for get_docs_from_server
 
-    //read buffer
+    //read in
     int pos = 1;
-    while(pos < query_size) {
+    while(pos < in_len) {
         iee_token tkn;
         tkn.word = NULL;
 
         char* tmp_type = (char*)malloc(sizeof(char));
-        readFromArr(tmp_type, 1, buffer, &pos);
+        iee_readFromArr(tmp_type, 1, in, &pos);
 
         tkn.type = tmp_type[0];
         free(tmp_type);
@@ -342,16 +347,16 @@ int search(char* buffer, int query_size, char** output) {
             count_words++;
 
             // read counter
-            tkn.counter = readIntFromArr(buffer, &pos);
+            tkn.counter = iee_readIntFromArr(in, &pos);
 
             // read word
-            tkn.word = (char*) malloc(sizeof(char) * MAX_WORD_SIZE);
+            tkn.word = (char*)malloc(sizeof(char) * MAX_WORD_SIZE);
             char* tmp = (char*)malloc(sizeof(char)); // TODO could this be more efficient since we're copying from
                                                      // one char array to another and then to a third one?
-                                                     // (buffer->tmp->tkn.word)
+                                                     // (in->tmp->tkn.word)
             int counter = 0;
             do {
-                readFromArr(tmp, 1, buffer, &pos);
+                iee_readFromArr(tmp, 1, in, &pos);
                 tkn.word[counter++] = tmp[0];
             } while(tmp[0] != '\0' && counter < MAX_WORD_SIZE);
             free(tmp);
@@ -359,7 +364,7 @@ int search(char* buffer, int query_size, char** output) {
             // guarantee string is terminated
             tkn.word[MAX_WORD_SIZE - 1] = '\0';
         } else if(tkn.type == META_TOKEN) {
-            nDocs = readIntFromArr(buffer, &pos);
+            nDocs = iee_readIntFromArr(in, &pos);
             continue;
         }
 
@@ -393,16 +398,16 @@ int search(char* buffer, int query_size, char** output) {
 
     #ifdef VERBOSE
     printf("Query Evaluated in IEE!\n");
-    #endif    
+    #endif
 
     // return query results
-    int output_size = vi_size(response_docs) * sizeof(int);
-    *output = (char*)malloc(sizeof(char) * output_size);
+    unsigned long long output_size = vi_size(response_docs) * sizeof(int);
+    *output = (unsigned char*)malloc(sizeof(unsigned char) * output_size);
     pos = 0;
 
     for(unsigned i = 0; i < vi_size(response_docs); i++) {
         //cout <<  response_docs[i] << endl;
-        addIntToArr(response_docs.array[i], *output, &pos);
+        iee_addIntToArr(response_docs.array[i], *output, &pos);
     }
 
     vt_destroy(&query);
@@ -411,5 +416,6 @@ int search(char* buffer, int query_size, char** output) {
     #ifdef VERBOSE
     printf("Finished Search!\n");
     #endif
-    return output_size;
+
+    *out_len = sizeof(unsigned char) * output_size;
 }

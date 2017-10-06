@@ -29,11 +29,12 @@ int clientBridgePipe;
 void init_pipes();
 void destroy_pipes();
 
-int f(char* data, int data_size, char** output);
-int process(char* ciphertext, int ciphertext_size, char** enc_output);
+//int f(char* data, int data_size, char** output);
+void f(unsigned char **out, unsigned long long *out_len, const unsigned long long pid, const unsigned char * in, const unsigned long long in_len);
 
-void setup(char* enc_data, int enc_data_size);
-void add(char* data, int data_size);
-int search(char* data, int data_size, char** output);
+void setup(unsigned char **out, unsigned long long *out_len, const unsigned char* in, const unsigned long long in_len);
+void add(unsigned char **out, unsigned long long *out_len, const unsigned char* in, const unsigned long long in_len);
+void search(unsigned char **output, unsigned long long *out_len, const unsigned char* in, const unsigned long long in_len);
+
 void get_docs_from_server(vec_token *query, unsigned count_words);
 #endif /* SSE_IEE_H */

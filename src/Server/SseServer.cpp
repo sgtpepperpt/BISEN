@@ -13,6 +13,9 @@ using namespace std;
 const char* SseServer::pipeDir = "/tmp/BooleanSSE/";
 int SseServer::clientSock;
 
+const int l_size = 32;
+const int d_size = 44;
+
 SseServer::SseServer() {
     //init pipe directory
     if(mkdir(pipeDir, 0770) == -1)
@@ -51,8 +54,8 @@ SseServer::SseServer() {
     //start listening for iee calls
     printf("Finished Server init! Gonna start listening for IEE requests!\n");
     while (true) {
-        char cmd;
-        socketReceive(readIeePipe, &cmd, sizeof(char));
+        unsigned char cmd;
+        socketReceive(readIeePipe, &cmd, sizeof(unsigned char));
         
         switch (cmd) {
             //setup
@@ -68,18 +71,17 @@ SseServer::SseServer() {
                 #ifdef VERBOSE
                 printf("Started Add!\n");
                 #endif
-                const int l_size = 20;
+
                 unsigned char* l = new unsigned char[l_size];
-                socketReceive(readIeePipe, (char*)l, l_size);
+                socketReceive(readIeePipe, l, l_size);
                 vector<unsigned char> l_vector = fillVector(l, l_size);
                 delete[] l;
-                
-                const int d_size = 16;
+
                 unsigned char* d = new unsigned char[d_size];
-                socketReceive(readIeePipe, (char*)d, d_size);
+                socketReceive(readIeePipe, d, d_size);
                 vector<unsigned char> d_vector = fillVector(d, d_size);
                 delete[] d;
-                
+
                 (*I)[l_vector] = d_vector;
                 #ifdef VERBOSE
                 printf("Finished Add!\n");
@@ -91,19 +93,23 @@ SseServer::SseServer() {
                 #ifdef VERBOSE
                 printf("Started Search 1st part!\n");
                 #endif
-                char buff[sizeof(int)];
+                unsigned char buff[sizeof(int)];
                 socketReceive(readIeePipe, buff, sizeof(int));
                 int pos = 0;
                 const int counter = readIntFromArr(buff, &pos);
                 //cout << "counter size " << counter << endl;
-                unsigned char* label = new unsigned char[20];
+                unsigned char* label = new unsigned char[l_size];
                 for (int i = 0; i < counter; i++) {
-                    socketReceive(readIeePipe, (char*)label, 20);
-                    vector<unsigned char> l = fillVector(label, 20);
+                    socketReceive(readIeePipe, label, l_size);
+                        for(unsigned i = 0; i < l_size; i++)
+        printf("%02x", label[i]);
+    printf("\n");
+                    vector<unsigned char> l = fillVector(label, l_size);
                     vector<unsigned char> enc_d = (*I)[l];
-                    //cout << "enc_d size " << enc_d.size() << endl;
+
+                    cout << "enc_d size " << enc_d.size() << endl;
                     for (unsigned j = 0; j < enc_d.size(); j++)
-                        socketSend(writeIeePipe, (char*)&enc_d[j], sizeof(unsigned char));
+                        socketSend(writeIeePipe, &enc_d[j], sizeof(unsigned char));
                 }
                 #ifdef VERBOSE
                 printf("Finished Search 1st part!\n");
@@ -113,24 +119,26 @@ SseServer::SseServer() {
             // search - send response to client
             case '4': {
                 //get data size
-                char buff[sizeof(int)];
+                unsigned char buff[sizeof(int)];
                 socketReceive(readIeePipe, buff, sizeof(int));
-                
+
                 //get data
                 int pos = 0;
                 const int data_size = readIntFromArr(buff, &pos);
-                char* data = new char[data_size];
+                unsigned char* data = new unsigned char[data_size];
                 socketReceive(readIeePipe, data, data_size);
-                
+
                 //send data to client
                 int sockfd = connectAndSend(buff, sizeof(int));
                 socketSend(sockfd, data, data_size);
-                
+
                 close(sockfd);
                 delete[] data;
+
                 #ifdef VERBOSE
                 printf("Finished Search 2nd part!\n");
                 #endif
+
                 break;
             }
             default:
@@ -173,7 +181,7 @@ void* SseServer::bridgeClientIeeThread(void* threadData) {
             continue;
         }
         //receive data
-        char* buf = new char[sizeof(int)];
+        unsigned char* buf = new unsigned char[sizeof(int)];
         if (receiveAll(newsockfd, buf, sizeof(int)) < 0) {
             close(newsockfd);
             perror("SseServer::bridgeClientIeeThread ERROR reading from socket");
@@ -182,7 +190,7 @@ void* SseServer::bridgeClientIeeThread(void* threadData) {
         int pos = 0;
         int len = readIntFromArr(buf, &pos);
         
-        char* bufAll = new char[len];
+        unsigned char* bufAll = new unsigned char[len];
         if (receiveAll(newsockfd, bufAll, len) < 0) {
             close(newsockfd);
             pee("ERROR reading from tee pipe");

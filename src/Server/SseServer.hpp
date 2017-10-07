@@ -25,7 +25,6 @@
 #include <pthread.h>
 #include "ServerUtils.hpp"
 
-
 using namespace std;
 
 class SseServer {

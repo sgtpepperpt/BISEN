@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 const int client_symBlocksize = 16;
-const int client_fBlocksize = 32;
+const int client_fBlocksize = crypto_auth_hmacsha256_KEYBYTES;
 
 // keys sent by the client
 static unsigned char* client_kEnc;

@@ -14,6 +14,10 @@ LIBS= -lsodium-sgx
 main: main.cpp common.a iee.a client.a
 	g++ $(CPP_FLAGS) -o main main.cpp common.a iee.a client.a $(LIBS)
 
+common.a: $(COMMON_DIR)/*.cpp
+	cd $(COMMON_DIR) && g++ $(CPP_FLAGS) -c *.cpp
+	ar rcs common.a $(COMMON_DIR)/*.o
+
 iee.a: $(IEE_DIR)/*.c
 	cd $(IEE_DIR) && gcc $(C_FLAGS) -c *.c
 	cd $(IEE_DIR)/util && gcc $(C_FLAGS) -c *.c
@@ -24,16 +28,10 @@ client.a: $(CLIENT_DIR)/*.c $(CLIENT_DIR)/*.cpp
 	cd $(CLIENT_DIR) && g++ $(CPP_FLAGS) -c *.cpp
 	ar rcs client.a $(CLIENT_DIR)/*.o
 
-common.a: $(COMMON_DIR)/*.cpp
-	cd $(COMMON_DIR) && g++ $(CPP_FLAGS) -c *.cpp
-	ar rcs common.a $(COMMON_DIR)/*.o
-
 ##
 
 clean:
 	@rm -f main storage.txt
 	@find . -name "*~" -exec rm {} \;
 	@find . -name "*.a" -exec rm {} \;
-	@find $(IEE_DIR) -name "*.o" -exec rm {} \;
-	@find $(CLIENT_DIR) -name "*.o" -exec rm {} \;
-	@find $(COMMON_DIR) -name "*.o" -exec rm {} \;
+	@find .. -name "*.o" -exec rm {} \;

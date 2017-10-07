@@ -63,7 +63,7 @@ void pee(const char *msg)
     exit(0);
 }
 
-int connectAndSend (char* buff, long size) {
+int connectAndSend (unsigned char* buff, long size) {
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     struct hostent *server = gethostbyname(serverIP);
     struct sockaddr_in serv_addr;
@@ -77,12 +77,12 @@ int connectAndSend (char* buff, long size) {
     return sockfd;
 }
 
-void socketSend (int sockfd, char* buff, long size) {
+void socketSend (int sockfd, unsigned char* buff, long size) {
     if (sendAll(sockfd, buff, size) < 0)
         pee("ERROR writing to socket");
 }
 
-int sendAll(int s, char *buf, long len)
+int sendAll(int s, unsigned char *buf, long len)
 {
     long total = 0;       // how many bytes we've sent
     long bytesleft = len; // how many we have left to send
@@ -98,12 +98,12 @@ int sendAll(int s, char *buf, long len)
     return n==-1||total!=len ? -1 : 0; // return -1 on failure, 0 on success
 }
 
-void socketReceive(int sockfd, char* buff, long size) {
+void socketReceive(int sockfd, unsigned char* buff, long size) {
     if (receiveAll(sockfd, buff, size) < 0)
         pee("ERROR reading from socket");
 }
 
-int receiveAll (int socket, char* buff, long len) {
+int receiveAll (int socket, unsigned char* buff, long len) {
     int r = 0;
     while (r < len) {
         ssize_t n = read(socket,&buff[r],len-r);
@@ -113,22 +113,21 @@ int receiveAll (int socket, char* buff, long len) {
     return r;
 }
 
-void addToArr (void* val, int size, char* arr, int* pos) {
+void addToArr (void* val, int size, unsigned char* arr, int* pos) {
     memcpy(&arr[*pos], val, size);
     *pos += size;
 }
 
-void addIntToArr (int val, char* arr, int* pos) {
-    uint32_t x = htonl(val);
-    addToArr (&x, sizeof(uint32_t), arr, pos);
+void addIntToArr (int val, unsigned char* arr, int* pos) {
+    addToArr (&val, sizeof(int), arr, pos);
 }
 
-void readFromArr (void* val, int size, char* arr, int* pos) {
+void readFromArr (void* val, int size, unsigned char* arr, int* pos) {
     memcpy(val, &arr[*pos], size);
     *pos += size;
 }
 
-int readIntFromArr (char* arr, int* pos) {
+int readIntFromArr (unsigned char* arr, int* pos) {
     int x;
     readFromArr(&x, sizeof(int), arr, pos);
     return x;

@@ -39,10 +39,10 @@ public:
     SseClient();
     ~SseClient();
 
-    int setup(char** data);
-    int add_new_document(set<string> text, char** data);
-    int add_words(int doc_id, set<string> words, char** data);
-    int search(string query, char** data);
+    unsigned long long setup(unsigned char** data);
+    unsigned long long add_new_document(set<string> text, unsigned char** data);
+    unsigned long long add_words(int doc_id, set<string> words, unsigned char** data);
+    int search(string query, unsigned char** data);
 
     // functions for testing purposes
     string generate_random_query(vector<string> all_words, const int size, const int not_prob, const int and_prob);

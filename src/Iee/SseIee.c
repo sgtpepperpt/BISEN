@@ -20,6 +20,13 @@
 
 const char* pipeDir = "/tmp/BooleanSSE/";
 
+void print_buffer(const char* name, const unsigned char * buf, const unsigned long long len) {
+    printf("%s size: %llu\n", name, len);
+    for(unsigned i = 0; i < len; i++)
+        printf("%02x", buf[i]);
+    printf("\n");
+}
+
 void init_pipes() {
     //init pipe directory
     if(mkdir(pipeDir, 0770) == -1)
@@ -61,10 +68,14 @@ void destroy_pipes() {
 
 // IEE entry point
 void f(unsigned char **out, unsigned long long *out_len, const unsigned long long pid, const unsigned char * in, const unsigned long long in_len) {
+    #ifdef VERBOSE
+    printf("\n***** Entering IEE *****\n");
+    #endif
+
     // set out variables
     *out = NULL;
     *out_len = 0;
-    
+
     //setup operation
     if(in[0] == 'i')
         setup(out, out_len, in, in_len);
@@ -74,18 +85,22 @@ void f(unsigned char **out, unsigned long long *out_len, const unsigned long lon
     //search operation
     else if (in[0] == 's')
         search(out, out_len, in, in_len);
+
+    #ifdef VERBOSE
+    printf("\n***** Leaving IEE *****\n\n");
+    #endif
 }
 
 void setup(unsigned char **out, unsigned long long *out_len, const unsigned char* in, const unsigned long long in_len) {
     int pos = 1;
 
-    // read kCom
-    /*const int kCom_size = iee_readIntFromArr(in, &pos);
-    unsigned char* kCom = new unsigned char[kCom_size];
-    readFromArr(kCom, kCom_size, in, &pos);*/
+    #ifdef VERBOSE
+    printf("IEE: Starting Setup!\n");
+    #endif
 
     // read kEnc
-    const int kEnc_size = (int) iee_readIntFromArr(in, &pos);
+    const int kEnc_size = iee_readIntFromArr(in, &pos);
+
     unsigned char* kEnc = (unsigned char*)malloc(sizeof(unsigned char) * kEnc_size);
     iee_readFromArr(kEnc, kEnc_size, in, &pos);
 
@@ -94,32 +109,26 @@ void setup(unsigned char **out, unsigned long long *out_len, const unsigned char
     unsigned char* kF = (unsigned char*)malloc(sizeof(unsigned char) * kF_size);
     iee_readFromArr(kF, kF_size, in, &pos);
 
-    /*for(int i = 0; i < kF_size; i++)
-        printf("%02x ", kF[i]);
-    printf("\n");*/
-
-    // [BP] - Keys will be given by the client (as input message)
+    // Keys are  given by the client (as input message)
     setKeys(kEnc, kF);
 
-    //tell server to init index I
+    // tell server to init index I
     unsigned char op = '1';
     iee_socketSend(writeServerPipe, &op, sizeof(char));
-
-    printf("Finished Setup!\n");
 
     // output message
     *out_len = 1;
     *out = (unsigned char*)malloc(sizeof(unsigned char));
-    // TODO ok confirmation char
+    (*out)[0] = 0x90;
+
+    #ifdef VERBOSE
+    printf("IEE: Finished Setup!\n");
+    #endif
 }
 
 void add(unsigned char **out, unsigned long long *out_len, const unsigned char* in, const unsigned long long in_len) {
-    // set out variables
-    *out = NULL;
-    *out_len = 0;
-
     #ifdef VERBOSE
-    printf("Started add in IEE!\n");
+    printf("IEE: Started add!\n");
     #endif
 
     // read buffer
@@ -142,31 +151,37 @@ void add(unsigned char **out, unsigned long long *out_len, const unsigned char* 
 
         // guarantee string is terminated
         word[MAX_WORD_SIZE - 1] = '\0';
+        printf("%s\n", word);
 
         //calculate key kW (with hmac sha256)
-        unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * fBlocksize);
+        unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
         c_hmac(kW, (unsigned char*)word, strlen(word), get_kF());
+        free(word);
 
         //calculate index position label
-        unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * fBlocksize);
+        unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
         c_hmac(label, (unsigned char*)&c, sizeof(int), kW);
-        free(kW);
+        //free(kW);
 
         //calculate index value enc_data
-        int enc_data_size = sizeof(int) + crypto_secretbox_MACBYTES;
+        int enc_data_size = sizeof(int) + C_EXPBYTES;
 
-        unsigned char* nonce = (unsigned char*)malloc(sizeof(char)*C_NONCESIZE);
+        unsigned char* nonce = (unsigned char*)malloc(sizeof(unsigned char) * C_NONCESIZE);
         for(int i= 0; i < C_NONCESIZE; i++) nonce[i] = 0x00;
 
         unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * enc_data_size);
-        /*enc_data_size = */c_encrypt(enc_data, (unsigned char*)&d, sizeof(int), nonce, get_kEnc());
+        c_encrypt(enc_data, (unsigned char*)&d, sizeof(int), nonce, get_kEnc());
 
         //send label and enc_data to server
         unsigned char op = '2';
+        //printf("add %d %d\n", H_BYTES, enc_data_size);
         iee_socketSend(writeServerPipe, &op, sizeof(unsigned char));
-        iee_socketSend(writeServerPipe, (unsigned char*)label, fBlocksize);
+        iee_socketSend(writeServerPipe, (unsigned char*)label, H_BYTES);
         iee_socketSend(writeServerPipe, (unsigned char*)enc_data, enc_data_size);
 
+        print_buffer("add label", label, H_BYTES);
+        print_buffer("add enc", enc_data, enc_data_size);
+        printf("\n\n");
         free(label);
         free(enc_data);
     }
@@ -178,7 +193,7 @@ void add(unsigned char **out, unsigned long long *out_len, const unsigned char* 
     // output message
     *out_len = 1;
     *out = (unsigned char*)malloc(sizeof(unsigned char));
-    // TODO ok confirmation char
+    (*out)[0] = 0x90;
 }
 
 void get_docs_from_server(vec_token *query, unsigned count_words) {
@@ -228,36 +243,37 @@ void get_docs_from_server(vec_token *query, unsigned count_words) {
             tkn->docs = dummy;
         }
 
+        printf("word is %s\n", tkn->word);
         //calculate key kW
-        unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * fBlocksize);
+        unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
         c_hmac(kW, (unsigned char*)tkn->word, strlen(tkn->word), get_kF());
 
         //calculate relevant index positions
         unsigned char** labels = (unsigned char**)malloc(sizeof(unsigned char*) * tkn->counter);
-        unsigned char* l = (unsigned char*)malloc(sizeof(unsigned char) * fBlocksize);
+        unsigned char* l = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
         for (int c = 0; c < tkn->counter; c++) {
-            c_hmac(kW, (unsigned char*)&c, sizeof(int), l);
-            unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * fBlocksize);
-
-            for (int i = 0; i < fBlocksize; i++)
+            c_hmac(l, (unsigned char*)&c, sizeof(int), kW);
+            unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
+            for (int i = 0; i < H_BYTES; i++)
                 label[i] = l[i];
 
             labels[c] = label;
-            bzero(l, fBlocksize);
+            print_buffer("label", label,H_BYTES);
+            bzero(l, H_BYTES);
         }
 
         free(l);
         free(kW);
 
         //request index positions from server
-        int len = sizeof(char) + sizeof(int) + tkn->counter * fBlocksize;
+        int len = sizeof(char) + sizeof(int) + tkn->counter * H_BYTES;
         unsigned char* buff = (unsigned char*)malloc(sizeof(unsigned char)* len);
         char op = '3';
         int pos = 0;
         iee_addToArr(&op, sizeof(unsigned char), buff, &pos);
         iee_addIntToArr(tkn->counter, buff, &pos);
         for (int i = 0; i < tkn->counter; i++)
-            for (int j = 0; j < fBlocksize; j++)
+            for (int j = 0; j < H_BYTES; j++)
                 iee_addToArr(&(labels[i][j]), sizeof(unsigned char), buff, &pos);
 
         iee_socketSend(writeServerPipe, buff, len);
@@ -274,13 +290,13 @@ void get_docs_from_server(vec_token *query, unsigned count_words) {
         unsigned char* nonce = (unsigned char*)malloc(sizeof(char)*C_NONCESIZE);
         for(int i= 0; i < C_NONCESIZE; i++) nonce[i] = 0x00;
 
-        unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char)* symBlocksize);
-        unsigned char* data = (unsigned char*)malloc(sizeof(unsigned char)* symBlocksize);
+        unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * 44);
+        unsigned char* data = (unsigned char*)malloc(sizeof(unsigned char) * 44);
         pos = 0;
         for (int i = 0; i < tkn->counter; i++) {
-            iee_socketReceive(readServerPipe, (unsigned char*)enc_data, symBlocksize);
-
-            c_decrypt(data, enc_data, symBlocksize, nonce, get_kEnc());
+            iee_socketReceive(readServerPipe, (unsigned char*)enc_data, 44);
+printf("HI2 %d\n", symBlocksize);
+            c_decrypt(data, enc_data, 44, nonce, get_kEnc());
             iee_addToArr((char*)data, sizeof(int), buff, &pos);
 
             //cout << "recv ." << buff << "." << endl;
@@ -304,7 +320,7 @@ void get_docs_from_server(vec_token *query, unsigned count_words) {
             int tmp = -1;
             iee_memcpy(&tmp, buff + pos, sizeof(int));
             pos += sizeof(int);
-
+            printf("doc %d\n", tmp);
             vi_push_back(&docs, tmp);
         }
 
@@ -326,7 +342,7 @@ void search(unsigned char **output, unsigned long long *out_len, const unsigned 
     #endif
 
     vec_token query;
-    vt_init(&query, DEFAULT_QUERY_TOKENS);
+    vt_init(&query, MAX_QUERY_TOKENS);
 
     int nDocs = -1;
     int count_words = 0; // useful for get_docs_from_server
@@ -406,9 +422,10 @@ void search(unsigned char **output, unsigned long long *out_len, const unsigned 
     pos = 0;
 
     for(unsigned i = 0; i < vi_size(response_docs); i++) {
-        //cout <<  response_docs[i] << endl;
+        //printf("%d ", response_docs.array[i]);
         iee_addIntToArr(response_docs.array[i], *output, &pos);
     }
+    //printf("\n");
 
     vt_destroy(&query);
     vi_destroy(&response_docs);

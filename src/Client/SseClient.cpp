@@ -26,19 +26,22 @@ SseClient::~SseClient() {
     close(querySocket);
 }
 
-int SseClient::setup(char** data) {
+unsigned long long SseClient::setup(unsigned char** data) {
     // get keys
     //unsigned char* kCom = crypto->getKcom();
     unsigned char* kEnc = client_get_kEnc();
     unsigned char* kF = client_get_kF();
 
     // pack the keys into a buffer
-    int data_size = sizeof(char) + 2 * sizeof(int) + client_symBlocksize + client_fBlocksize;
-    *data = new char[data_size];
-    
-    char op = 'i';
+    unsigned long long data_size = sizeof(unsigned char)
+                                   + 2 * sizeof(int)
+                                   + client_symBlocksize * sizeof(unsigned char)
+                                   + client_fBlocksize * sizeof(unsigned char);
+    *data = new unsigned char[data_size];
+
+    unsigned char op = 'i';
     int pos = 0;
-    addToArr(&op, sizeof(char), (char*)*data, &pos);
+    addToArr(&op, sizeof(unsigned char), *data, &pos);
 
     // TODO client envia o kCom, deve ser lido pela framework do norte
     // add kCom to buffer
@@ -67,14 +70,14 @@ set<string> SseClient::extractUniqueKeywords(string fname) {
     return analyzer->extractUniqueKeywords(fname);
 }
 
-int SseClient::add_new_document(set<string> text, char** data) {
+unsigned long long SseClient::add_new_document(set<string> text, unsigned char** data) {
     int id = newDoc();
 
     //timeval start, end;
     //gettimeofday(&start, 0);
 
     // add words to the newly generated document
-    int data_size = add_words(id, text, data);
+    unsigned long long data_size = add_words(id, text, data);
 
     //gettimeofday(&end, 0);
     //unsigned long long elapsed = 1000 * (end.tv_sec - start.tv_sec) + (end.tv_usec - start.tv_usec) / 1000;
@@ -84,8 +87,8 @@ int SseClient::add_new_document(set<string> text, char** data) {
     return data_size;
 }
 
-int SseClient::add_words(int doc_id, set<string> words, char** data) {
-    int data_size = sizeof(char);
+unsigned long long SseClient::add_words(int doc_id, set<string> words, unsigned char** data) {
+    unsigned long long data_size = sizeof(unsigned char);
 
     // first iteration: to get the size of the buffer to allocate
     for(string w : words) {
@@ -93,11 +96,11 @@ int SseClient::add_words(int doc_id, set<string> words, char** data) {
     }
 
     //allocate data buffer
-    *data = new char[data_size];
+    *data = new unsigned char[data_size];
 
-    char op = 'a';
+    unsigned char op = 'a';
     int pos = 0;
-    addToArr(&op, sizeof(char), (char*)*data, &pos);
+    addToArr(&op, sizeof(unsigned char), *data, &pos);
 
     // second iteration: to fill the buffer
     for(string w : words) {
@@ -110,25 +113,25 @@ int SseClient::add_words(int doc_id, set<string> words, char** data) {
         // update counter c
         (*W)[w] = c;
 
-        addIntToArr(doc_id, (char*)*data, &pos);
-        addIntToArr(c - 1, (char*)*data, &pos); // counter starts at 1, so -1 for indexing
+        addIntToArr(doc_id, *data, &pos);
+        addIntToArr(c - 1, *data, &pos); // counter starts at 1, so -1 for indexing
         for (unsigned i = 0; i < w.size(); i++)
-            addToArr(&w[i], sizeof(char), (char*)*data, &pos);
+            addToArr(&w[i], sizeof(unsigned char), *data, &pos);
         
-        char term = '\0';
-        addToArr(&term, sizeof(char), (char*)*data, &pos);
+        unsigned char term = '\0';
+        addToArr(&term, sizeof(unsigned char), *data, &pos);
     }
 
     return data_size;
 }
 
 //boolean operands: AND, OR, NOT, (, )
-int SseClient::search(string query, char** data) {
+int SseClient::search(string query, unsigned char** data) {
     // parse the query into token structs and apply the shunting yard algorithm
     vector<client_token> infix_query = parser->tokenize(query);
     vector<client_token> rpn = parser->shunting_yard(infix_query);
 
-    int data_size = sizeof(char); // char from op
+    int data_size = sizeof(unsigned char); // char from op
 
     // first query iteration: to get needed size and counters
     for(unsigned i = 0; i < rpn.size(); i++) {
@@ -142,9 +145,9 @@ int SseClient::search(string query, char** data) {
                 tkn->counter = 0;
 
             //printf("counter %s %d\n", tkn->word.c_str(), tkn->counter);
-            data_size += sizeof(char) + sizeof(int) + (tkn->word.size() + 1);
+            data_size += sizeof(unsigned char) + sizeof(int) + (tkn->word.size() + 1);
         } else {
-            data_size += sizeof(char);
+            data_size += sizeof(unsigned char);
         }
     }
 
@@ -154,31 +157,31 @@ int SseClient::search(string query, char** data) {
     t.counter = nDocs;
 
     rpn.push_back(t);
-    data_size += sizeof(char) + sizeof(int);
+    data_size += sizeof(unsigned char) + sizeof(int);
 
     //prepare query
-    *data = new char[data_size];
+    *data = new unsigned char[data_size];
     int pos = 0;
 
-    char op = 's';
-    addToArr(&op, sizeof(char), (char*)*data, &pos);
+    unsigned char op = 's';
+    addToArr(&op, sizeof(unsigned char), *data, &pos);
 
     // second query iteration: to fill "data" buffer
     for(vector<client_token>::iterator it = rpn.begin(); it != rpn.end(); ++it) {
         client_token tkn = *it;
 
-        addToArr(&(tkn.type), sizeof(char), (char*)*data, &pos);
+        addToArr(&(tkn.type), sizeof(unsigned char), *data, &pos);
 
         if(tkn.type == WORD_TOKEN) {
-            addIntToArr(tkn.counter, (char*)*data, &pos);
+            addIntToArr(tkn.counter, *data, &pos);
 
             for (unsigned i = 0; i < tkn.word.size(); i++)
-                addToArr(&tkn.word[i], sizeof(char), (char*)*data, &pos);
+                addToArr(&tkn.word[i], sizeof(unsigned char), *data, &pos);
 
             char term = '\0';
-            addToArr(&term, sizeof(char), (char*)*data, &pos);
+            addToArr(&term, sizeof(unsigned char), *data, &pos);
         } else if(tkn.type == META_TOKEN) {
-            addIntToArr(tkn.counter, (char*)*data, &pos);
+            addIntToArr(tkn.counter, *data, &pos);
         }
     }
 

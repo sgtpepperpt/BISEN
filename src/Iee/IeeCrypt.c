@@ -8,9 +8,9 @@
 
 #include "IeeCrypt.h"
 
-void setKeys(unsigned char* kEnc, unsigned char* kF) {
-    kEnc = kEnc;
-    kF = kF;
+void setKeys(unsigned char* new_kEnc, unsigned char* new_kF) {
+    kEnc = new_kEnc;
+    kF = new_kF;
 }
 
 void destroyKeys() {

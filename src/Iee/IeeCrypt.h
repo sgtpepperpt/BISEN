@@ -18,14 +18,14 @@
 #define H_KEYSIZE crypto_auth_hmacsha256_KEYBYTES
 #define H_BYTES crypto_auth_hmacsha256_BYTES
 
-static const int symBlocksize = 16;
-static const int fBlocksize = 32;
+static const int symBlocksize = crypto_secretbox_KEYBYTES;
+static const int fBlocksize = crypto_auth_hmacsha256_KEYBYTES;
 
 // keys sent by the client
 unsigned char* kEnc;
 unsigned char* kF;
 
-void setKeys(unsigned char* kEnc, unsigned char* kF);
+void setKeys(unsigned char* new_kEnc, unsigned char* new_kF);
 void destroyKeys();
 
 unsigned char* get_kF();

@@ -40,7 +40,6 @@
 #endif
 
 #include "zlib.h"
-#include "portable_endian.h"
 #include "Definitions.h"
 
 #define  LOGI(...)  fprintf(stdout,__VA_ARGS__)
@@ -55,20 +54,20 @@ std::string getHexRepresentation(const unsigned char * Bytes, size_t Length);
 
 void pee(const char *msg);
 
-int sendAll(int s, char *buf, long len);
-int receiveAll (int s, char* buff, long len);
+int sendAll(int s, unsigned char *buf, long len);
+int receiveAll (int s, unsigned char* buff, long len);
 
-int connectAndSend (char* buff, long size);
+int connectAndSend (unsigned char* buff, long size);
 
-void socketSend (int sockfd, char* buff, long size);
-void socketReceive(int sockfd, char* buff, long size);
+void socketSend (int sockfd, unsigned char* buff, long size);
+void socketReceive(int sockfd, unsigned char* buff, long size);
 
 //void socketReceiveAck(int sockfd);
 
-void addToArr (void* val, int size, char* arr, int* pos);
-void readFromArr (void* val, int size, char* arr, int* pos);
+void addToArr (void* val, int size, unsigned char* arr, int* pos);
+void readFromArr (void* val, int size, unsigned char* arr, int* pos);
 
-void addIntToArr (int val, char* arr, int* pos);
-int readIntFromArr (char* arr, int* pos);
+void addIntToArr (int val, unsigned char* arr, int* pos);
+int readIntFromArr (unsigned char* arr, int* pos);
 
 #endif /* defined(__BooleanSSE__ClientUtils__) */

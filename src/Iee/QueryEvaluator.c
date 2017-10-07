@@ -34,7 +34,7 @@ vec_int get_not_docs(int nDocs, vec_int negate){
 // the resulting set of docs
 vec_int evaluate(vec_token rpn_expr, int nDocs) {
     vec_token eval_stack;
-    vt_init(&eval_stack, DEFAULT_QUERY_TOKENS);
+    vt_init(&eval_stack, MAX_QUERY_TOKENS);
 
     iee_token tkn;
     for(unsigned i = 0; i < vt_size(rpn_expr); i++) {

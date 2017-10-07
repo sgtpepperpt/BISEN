@@ -15,7 +15,7 @@
 #include "vec_int.h"
 
 // IEE TOKEN DEFINITIONS
-#define DEFAULT_QUERY_TOKENS 25 // max tokens per query; vec_token should regrow anyway; iee-only restriction
+#define MAX_QUERY_TOKENS 25 // max tokens per query; vec_token should regrow anyway; iee-only restriction
 
 #define WORD_TOKEN 'w'
 #define META_TOKEN 'z'

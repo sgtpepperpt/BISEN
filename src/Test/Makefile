@@ -2,7 +2,7 @@ IEE_DIR=../Iee
 CLIENT_DIR=../Client
 COMMON_DIR=../Common
 
-C_FLAGS= -Wall -g -Wno-unused-function -Wno-unused-variable -DVERBOSE
+C_FLAGS= -Wall -g -Wno-unused-function -Wno-unused-variable -fno-stack-protector -DVERBOSE
 CPP_FLAGS= $(C_FLAGS) -std=c++11
 
 LIBS= -lsodium-sgx

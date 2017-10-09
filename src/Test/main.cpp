@@ -12,12 +12,12 @@
 #include <assert.h>
 #include <string.h>
 
-#include "types.h"
 #include "../Common/Utils.h"
 #include "../Client/SseClient.hpp"
 
 extern "C" {
 #include "../Iee/SseIee.h"
+#include "../Iee/types.h"
 }
 
 // DEBUGGING

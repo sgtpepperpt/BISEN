@@ -21,10 +21,10 @@
 const char* pipeDir = "/tmp/BooleanSSE/";
 
 void print_buffer(const char* name, const unsigned char * buf, const unsigned long long len) {
-    printf("%s size: %llu\n", name, len);
+    ocall_printf("%s size: %llu\n", name, len);
     for(unsigned i = 0; i < len; i++)
-        printf("%02x", buf[i]);
-    printf("\n");
+        ocall_printf("%02x", buf[i]);
+    ocall_printf("\n");
 }
 
 void init_pipes() {
@@ -43,8 +43,8 @@ void init_pipes() {
         //if(errno != EEXIST)
             //iee_pee("Fail to mknod");
     
-    printf("opening read pipe!\n");
-    readServerPipe = open(pipeName, O_ASYNC | O_RDONLY);
+    ocall_printf("opening read pipe!\n");
+    readServerPipe = ocall_open(pipeName, O_ASYNC | O_RDONLY);
 
     //start iee-server pipe
     bzero(pipeName,256);
@@ -55,10 +55,10 @@ void init_pipes() {
     //    if(errno != EEXIST)
     //       iee_pee("Fail to mknod");
 
-    printf("opening write pipe!\n");
-    writeServerPipe = open(pipeName, O_ASYNC | O_WRONLY);
-    printf("donarino!\n");
-    printf("Finished IEE init! Gonna start listening for client requests through bridge!\n");
+    ocall_printf("opening write pipe!\n");
+    writeServerPipe = ocall_open(pipeName, O_ASYNC | O_WRONLY);
+    ocall_printf("donarino!\n");
+    ocall_printf("Finished IEE init! Gonna start listening for client requests through bridge!\n");
 }
 
 void destroy_pipes() {
@@ -69,7 +69,7 @@ void destroy_pipes() {
 // IEE entry point
 void f(unsigned char **out, unsigned long long *out_len, const unsigned long long pid, const unsigned char * in, const unsigned long long in_len) {
     #ifdef VERBOSE
-    printf("\n***** Entering IEE *****\n");
+    ocall_printf("\n***** Entering IEE *****\n");
     #endif
 
     // set out variables
@@ -87,7 +87,7 @@ void f(unsigned char **out, unsigned long long *out_len, const unsigned long lon
         search(out, out_len, in, in_len);
 
     #ifdef VERBOSE
-    printf("\n***** Leaving IEE *****\n\n");
+    ocall_printf("\n***** Leaving IEE *****\n\n");
     #endif
 }
 
@@ -95,7 +95,7 @@ void setup(unsigned char **out, unsigned long long *out_len, const unsigned char
     int pos = 1;
 
     #ifdef VERBOSE
-    printf("IEE: Starting Setup!\n");
+    ocall_printf("IEE: Starting Setup!\n");
     #endif
 
     // read kEnc
@@ -122,13 +122,13 @@ void setup(unsigned char **out, unsigned long long *out_len, const unsigned char
     (*out)[0] = 0x90;
 
     #ifdef VERBOSE
-    printf("IEE: Finished Setup!\n");
+    ocall_printf("IEE: Finished Setup!\n");
     #endif
 }
 
 void add(unsigned char **out, unsigned long long *out_len, const unsigned char* in, const unsigned long long in_len) {
     #ifdef VERBOSE
-    printf("IEE: Started add!\n");
+    ocall_printf("IEE: Started add!\n");
     #endif
 
     // read buffer
@@ -151,7 +151,7 @@ void add(unsigned char **out, unsigned long long *out_len, const unsigned char* 
 
         // guarantee string is terminated
         word[MAX_WORD_SIZE - 1] = '\0';
-        printf("%s\n", word);
+        ocall_printf("%s\n", word);
 
         //calculate key kW (with hmac sha256)
         unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
@@ -174,20 +174,20 @@ void add(unsigned char **out, unsigned long long *out_len, const unsigned char* 
 
         //send label and enc_data to server
         unsigned char op = '2';
-        //printf("add %d %d\n", H_BYTES, enc_data_size);
+        //ocall_printf("add %d %d\n", H_BYTES, enc_data_size);
         iee_socketSend(writeServerPipe, &op, sizeof(unsigned char));
         iee_socketSend(writeServerPipe, (unsigned char*)label, H_BYTES);
         iee_socketSend(writeServerPipe, (unsigned char*)enc_data, enc_data_size);
 
         print_buffer("add label", label, H_BYTES);
         print_buffer("add enc", enc_data, enc_data_size);
-        printf("\n\n");
+        ocall_printf("\n\n");
         free(label);
         free(enc_data);
     }
 
     #ifdef VERBOSE
-    printf("Finished add in IEE!\n");
+    ocall_printf("Finished add in IEE!\n");
     #endif
 
     // output message
@@ -198,7 +198,7 @@ void add(unsigned char **out, unsigned long long *out_len, const unsigned char* 
 
 void get_docs_from_server(vec_token *query, unsigned count_words) {
     #ifdef VERBOSE
-    printf("Requesting docs from server!\n");
+    ocall_printf("Requesting docs from server!\n");
     #endif
 
     // initialise array to hold all tokens in random order
@@ -214,11 +214,11 @@ void get_docs_from_server(vec_token *query, unsigned count_words) {
 
         /*for(unsigned ii = 0; ii < count_words; ii++) {
             if(rand[ii])
-                printf("%c %s\n", rand[ii]->type, rand[ii]->word);
+                ocall_printf("%c %s\n", rand[ii]->type, rand[ii]->word);
             else
-                printf("%d\n", rand[ii]);
+                ocall_printf("%d\n", rand[ii]);
         }
-        printf("\n");*/
+        ocall_printf("\n");*/
 
         // choose a random unoccupied position from the rand array
         int pos;
@@ -230,7 +230,7 @@ void get_docs_from_server(vec_token *query, unsigned count_words) {
     }
 
     #ifdef VERBOSE
-    printf("Randomized positions!\n");
+    ocall_printf("Randomized positions!\n");
     #endif
 
     // request the documents from the server
@@ -243,7 +243,7 @@ void get_docs_from_server(vec_token *query, unsigned count_words) {
             tkn->docs = dummy;
         }
 
-        printf("word is %s\n", tkn->word);
+        ocall_printf("word is %s\n", tkn->word);
         //calculate key kW
         unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
         c_hmac(kW, (unsigned char*)tkn->word, strlen(tkn->word), get_kF());
@@ -294,10 +294,10 @@ void get_docs_from_server(vec_token *query, unsigned count_words) {
         unsigned char* data = (unsigned char*)malloc(sizeof(unsigned char) * 44);
         pos = 0;
         for (int i = 0; i < tkn->counter; i++) {
-            iee_socketReceive(readServerPipe, (unsigned char*)enc_data, 44);
-printf("HI2 %d\n", symBlocksize);
+            iee_socketReceive(readServerPipe, enc_data, 44);
+
             c_decrypt(data, enc_data, 44, nonce, get_kEnc());
-            iee_addToArr((char*)data, sizeof(int), buff, &pos);
+            iee_addToArr((unsigned char*)data, sizeof(int), buff, &pos);
 
             //cout << "recv ." << buff << "." << endl;
             /** Another way of doing it
@@ -320,7 +320,7 @@ printf("HI2 %d\n", symBlocksize);
             int tmp = -1;
             iee_memcpy(&tmp, buff + pos, sizeof(int));
             pos += sizeof(int);
-            printf("doc %d\n", tmp);
+            ocall_printf("doc %d\n", tmp);
             vi_push_back(&docs, tmp);
         }
 
@@ -332,13 +332,13 @@ printf("HI2 %d\n", symBlocksize);
     }
 
     #ifdef VERBOSE
-    printf("Got all docs from server!\n\n");
+    ocall_printf("Got all docs from server!\n\n");
     #endif
 }
 
 void search(unsigned char **output, unsigned long long *out_len, const unsigned char* in, const unsigned long long in_len) {
     #ifdef VERBOSE
-    printf("Search!\n");
+    ocall_printf("Search!\n");
     #endif
 
     vec_token query;
@@ -391,29 +391,29 @@ void search(unsigned char **output, unsigned long long *out_len, const unsigned 
     get_docs_from_server(&query, count_words);
 
     #ifdef VERBOSE
-    printf("parsed: ");
+    ocall_printf("parsed: ");
     for(unsigned i = 0; i < vt_size(query); i++) {
         iee_token x = query.array[i];
         if(x.type == WORD_TOKEN) {
-            printf("%s (", x.word);
+            ocall_printf("%s (", x.word);
             for(unsigned i = 0; i < vi_size(x.docs); i++) {
                 if(i < vi_size(x.docs) - 1)
-                    printf("%i,", x.docs.array[i]);
+                    ocall_printf("%i,", x.docs.array[i]);
                 else
-                    printf("%i); ", x.docs.array[i]);
+                    ocall_printf("%i); ", x.docs.array[i]);
             }
         } else {
-            printf("%c ", x.type);
+            ocall_printf("%c ", x.type);
         }
     }
-    printf("\n\n");
+    ocall_printf("\n\n");
     #endif
 
     //calculate boolean formula
     vec_int response_docs = evaluate(query, nDocs);
 
     #ifdef VERBOSE
-    printf("Query Evaluated in IEE!\n");
+    ocall_printf("Query Evaluated in IEE!\n");
     #endif
 
     // return query results
@@ -422,16 +422,16 @@ void search(unsigned char **output, unsigned long long *out_len, const unsigned 
     pos = 0;
 
     for(unsigned i = 0; i < vi_size(response_docs); i++) {
-        //printf("%d ", response_docs.array[i]);
+        //ocall_printf("%d ", response_docs.array[i]);
         iee_addIntToArr(response_docs.array[i], *output, &pos);
     }
-    //printf("\n");
+    //ocall_printf("\n");
 
     vt_destroy(&query);
     vi_destroy(&response_docs);
 
     #ifdef VERBOSE
-    printf("Finished Search!\n");
+    ocall_printf("Finished Search!\n");
     #endif
 
     *out_len = sizeof(unsigned char) * output_size;

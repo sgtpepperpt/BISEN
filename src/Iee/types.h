@@ -12,13 +12,13 @@ void f(
   const label pid,
   const bytes in,
   const size inlen
-);*/
+);
 
 void fserver(
   bytes *out,
   size *outlen,
   const bytes in,
   const size inlen
-);
+);*/
 
 #endif 

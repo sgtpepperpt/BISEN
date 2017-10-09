@@ -1,5 +1,5 @@
-#ifndef OCALL_H_
-#define OCALL_H_
+#ifndef __OCALL_H_
+#define __OCALL_H_
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -16,6 +16,16 @@
 #define OCALL_OPEN 0x79
 #define OCALL_CLOSE 0x80
 
-void fserver(unsigned char **out, unsigned long long *outlen, const unsigned char * in, const unsigned long long inlen);
+void ocall_printf(const char *fmt, ...);
+ssize_t ocall_write(int fildes, const void *buf, size_t nbytes);
+ssize_t ocall_read(int fildes, unsigned char* buf, size_t nbytes);
+int ocall_open(const char *path, int oflags);
+int ocall_close(int fildes);
 
-#endif /* OCALL_H_ */
+static void fs_open(bytes* out, size* outlen, const bytes in, const size inlen);
+static void fs_close(bytes* out, size* outlen, const bytes in, const size inlen);
+static void fs_read(bytes* out, size* outlen, const bytes in, const size inlen);
+static void fs_write(bytes* out, size* outlen, const bytes in, const size inlen);
+static void fserver(bytes* out, size* outlen, const bytes in, const size inlen);
+
+#endif /* __OCALL_H_ */

@@ -6,11 +6,8 @@
 //  Copyright © 2017 Bernardo Ferreira. All rights reserved.
 //
 
-#ifndef IeeUtils_h
-#define IeeUtils_h
-
-//#include <stdio.h> //TODO remove
-#include <unistd.h> // read/write
+#ifndef __IEEUTILS_H
+#define __IEEUTILS_H
 
 #include "vec_int.h"
 #include "../ocall.h"
@@ -28,12 +25,6 @@ typedef struct iee_token {
     vec_int docs;
 } iee_token;
 // END IEE TOKEN DEFINITIONS
-
-void ocall_printf(const char *fmt, ...);
-ssize_t ocall_write(int fildes, const void *buf, size_t nbytes);
-ssize_t ocall_read(int fildes, unsigned char* buf, size_t nbytes);
-int ocall_open(const char *path, int oflags);
-int ocall_close(int fildes);
 
 void iee_pee(const char *msg);
 
@@ -61,4 +52,4 @@ ssize_t iee_read_ssize_t(const unsigned char * arr, int* pos);
 void *iee_memcpy(void *dest, const void *src, size_t n);
 size_t iee_strlen(const char* str);
 
-#endif /* IeeUtils_h */
+#endif /* __IEEUTILS_H */

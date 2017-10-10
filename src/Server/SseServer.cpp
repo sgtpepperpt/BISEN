@@ -30,19 +30,21 @@ SseServer::SseServer() {
     if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
         if(errno != EEXIST)
             pee("Fail to mknod");
-    printf("gona open  write pipe!\n");
-	writeIeePipe = open(pipeName, O_ASYNC | O_WRONLY);
-    
+
     //create iee-server pipe
-    strcpy(pipeName, pipeDir);
-    strcpy(pipeName+strlen(pipeName), "iee_to_server");
-    if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
+    char pipeName2[256];
+    strcpy(pipeName2, pipeDir);
+    strcpy(pipeName2+strlen(pipeName2), "iee_to_server");
+    if(mknod(pipeName2, S_IFIFO | 0770, 0) == -1)
         if(errno != EEXIST)
             pee("Fail to mknod");
-	
+
+    printf("gona open  write pipe!\n");
+	writeIeePipe = open(pipeName, O_ASYNC | O_WRONLY);
+
 	//start listening on pipes; must open write first as read blocks
 	printf("gona open read pipe!\n");
-    readIeePipe = open(pipeName, O_ASYNC | O_RDONLY);
+    readIeePipe = open(pipeName2, O_ASYNC | O_RDONLY);
     printf("done!\n");
     
     //launch client-iee tunnel

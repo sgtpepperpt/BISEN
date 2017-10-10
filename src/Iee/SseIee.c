@@ -28,36 +28,27 @@ void print_buffer(const char* name, const unsigned char * buf, const unsigned lo
 }
 
 void init_pipes() {
-    //init pipe directory
-    if(mkdir(pipeDir, 0770) == -1)
-        if(errno != EEXIST)
-            iee_pee("Failed to mkdir");
-
     char pipeName[256];
 
     //start server-iee pipe
     strcpy(pipeName, pipeDir);
     strcpy(pipeName+strlen(pipeName), "server_to_iee");
-	//not necessary, server creates file.
-    //if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
-        //if(errno != EEXIST)
-            //iee_pee("Fail to mknod");
-    
-    ocall_printf("opening read pipe!\n");
+
+    ocall_printf("Opening read pipe!\n");
     readServerPipe = ocall_open(pipeName, O_ASYNC | O_RDONLY);
 
     //start iee-server pipe
-    bzero(pipeName,256);
+    bzero(pipeName, 256);
     strcpy(pipeName, pipeDir);
     strcpy(pipeName+strlen(pipeName), "iee_to_server");
-	//not necessary, server creates file.
-    //if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
-    //    if(errno != EEXIST)
-    //       iee_pee("Fail to mknod");
 
-    ocall_printf("opening write pipe!\n");
-    writeServerPipe = ocall_open(pipeName, O_ASYNC | O_WRONLY);
-    ocall_printf("donarino!\n");
+    ocall_printf("Opening write pipe!\n");
+    writeServerPipe = open(pipeName, O_ASYNC | O_WRONLY);
+        if(writeServerPipe < 0){
+        printf("shit %d\n", writeServerPipe);
+        exit(-1);
+    }
+
     ocall_printf("Finished IEE init! Gonna start listening for client requests through bridge!\n");
 }
 

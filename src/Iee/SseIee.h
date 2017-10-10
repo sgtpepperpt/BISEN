@@ -11,11 +11,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <errno.h>
-#include <string.h>
 
 #include "util/IeeUtils.h"
 #include "util/vec_token.h"
@@ -24,7 +19,7 @@
 
 int readServerPipe;
 int writeServerPipe;
-int clientBridgePipe;
+//int clientBridgePipe;
 
 void init_pipes();
 void destroy_pipes();

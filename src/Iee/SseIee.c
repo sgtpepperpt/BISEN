@@ -52,7 +52,7 @@ void f(bytes* out, size* out_len, const unsigned long long pid, const bytes in, 
     #endif
 }
 
-static void init_pipes() {
+void init_pipes() {
     char pipeName[256];
 
     //start server-iee pipe
@@ -77,7 +77,7 @@ static void init_pipes() {
     ocall_printf("Finished IEE init! Gonna start listening for client requests through bridge!\n");
 }
 
-static void destroy_pipes() {
+void destroy_pipes() {
     close(readServerPipe);
     close(writeServerPipe);
 }

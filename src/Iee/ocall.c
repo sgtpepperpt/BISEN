@@ -101,7 +101,7 @@ ssize_t ocall_write(int fildes, const void *buf, size_t nbytes)
     size_t buf_size = sizeof(unsigned char) + sizeof(int) + sizeof(size_t) + nbytes * sizeof(unsigned char);
     unsigned char* buffer = (unsigned char*)malloc(buf_size);
     buffer[0] = OCALL_WRITE;
-    ocall_printf("ocall fildes write is %d\n", fildes);
+    ocall_printf("ocall write %lu\n", nbytes);
     int pos = 1;
     iee_addIntToArr(fildes, buffer, &pos);
     iee_add_size_t(nbytes, buffer, &pos);

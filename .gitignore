@@ -1,7 +1,7 @@
-src/Data/enron
-src/Data/parsed
-
-!.gitkeep
+src/Data/enron/*
+!src/Data/enron/.gitkeep
+src/Data/parsed/*
+!src/Data/parsed/.gitkeep
 
 # Xcode
 #

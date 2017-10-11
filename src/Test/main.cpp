@@ -91,7 +91,7 @@ int main(int argc, const char * argv[]) {
     //free(output);
 
     const string base_dir = "../Data/parsed/";
-    const int num_queries = 10;
+    const int num_queries = 1;
 
     // random query parameters
     const int size = 2; // size will be about between [size, size * 2]
@@ -135,7 +135,7 @@ int main(int argc, const char * argv[]) {
     copy(all_words_set.begin(), all_words_set.end(), all_words.begin());
 
     for(unsigned i = 0; i < num_queries; i++) {
-        string query = client.generate_random_query(all_words, size, not_prob, and_prob);
+        string query = "sherlock && holmes || ze"; //client.generate_random_query(all_words, size, not_prob, and_prob);
 
         #ifdef VERBOSE
        // cout << "\n----------------------------\nQuery: " << query << endl;

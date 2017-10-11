@@ -27,7 +27,32 @@ void print_buffer(const char* name, const unsigned char * buf, const unsigned lo
     ocall_printf("\n");
 }
 
-void init_pipes() {
+// IEE entry point
+void f(bytes* out, size* out_len, const unsigned long long pid, const bytes in, const size in_len) {
+    #ifdef VERBOSE
+    ocall_printf("\n***** Entering IEE *****\n");
+    #endif
+
+    // set out variables
+    *out = NULL;
+    *out_len = 0;
+
+    //setup operation
+    if(in[0] == 'i')
+        setup(out, out_len, in, in_len);
+    //add / update operation
+    else if (in[0] == 'a')
+        add(out, out_len, in, in_len);
+    //search operation
+    else if (in[0] == 's')
+        search(out, out_len, in, in_len);
+
+    #ifdef VERBOSE
+    ocall_printf("\n***** Leaving IEE *****\n\n");
+    #endif
+}
+
+static void init_pipes() {
     char pipeName[256];
 
     //start server-iee pipe
@@ -52,37 +77,12 @@ void init_pipes() {
     ocall_printf("Finished IEE init! Gonna start listening for client requests through bridge!\n");
 }
 
-void destroy_pipes() {
+static void destroy_pipes() {
     close(readServerPipe);
     close(writeServerPipe);
 }
 
-// IEE entry point
-void f(unsigned char **out, unsigned long long *out_len, const unsigned long long pid, const unsigned char * in, const unsigned long long in_len) {
-    #ifdef VERBOSE
-    ocall_printf("\n***** Entering IEE *****\n");
-    #endif
-
-    // set out variables
-    *out = NULL;
-    *out_len = 0;
-
-    //setup operation
-    if(in[0] == 'i')
-        setup(out, out_len, in, in_len);
-    //add / update operation
-    else if (in[0] == 'a')
-        add(out, out_len, in, in_len);
-    //search operation
-    else if (in[0] == 's')
-        search(out, out_len, in, in_len);
-
-    #ifdef VERBOSE
-    ocall_printf("\n***** Leaving IEE *****\n\n");
-    #endif
-}
-
-void setup(unsigned char **out, unsigned long long *out_len, const unsigned char* in, const unsigned long long in_len) {
+static void setup(bytes* out, size* out_len, const bytes in, const size in_len) {
     int pos = 1;
 
     #ifdef VERBOSE
@@ -117,7 +117,7 @@ void setup(unsigned char **out, unsigned long long *out_len, const unsigned char
     #endif
 }
 
-void add(unsigned char **out, unsigned long long *out_len, const unsigned char* in, const unsigned long long in_len) {
+static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
     #ifdef VERBOSE
     ocall_printf("IEE: Started add!\n");
     #endif
@@ -187,7 +187,7 @@ void add(unsigned char **out, unsigned long long *out_len, const unsigned char* 
     (*out)[0] = 0x90;
 }
 
-void get_docs_from_server(vec_token *query, unsigned count_words) {
+static void get_docs_from_server(vec_token *query, unsigned count_words) {
     #ifdef VERBOSE
     ocall_printf("Requesting docs from server!\n");
     #endif
@@ -327,7 +327,7 @@ void get_docs_from_server(vec_token *query, unsigned count_words) {
     #endif
 }
 
-void search(unsigned char **output, unsigned long long *out_len, const unsigned char* in, const unsigned long long in_len) {
+static void search(bytes* out, size* out_len, const bytes in, const size in_len) {
     #ifdef VERBOSE
     ocall_printf("Search!\n");
     #endif
@@ -409,12 +409,12 @@ void search(unsigned char **output, unsigned long long *out_len, const unsigned 
 
     // return query results
     unsigned long long output_size = vi_size(response_docs) * sizeof(int);
-    *output = (unsigned char*)malloc(sizeof(unsigned char) * output_size);
+    *out = (unsigned char*)malloc(sizeof(unsigned char) * output_size);
     pos = 0;
 
     for(unsigned i = 0; i < vi_size(response_docs); i++) {
         //ocall_printf("%d ", response_docs.array[i]);
-        iee_addIntToArr(response_docs.array[i], *output, &pos);
+        iee_addIntToArr(response_docs.array[i], *out, &pos);
     }
     //ocall_printf("\n");
 

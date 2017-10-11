@@ -16,20 +16,20 @@
 #include "util/vec_token.h"
 #include "IeeCrypt.h"
 #include "QueryEvaluator.h"
+#include "types.h" // mpc data types
 
 int readServerPipe;
 int writeServerPipe;
 //int clientBridgePipe;
 
-void init_pipes();
-void destroy_pipes();
+static void init_pipes();
+static void destroy_pipes();
 
-//int f(char* data, int data_size, char** output);
-void f(unsigned char **out, unsigned long long *out_len, const unsigned long long pid, const unsigned char * in, const unsigned long long in_len);
+void f(bytes* out, size* out_len, const unsigned long long pid, const bytes in, const size in_len);
 
-void setup(unsigned char **out, unsigned long long *out_len, const unsigned char* in, const unsigned long long in_len);
-void add(unsigned char **out, unsigned long long *out_len, const unsigned char* in, const unsigned long long in_len);
-void search(unsigned char **output, unsigned long long *out_len, const unsigned char* in, const unsigned long long in_len);
+static void setup(bytes* out, size* out_len, const bytes in, const size in_len);
+static void add(bytes* out, size* out_len, const bytes in, const size in_len);
+static void search(bytes* out, size* out_len, const bytes in, const size in_len);
 
-void get_docs_from_server(vec_token *query, unsigned count_words);
+static void get_docs_from_server(vec_token *query, unsigned count_words);
 #endif /* SSE_IEE_H */

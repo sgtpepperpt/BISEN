@@ -77,14 +77,13 @@ int main(int argc, const char * argv[]) {
     ////////////////////////////////////////////////////////////////////////////
     // SETUP ///////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    printf("%d %d\n", crypto_auth_hmacsha256_KEYBYTES, crypto_secretbox_KEYBYTES);
     #ifdef VERBOSE
     printf("Starting IEE communication\n");
     #endif
 
     unsigned char * output;
     unsigned long long output_size;
-    f(&output, &output_size, 0, (const unsigned char*) data, data_size);
+    f(&output, &output_size, 0, (const bytes) data, data_size);
 
     //print_buffer("Output", output, output_size);
 
@@ -92,7 +91,7 @@ int main(int argc, const char * argv[]) {
     //free(output);
 
     const string base_dir = "../Data/parsed/";
-    const int num_queries = 1;
+    const int num_queries = 10;
 
     // random query parameters
     const int size = 2; // size will be about between [size, size * 2]
@@ -119,7 +118,7 @@ int main(int argc, const char * argv[]) {
         //print_buffer("Data", data, data_size);
 
         output_size = 0;
-        f(&output, &output_size, 0, (const unsigned char*) data, data_size);
+        f(&output, &output_size, 0, (const bytes) data, data_size);
 
         //print_buffer("Output", output, output_size);
 
@@ -136,7 +135,7 @@ int main(int argc, const char * argv[]) {
     copy(all_words_set.begin(), all_words_set.end(), all_words.begin());
 
     for(unsigned i = 0; i < num_queries; i++) {
-        string query = "sherlock && holmes || ze";//client.generate_random_query(all_words, size, not_prob, and_prob);
+        string query = client.generate_random_query(all_words, size, not_prob, and_prob);
 
         #ifdef VERBOSE
        // cout << "\n----------------------------\nQuery: " << query << endl;
@@ -147,7 +146,7 @@ int main(int argc, const char * argv[]) {
 
         //print_buffer("Data", data, data_size);
         output_size = 0;
-        f(&output, &output_size, 0, (const unsigned char*) data, data_size);
+        f(&output, &output_size, 0, (const bytes) data, data_size);
         //print_buffer("Output", output, output_size);
 
         //process results

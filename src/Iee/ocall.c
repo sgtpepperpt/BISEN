@@ -2,20 +2,39 @@
 
 void ocall_printf(const char *fmt, ...)
 {
-    //TODO do something
-    /*#define BUFSIZ 512
+    //DEBUG ONLY, NOT WORKING IN SGX
+    #undef BUFSIZ
+    #define BUFSIZ 512
+    #include <stdarg.h>
     char buf[BUFSIZ+1] = {'\0'};
     va_list ap;
     va_start(ap, fmt);
     vsnprintf(buf+1, BUFSIZ+1, fmt, ap);
     va_end(ap);
 
-    // op code
-    buf[0] = 0x70;
+    ocall_strprint(buf);
+}
 
-    unsigned char * output;
-    unsigned long long output_size;
-    fserver(&output, &output_size, buf, BUFSIZ+1);*/
+void ocall_strprint(const char *str)
+{
+    size_t len = iee_strlen(str);
+
+    size_t inlen = sizeof(int) + (len * sizeof(char));
+    unsigned char* in = (unsigned char*)malloc(inlen);
+    in[0] = OCALL_STRPRNT;
+
+    int pos = 1;
+    iee_addToArr((const void *)str, len+1, in, &pos); // len + 1 to include \0
+
+    // execute ocall
+    unsigned char * out;
+    unsigned long long outlen;
+    fserver(&out, &outlen, in, inlen);
+
+    // read ocall output
+    pos = 0;
+    int ocall_ret = iee_readIntFromArr(out, &pos);
+    //printf("ret ocall: %d\n", ocall_ret);// not ocall_printf, recursion...
 }
 
 int ocall_open(const char *path, int oflags)
@@ -39,7 +58,7 @@ int ocall_open(const char *path, int oflags)
     // read ocall output
     pos = 0;
     int ocall_ret = iee_readIntFromArr(out, &pos);
-    ocall_printf("ret ocall: %d\n", ocall_ret);
+    ocall_printf("ret ocall_open: %d\n", ocall_ret);
 
     return ocall_ret;
 }
@@ -86,7 +105,7 @@ ssize_t ocall_read(int fildes, unsigned char* buf, size_t nbytes)
     // read ocall output
     pos = 0;
     ssize_t ocall_ret = iee_read_ssize_t(out, &pos);
-    ocall_printf("ret ocall: %lu\n", ocall_ret);
+    ocall_printf("ret ocall_read: %lu\n", ocall_ret);
 
     ocall_printf("%ld\n", ocall_ret);
     
@@ -119,5 +138,27 @@ ssize_t ocall_write(int fildes, const void *buf, size_t nbytes)
 
     free(buffer);
     free(output);
+    return ocall_ret;
+}
+
+int ocall_exit(int status)
+{
+    size_t inlen = sizeof(int);
+    unsigned char* in = (unsigned char*)malloc(inlen);
+    in[0] = OCALL_EXIT;
+
+    int pos = 1;
+    iee_addIntToArr(status, in, &pos);
+
+    // execute ocall
+    unsigned char * out;
+    unsigned long long outlen;
+    fserver(&out, &outlen, in, inlen);
+
+    // read ocall output
+    pos = 0;
+    int ocall_ret = iee_readIntFromArr(out, &pos);
+    ocall_printf("ret status ocall: %d\n", ocall_ret);
+
     return ocall_ret;
 }

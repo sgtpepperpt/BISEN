@@ -10,13 +10,8 @@
 
 void iee_pee(const char *msg)
 {
-    perror(msg);
-    exit(0);
-    /*unsigned char * m = (unsigned char *)malloc(32 * sizeof(char));
-    for(int i = 1; i < 32; i++)
-        m[i] = msg[i];
-
-    fserver(NULL, 0,m, 32);*/
+    ocall_strprint(msg);
+    ocall_exit(-1);
 }
 
 void iee_socketSend (int sockfd, unsigned char* buff, unsigned long size) {
@@ -48,13 +43,13 @@ void iee_socketReceive(int sockfd, unsigned char* buff, unsigned long size) {
 int iee_receiveAll (int socket, unsigned char* buff, unsigned long len) {
     ssize_t r = 0;
     while (r < len) {
-        printf("calling len %lu; r %ld\n", len, r);
+        ocall_printf("calling len %lu; r %ld\n", len, r);
         ssize_t n = ocall_read(socket, buff + r, len-r);
-        printf("got %lu\n-------------------------\n", n);
+        ocall_printf("got %lu\n-------------------------\n", n);
         if (n < 0) iee_pee("ERROR reading from socket");
         r+=n;
     }
-    printf("*********** finish iee_receiveAll ***********\n\n");
+    ocall_printf("*********** finish iee_receiveAll ***********\n\n");
     return r;
 }
 

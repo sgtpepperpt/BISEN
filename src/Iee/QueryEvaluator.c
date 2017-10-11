@@ -41,9 +41,10 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
         tkn = rpn_expr.array[i];
 
         if(tkn.type == '&') {
-            if (vt_size(eval_stack) < 2)
-                printf("Insufficient operands for AND!\n");
-                //throw invalid_argument("Insufficient operands for AND!");
+            if (vt_size(eval_stack) < 2) {
+                ocall_strprint("Insufficient operands for AND!\n");
+                ocall_exit(-1);
+            }
 
             // get both operands for AND
             vec_int and1 = vt_peek_back(eval_stack).docs;
@@ -54,12 +55,11 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
 
             // intersection of the two sets of documents
             vec_int set_inter = vi_vec_intersection(and1, and2);
-            //set_intersection(and1.begin(), and1.end(), and2.begin(), and2.end(), back_inserter(set_inter));
 
-            /*printf("intersection ");
+            /*ocall_strprint("intersection ");
             for(int i = 0; i < size(set_inter); i++)
-                printf("%i ", set_inter.array[i]);
-            printf("\n");*/
+                ocall_printf("%i ", set_inter.array[i]);
+            ocall_strprint("\n");*/
 
             iee_token res;
             res.type = 'r';
@@ -71,9 +71,10 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             vi_destroy(&and1);
             vi_destroy(&and2);
         } else if(tkn.type == '|') {
-            if (vt_size(eval_stack) < 2)
-                printf("Insufficient operands for OR!\n");
-                //throw invalid_argument("Insufficient operands for OR!");
+            if (vt_size(eval_stack) < 2) {
+                ocall_strprint("Insufficient operands for OR!\n");
+                ocall_exit(-1);
+            }
 
             // get both operands for OR
             vec_int or1 = vt_peek_back(eval_stack).docs;
@@ -86,10 +87,10 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             vec_int set_un = vi_vec_union(or1, or2);
             //set_union(or1.begin(), or1.end(), or2.begin(), or2.end(), back_inserter(set_un));
 
-            /*printf("union ");
+            /*ocall_strprint("union ");
             for(int i = 0; i < size(set_un); i++)
-                printf("%i ", set_un.array[i]);
-            printf("\n");*/
+                ocall_printf("%i ", set_un.array[i]);
+            ocall_strprint("\n");*/
 
             iee_token res;
             res.type = 'r';
@@ -101,9 +102,10 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             vi_destroy(&or1);
             vi_destroy(&or2);
         } else if(tkn.type == '!') {
-            if (vt_size(eval_stack) < 1)
-                printf("Insufficient operands for NOT!\n");
-                //throw invalid_argument("Insufficient operands for NOT!");
+            if (vt_size(eval_stack) < 1) {
+                ocall_strprint("Insufficient operands for NOT!\n");
+                ocall_exit(-1);
+            }
 
             vec_int negate = vt_peek_back(eval_stack).docs;
             vt_pop_back(&eval_stack);
@@ -111,10 +113,10 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             // difference between all docs and the docs we don't want
             vec_int set_diff = get_not_docs(nDocs, negate);
 
-            /*printf("not ");
+            /*ocall_strprint("not ");
             for(int i = 0; i < size(set_diff); i++)
-                printf("%i ", set_diff.array[i]);
-            printf("\n");*/
+                ocall_printf("%i ", set_diff.array[i]);
+            ocall_strprint("\n");*/
 
             iee_token res;
             res.type = 'r';
@@ -130,9 +132,9 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
     }
 
     if (vt_size(eval_stack) != 1) {
-        printf("Wrong number of operands left: %u\n", vt_size(eval_stack));
-        //string err = "Wrong number of operands left: " + eval_stack.size();c
-        //throw invalid_argument(err);
+        ocall_printf("Wrong number of operands left: %u\n", vt_size(eval_stack));
+        //ocall_printf("%02x\n", vt_peek_back(eval_stack).type);
+        ocall_exit(-1);
     }
 
     return vt_peek_back(eval_stack).docs;

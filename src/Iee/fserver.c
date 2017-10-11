@@ -1,5 +1,21 @@
 #include "fserver.h"
 
+static void fs_strprint(bytes* out, size* outlen, const bytes in, const size inlen)
+{
+    // read values from buffer
+    int pos = 1;
+
+    // execute printf syscall
+    printf("%s", in+1); // ignore op char
+
+    // prepare response
+    pos = 0;
+    *outlen = sizeof(int);
+    *out = (void *)malloc(*outlen);
+
+    iee_addIntToArr(0, *out, &pos);
+}
+
 static void fs_open(bytes* out, size* outlen, const bytes in, const size inlen)
 {
     printf("Open ocall\n");
@@ -93,6 +109,26 @@ static void fs_write(bytes* out, size* outlen, const bytes in, const size inlen)
     iee_add_ssize_t(res, *out, &pos);
 }
 
+static void fs_exit(bytes* out, size* outlen, const bytes in, const size inlen)
+{
+    printf("EXIT ocall\n");
+
+    // read values from buffer
+    int pos = 1;
+    int status = iee_readIntFromArr(in, &pos);
+
+    // execute close syscall
+    exit(status);
+    printf("We definitely should't be running after exiting...");
+
+    // prepare response
+    pos = 0;
+    *outlen = sizeof(int);
+    *out = (void *)malloc(*outlen);
+
+    iee_addIntToArr(-1, *out, &pos);
+}
+
 void fserver(bytes* out, size* outlen, const bytes in, const size inlen)
 {
     // set out variables
@@ -110,4 +146,10 @@ void fserver(bytes* out, size* outlen, const bytes in, const size inlen)
 
     else if(in[0] == OCALL_CLOSE)
         fs_close(out, outlen, in, inlen);
+
+    else if(in[0] == OCALL_STRPRNT)
+        fs_strprint(out, outlen, in, inlen);
+
+    else if(in[0] == OCALL_EXIT)
+        fs_exit(out, outlen, in, inlen);
 }

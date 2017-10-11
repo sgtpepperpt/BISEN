@@ -30,7 +30,7 @@ void print_buffer(const char* name, const unsigned char * buf, const unsigned lo
 // IEE entry point
 void f(bytes* out, size* out_len, const unsigned long long pid, const bytes in, const size in_len) {
     #ifdef VERBOSE
-    ocall_printf("\n***** Entering IEE *****\n");
+    ocall_strprint("\n***** Entering IEE *****\n");
     #endif
 
     // set out variables
@@ -48,7 +48,7 @@ void f(bytes* out, size* out_len, const unsigned long long pid, const bytes in, 
         search(out, out_len, in, in_len);
 
     #ifdef VERBOSE
-    ocall_printf("\n***** Leaving IEE *****\n\n");
+    ocall_strprint("\n***** Leaving IEE *****\n\n");
     #endif
 }
 
@@ -59,7 +59,7 @@ void init_pipes() {
     strcpy(pipeName, pipeDir);
     strcpy(pipeName+strlen(pipeName), "server_to_iee");
 
-    ocall_printf("Opening read pipe!\n");
+    ocall_strprint("Opening read pipe!\n");
     readServerPipe = ocall_open(pipeName, O_ASYNC | O_RDONLY);
 
     //start iee-server pipe
@@ -67,26 +67,26 @@ void init_pipes() {
     strcpy(pipeName, pipeDir);
     strcpy(pipeName+strlen(pipeName), "iee_to_server");
 
-    ocall_printf("Opening write pipe!\n");
+    ocall_strprint("Opening write pipe!\n");
     writeServerPipe = open(pipeName, O_ASYNC | O_WRONLY);
-        if(writeServerPipe < 0){
-        printf("shit %d\n", writeServerPipe);
-        exit(-1);
+    if(writeServerPipe < 0){
+        ocall_strprint("everything gone awry\n");
+        ocall_exit(-1);
     }
 
-    ocall_printf("Finished IEE init! Gonna start listening for client requests through bridge!\n");
+    ocall_strprint("Finished IEE init! Gonna start listening for client requests through bridge!\n");
 }
 
 void destroy_pipes() {
-    close(readServerPipe);
-    close(writeServerPipe);
+    ocall_close(readServerPipe);
+    ocall_close(writeServerPipe);
 }
 
 static void setup(bytes* out, size* out_len, const bytes in, const size in_len) {
     int pos = 1;
 
     #ifdef VERBOSE
-    ocall_printf("IEE: Starting Setup!\n");
+    ocall_strprint("IEE: Starting Setup!\n");
     #endif
 
     // read kEnc
@@ -113,13 +113,13 @@ static void setup(bytes* out, size* out_len, const bytes in, const size in_len) 
     (*out)[0] = 0x90;
 
     #ifdef VERBOSE
-    ocall_printf("IEE: Finished Setup!\n");
+    ocall_strprint("IEE: Finished Setup!\n");
     #endif
 }
 
 static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
     #ifdef VERBOSE
-    ocall_printf("IEE: Started add!\n");
+    ocall_strprint("IEE: Started add!\n");
     #endif
 
     // read buffer
@@ -172,13 +172,13 @@ static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
 
         print_buffer("add label", label, H_BYTES);
         print_buffer("add enc", enc_data, enc_data_size);
-        ocall_printf("\n\n");
+        ocall_strprint("\n\n");
         free(label);
         free(enc_data);
     }
 
     #ifdef VERBOSE
-    ocall_printf("Finished add in IEE!\n");
+    ocall_strprint("Finished add in IEE!\n");
     #endif
 
     // output message
@@ -189,7 +189,7 @@ static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
 
 static void get_docs_from_server(vec_token *query, unsigned count_words) {
     #ifdef VERBOSE
-    ocall_printf("Requesting docs from server!\n");
+    ocall_strprint("Requesting docs from server!\n");
     #endif
 
     // initialise array to hold all tokens in random order
@@ -221,7 +221,7 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
     }
 
     #ifdef VERBOSE
-    ocall_printf("Randomized positions!\n");
+    ocall_strprint("Randomized positions!\n");
     #endif
 
     // request the documents from the server
@@ -323,13 +323,13 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
     }
 
     #ifdef VERBOSE
-    ocall_printf("Got all docs from server!\n\n");
+    ocall_strprint("Got all docs from server!\n\n");
     #endif
 }
 
 static void search(bytes* out, size* out_len, const bytes in, const size in_len) {
     #ifdef VERBOSE
-    ocall_printf("Search!\n");
+    ocall_strprint("Search!\n");
     #endif
 
     vec_token query;
@@ -382,7 +382,7 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
     get_docs_from_server(&query, count_words);
 
     #ifdef VERBOSE
-    ocall_printf("parsed: ");
+    ocall_strprint("parsed: ");
     for(unsigned i = 0; i < vt_size(query); i++) {
         iee_token x = query.array[i];
         if(x.type == WORD_TOKEN) {
@@ -397,14 +397,14 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
             ocall_printf("%c ", x.type);
         }
     }
-    ocall_printf("\n\n");
+    ocall_strprint("\n\n");
     #endif
 
     //calculate boolean formula
     vec_int response_docs = evaluate(query, nDocs);
 
     #ifdef VERBOSE
-    ocall_printf("Query Evaluated in IEE!\n");
+    ocall_strprint("Query Evaluated in IEE!\n");
     #endif
 
     // return query results
@@ -422,7 +422,7 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
     vi_destroy(&response_docs);
 
     #ifdef VERBOSE
-    ocall_printf("Finished Search!\n");
+    ocall_strprint("Finished Search!\n");
     #endif
 
     *out_len = sizeof(unsigned char) * output_size;

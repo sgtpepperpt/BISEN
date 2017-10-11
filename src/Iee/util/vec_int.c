@@ -106,8 +106,8 @@ int main (char* argv, int argc) {
     vec_int r = array_union(va, vb);
     
     for(int i = 0; i < r.counter; i++)
-        printf("%d ", r.array[i]);
-    printf("\n");
+        ocall_printf("%d ", r.array[i]);
+    ocall_printf("\n");
 
     return 0;
 }*/

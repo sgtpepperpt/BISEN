@@ -64,8 +64,8 @@ int main (char* argv, int argc) {
     push_back(&vb, 3);
     
     for(int i = 0; i < r.counter; i++)
-        printf("%d ", r.array[i]);
-    printf("\n");
+        ocall_printf("%d ", r.array[i]);
+    ocall_printf("\n");
 
     return 0;
 }*/

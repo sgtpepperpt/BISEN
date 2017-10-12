@@ -3,6 +3,10 @@ src/Data/enron/*
 src/Data/parsed/*
 !src/Data/parsed/.gitkeep
 
+# generated test files
+src/Test/output
+
+
 # Xcode
 #
 # gitignore contributors: remember to update Global/Xcode.gitignore, Objective-C.gitignore & Swift.gitignore

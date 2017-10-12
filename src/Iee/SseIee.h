@@ -26,8 +26,8 @@ int readServerPipe;
 int writeServerPipe;
 //int clientBridgePipe;
 
-void init_pipes();
-void destroy_pipes();
+static void init_pipes();
+static void destroy_pipes();
 
 void f(bytes* out, size* out_len, const unsigned long long pid, const bytes in, const size in_len);
 

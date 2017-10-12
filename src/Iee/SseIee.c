@@ -42,7 +42,7 @@ void f(bytes* out, size* out_len, const unsigned long long pid, const bytes in, 
     #endif
 }
 
-void init_pipes() {
+static void init_pipes() {
     char pipeName[256];
 
     //start server-iee pipe
@@ -67,17 +67,18 @@ void init_pipes() {
     ocall_strprint("Finished IEE init! Gonna start listening for client requests through bridge!\n");
 }
 
-void destroy_pipes() {
+static void destroy_pipes() {
     ocall_close(readServerPipe);
     ocall_close(writeServerPipe);
 }
 
 static void setup(bytes* out, size* out_len, const bytes in, const size in_len) {
-    int pos = 1;
-
     #ifdef VERBOSE
     ocall_strprint("IEE: Starting Setup!\n");
     #endif
+
+    init_pipes();
+    int pos = 1;
 
     // read kEnc
     const int kEnc_size = iee_readIntFromArr(in, &pos);

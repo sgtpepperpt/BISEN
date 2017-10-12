@@ -66,8 +66,16 @@ int main(int argc, const char * argv[]) {
     setvbuf(stdout, NULL, _IONBF, 0);
 
     // init iee
-    init_pipes();
+    // init_pipes();
 
+    // init output file
+    FILE *out_f = fopen("output","rb+");
+    if (!out_f) {
+		printf("Error opening output file!");
+		exit(-1);
+	}
+
+    // init client
     SseClient client;
     unsigned char* data;
     unsigned long long data_size;
@@ -79,6 +87,10 @@ int main(int argc, const char * argv[]) {
     data_size = client.setup(&data);
     //print_buffer("Data", data, data_size);
 
+    // write to benchmark file
+    fwrite(&data_size, sizeof(unsigned long long), 1, out_f);
+    fwrite(data, sizeof(unsigned char), data_size, out_f);
+
     #ifdef VERBOSE
     printf("Starting IEE communication\n");
     #endif
@@ -87,16 +99,20 @@ int main(int argc, const char * argv[]) {
     unsigned long long output_size;
     f(&output, &output_size, 0, (const bytes) data, data_size);
 
+    // write to benchmark file
+    fwrite(&data_size, sizeof(unsigned long long), 1, out_f);
+    fwrite(data, sizeof(unsigned char), data_size, out_f);
+
     //print_buffer("Output", output, output_size);
 
     free(data);
     free(output);
 
     const string base_dir = "../Data/parsed/";
-    const int num_queries = 1;
+    const int num_queries = 100;
 
     // random query parameters
-    const int size = 2; // size will be about between [size, size * 2]
+    const int size = 5; // size will be about between [size, size * 2]
     const int not_prob = 5;
     const int and_prob = 30;
 
@@ -123,6 +139,10 @@ int main(int argc, const char * argv[]) {
         f(&output, &output_size, 0, (const bytes) data, data_size);
 
         //print_buffer("Output", output, output_size);
+
+        // write to benchmark file
+        fwrite(&data_size, sizeof(unsigned long long), 1, out_f);
+        fwrite(data, sizeof(unsigned char), data_size, out_f);
 
         free(data);
         free(output);
@@ -154,6 +174,10 @@ int main(int argc, const char * argv[]) {
         f(&output, &output_size, 0, (const bytes) data, data_size);
         //print_buffer("Output", output, output_size);
 
+        // write to benchmark file
+        fwrite(&data_size, sizeof(unsigned long long), 1, out_f);
+        fwrite(data, sizeof(unsigned char), data_size, out_f);
+
         //process results
         const int nDocs = output_size / sizeof(int);
 
@@ -174,6 +198,9 @@ int main(int argc, const char * argv[]) {
 
     //for (auto const& x : f)
     //    cout << x.first << ':' << x.second << endl;
+
+    // close benchamrk file
+    fclose(out_f);
 
     return 0;
 }

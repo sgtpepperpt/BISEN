@@ -31,9 +31,6 @@ protected:
     int querySocket;
     int nDocs;
 
-    void openQueryResponseSocket();
-    int acceptQueryResponseSocket();
-
 public:
     SseClient();
     ~SseClient();

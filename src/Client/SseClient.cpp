@@ -43,12 +43,6 @@ unsigned long long SseClient::setup(unsigned char** data) {
     int pos = 0;
     addToArr(&op, sizeof(unsigned char), *data, &pos);
 
-    // TODO client envia o kCom, deve ser lido pela framework do norte
-    // add kCom to buffer
-    /*addIntToArr(symBlocksize, data, &pos);
-    for (int i = 0; i < symBlocksize; i++)
-        addToArr(&kCom[i], sizeof(unsigned char), data, &pos);*/
-
     // add kEnc to buffer
     addIntToArr(client_symBlocksize, *data, &pos);
     for (int i = 0; i < client_symBlocksize; i++)
@@ -186,30 +180,6 @@ int SseClient::search(string query, unsigned char** data) {
     }
 
     return data_size;
-}
-
-void SseClient::openQueryResponseSocket() {
-    struct sockaddr_in serv_addr;
-    querySocket = socket(AF_INET, SOCK_STREAM, 0);
-    if (querySocket < 0)
-        pee("SseClient::getQueryResponseSocket ERROR opening socket");
-    bzero((char *) &serv_addr, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons(clientPort);
-    if (bind(querySocket, (const struct sockaddr *) &serv_addr,(socklen_t)sizeof(serv_addr)) < 0)
-        pee("SseClient::getQueryResponseSocket ERROR on binding");
-    listen(querySocket,5);
-}
-
-int SseClient::acceptQueryResponseSocket() {
-    int newsockfd = -1;
-    while (newsockfd < 0) {
-        struct sockaddr_in cli_addr;
-        socklen_t clilen = sizeof(cli_addr);
-        newsockfd = accept(querySocket, (struct sockaddr *) &cli_addr, &clilen);
-    }
-    return newsockfd;
 }
 
 //void SseClient::addDocs(string textDataset) {

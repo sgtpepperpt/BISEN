@@ -2,57 +2,116 @@
 #include <stdlib.h>
 #include "../Iee/types.h"
 
-// 0x1 : setup secret key
-byte cmd1[] = {0x01};
+// exported
+size test_len;
+bytes* commands;
+size* commands_sizes;
 
-// 0x2 : create or reset file
-byte cmd2[] = {0x02};
+size count_queries_file(FILE *f, size_t f_size)
+{
+    size num_queries = 0;
+    size_t pos = 0;
+    rewind(f);
 
-// 0x3 : add byte string to file
-byte cmd3_1[] = {0x03, 0x03, 0xAA, 0xBB, 0xCC};
-byte cmd3_2[] = {0x03, 0x02, 0xAA, 0xBB};
-byte cmd3_3[] = {0x03, 0x01, 0xAA};
+    while(pos < f_size) {
+        size query_size = 0;
+        if(fread(&query_size, sizeof(size), 1, f) != 1) {
+            printf("Error reading file!\n");
+            exit(-1);
+        }
 
-// 0x4 : get byte string from file
-byte cmd4_1[] = {0x04, 0x02};
-byte cmd4_2[] = {0x04, 0x02};
-byte cmd4_3[] = {0x04, 0x03};
-byte cmd4_4[] = {0x04, 0x03};
-byte cmd4_5[] = {0x04, 0x01};
+        // ignore the query
+        fseek(f, query_size, SEEK_CUR);
+        num_queries++;
 
-// exported 
-#define TL 10 
-size test_len = TL;
-bytes commands[TL] = { cmd1, cmd2, cmd3_1, cmd3_2, cmd3_3, cmd4_1, cmd4_2, cmd4_3, cmd4_4, cmd4_5 };
-size commands_sizes[TL] = {1,1,   5,4,3,   2,2,2,2,2};
+        // advance position
+        pos += sizeof(size) + query_size;
+    }
+
+    rewind(f);
+    return num_queries;
+}
+
+size_t get_file_size(FILE *f)
+{
+    fseek(f, 0, SEEK_END);
+    size_t in_size = ftell(f);
+    rewind(f);
+
+    return in_size;
+}
 
 void generate_commands()
 {
-	FILE *f = fopen("output","rb+");
-    if (!f) {
-		printf("Unable to open file!");
+    // init output file
+    FILE *in_f = fopen("test_all","rb");
+    if (!in_f) {
+		printf("Error opening test file!\n");
 		exit(-1);
 	}
 
-    bytes buff = (bytes)malloc(sizeof(byte)*4);
-    buff[0] = 99;
-    buff[1] = 104;
-    buff[2] = 81;
-    buff[3] = 82;
+    // get file size
+    size_t f_size = get_file_size(in_f);
+    printf("File size: %lu\n", f_size);
 
-    fwrite(buff, sizeof(unsigned char), 4, f);
-    fseek(f, 0, SEEK_SET);
+    // count number of queries
+    test_len = count_queries_file(in_f, f_size);
+    printf("Number of queries to execute: %u\n", test_len);
 
-    for (int i = 0; i < 4; i++) {
-        byte a = -1;
-		int x = fread(&a, sizeof(byte), 1, f);
-		printf("%d . %c\n", x, a);
-	}
-    printf("o\n");
-    fclose(f);
-    free(buff);
+    // prepare buffers to hold queries
+    commands = (unsigned char**)malloc(test_len * sizeof(unsigned char*));
+    commands_sizes = (unsigned long long*)malloc(test_len * sizeof(unsigned long long));
+
+    // iterate the file to read the commands into the buffers
+    unsigned current_query = 0;
+    rewind(in_f);
+
+    for(unsigned current_query = 0; current_query < test_len; current_query++) {
+        if(fread(commands_sizes + current_query, sizeof(size), 1, in_f) != 1) {
+            printf("Error reading file!\n");
+            exit(-1);
+        }
+
+        // allocate the query buffer
+        commands[current_query] = (unsigned char*)malloc(commands_sizes[current_query] * sizeof(unsigned char*));
+
+        if(fread(commands[current_query], commands_sizes[current_query], 1, in_f) != 1) {
+            printf("Error reading file!\n");
+            exit(-1);
+        }
+    }
+
+    /*for(int i = 0; i < test_len; i++)
+        printf("%d\n", commands_sizes[i]);
+    printf("\n");*/
+
+    printf("File totally read!\n");
+    fclose(in_f);
+
+    free(commands_sizes);
+    for(int i = 0; i < test_len; i++)
+        free(commands[i]);
+
+    free(commands);
 }
 
+/*
+size_t read_all(FILE *f, unsigned char** buffer)
+{
+    // get file size
+    fseek(f, 0, SEEK_END);
+    size_t size = ftell(f);
+    rewind(f);
+
+    // allocate buffer to read the file into
+    *buffer = (unsigned char*)malloc(sizeof(unsigned char*) * size);
+    size_t pos = 0;
+    while(pos < size) {
+        pos += fread(*buffer, sizeof(size), size, f);
+    }
+
+    return size;
+}*/
 
 int main()
 {

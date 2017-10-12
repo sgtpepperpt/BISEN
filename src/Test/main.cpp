@@ -108,10 +108,6 @@ int main(int argc, const char * argv[]) {
     unsigned long long output_size;
     f(&output, &output_size, 0, (const bytes) data, data_size);
 
-    // write to benchmark file
-    fwrite(&data_size, sizeof(unsigned long long), 1, out_f);
-    fwrite(data, sizeof(unsigned char), data_size, out_f);
-
     //print_buffer("Output", output, output_size);
 
     free(data);

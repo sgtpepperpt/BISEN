@@ -18,6 +18,10 @@
 #include "QueryEvaluator.h"
 #include "types.h" // mpc data types
 
+#define OP_SETUP 0x69
+#define OP_ADD 0x61
+#define OP_SRC 0x73
+
 int readServerPipe;
 int writeServerPipe;
 //int clientBridgePipe;

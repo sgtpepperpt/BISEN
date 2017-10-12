@@ -70,13 +70,15 @@ int main(int argc, const char * argv[]) {
 
     SseClient client;
     unsigned char* data;
-    unsigned long long data_size = client.setup(&data);
-
-    //print_buffer("Data", data, data_size);
+    unsigned long long data_size;
 
     ////////////////////////////////////////////////////////////////////////////
     // SETUP ///////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
+
+    data_size = client.setup(&data);
+    //print_buffer("Data", data, data_size);
+
     #ifdef VERBOSE
     printf("Starting IEE communication\n");
     #endif
@@ -87,8 +89,8 @@ int main(int argc, const char * argv[]) {
 
     //print_buffer("Output", output, output_size);
 
-    //free(data);
-    //free(output);
+    free(data);
+    free(output);
 
     const string base_dir = "../Data/parsed/";
     const int num_queries = 1;
@@ -121,6 +123,9 @@ int main(int argc, const char * argv[]) {
         f(&output, &output_size, 0, (const bytes) data, data_size);
 
         //print_buffer("Output", output, output_size);
+
+        free(data);
+        free(output);
 
         // add all new words to a set, used later to generate queries
         all_words_set.insert(text.begin(), text.end());
@@ -163,6 +168,8 @@ int main(int argc, const char * argv[]) {
         }
 
         printResults(results);
+        free(data);
+        free(output);
     }
 
     //for (auto const& x : f)

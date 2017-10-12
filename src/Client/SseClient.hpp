@@ -12,8 +12,7 @@
 #ifndef SseClient_hpp
 #define SseClient_hpp
 
-#include "../Common/Utils.h"
-#include "../Common/Definitions.h"
+#include "ClientUtils.h"
 #include "EnglishAnalyzer.h"
 #include "QueryParser.hpp"
 

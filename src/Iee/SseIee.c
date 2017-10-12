@@ -6,16 +6,6 @@
 //  Copyright © 2016 Bernardo Ferreira. All rights reserved.
 //
 
-/*
- Required changes are tagged with [BP]
-
- Modifications:
- -> There is no connection between client and IEE. Client requests will be given as input messages to SseIee.
- -> SseIee runs with a message already on plaintext. Secure channel encryption/decryption is taken care of outside SseIee.
- -> Thus, KCom no longer exists here.
- -> Pipe connections will thus only be required for Iee->Server and Server->Iee. 
-*/
-
 #include "SseIee.h"
 
 const char* pipeDir = "/tmp/BooleanSSE/";
@@ -38,13 +28,13 @@ void f(bytes* out, size* out_len, const unsigned long long pid, const bytes in, 
     *out_len = 0;
 
     //setup operation
-    if(in[0] == 'i')
+    if(in[0] == OP_SETUP)
         setup(out, out_len, in, in_len);
     //add / update operation
-    else if (in[0] == 'a')
+    else if (in[0] == OP_ADD)
         add(out, out_len, in, in_len);
     //search operation
-    else if (in[0] == 's')
+    else if (in[0] == OP_SRC)
         search(out, out_len, in, in_len);
 
     #ifdef VERBOSE

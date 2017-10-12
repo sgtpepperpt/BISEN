@@ -32,6 +32,6 @@ client.a: $(CLIENT_DIR)/*.c $(CLIENT_DIR)/*.cpp
 
 clean:
 	@rm -f main storage.txt
-	@find . -name "*~" -exec rm {} \;
-	@find . -name "*.a" -exec rm {} \;
+	@find .. -name "*~" -exec rm {} \;
+	@find .. -name "*.a" -exec rm {} \;
 	@find .. -name "*.o" -exec rm {} \;

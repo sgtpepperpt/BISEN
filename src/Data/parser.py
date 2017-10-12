@@ -76,6 +76,7 @@ if(len(sys.argv) != 2):
 
 # clear parsed folder
 for f in os.listdir("./parsed/"):
-    os.remove("./parsed/" + f)
+    if f != ".gitkeep":
+        os.remove("./parsed/" + f)
 
 iterate_folders("./enron", int(sys.argv[1]))

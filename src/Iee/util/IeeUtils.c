@@ -121,3 +121,9 @@ size_t iee_strlen(const char* str)
 
     return len;
 }
+
+void iee_bzero(void *s, size_t n)
+{
+    for(unsigned i = 0; i < n; i++)
+        *((char*)(s+i)) = 0x00;
+}

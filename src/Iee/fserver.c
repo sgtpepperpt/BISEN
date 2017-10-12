@@ -91,7 +91,6 @@ static void fs_write(bytes* out, size* outlen, const bytes in, const size inlen)
     // read values from buffer
     int pos = 1;
     int fildes = iee_readIntFromArr(in, &pos);
-    printf("fildes write is %d\n", fildes);
     size_t nbytes = iee_read_size_t(in, &pos);
 
     void *buf = (void *)malloc(sizeof(unsigned char) * nbytes);

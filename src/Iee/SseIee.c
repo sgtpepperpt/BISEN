@@ -53,7 +53,7 @@ void init_pipes() {
     readServerPipe = ocall_open(pipeName, O_ASYNC | O_RDONLY);
 
     //start iee-server pipe
-    bzero(pipeName, 256);
+    iee_bzero(pipeName, 256);
     strcpy(pipeName, pipeDir);
     strcpy(pipeName+strlen(pipeName), "iee_to_server");
 
@@ -148,7 +148,8 @@ static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
         int enc_data_size = sizeof(int) + C_EXPBYTES;
 
         unsigned char* nonce = (unsigned char*)malloc(sizeof(unsigned char) * C_NONCESIZE);
-        for(int i= 0; i < C_NONCESIZE; i++) nonce[i] = 0x00;
+        for(int i= 0; i < C_NONCESIZE; i++)
+            nonce[i] = 0x00;
 
         unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * enc_data_size);
         c_encrypt(enc_data, (unsigned char*)&d, sizeof(int), nonce, get_kEnc());
@@ -239,8 +240,8 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
                 label[i] = l[i];
 
             labels[c] = label;
-            print_buffer("label", label,H_BYTES);
-            bzero(l, H_BYTES);
+            print_buffer("label", label, H_BYTES);
+            iee_bzero(l, H_BYTES);
         }
 
         free(l);
@@ -287,8 +288,9 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
                 iee_addIntToArr(d, buff, &pos);
             **/
 
-            bzero(enc_data, symBlocksize);
-            bzero(data, symBlocksize);
+            // delete keys from memory
+            iee_bzero(enc_data, C_KEYSIZE);
+            iee_bzero(data, C_KEYSIZE);
         }
 
         // generate int vector

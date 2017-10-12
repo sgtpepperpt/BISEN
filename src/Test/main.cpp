@@ -140,7 +140,7 @@ int main(int argc, const char * argv[]) {
     copy(all_words_set.begin(), all_words_set.end(), all_words.begin());
 
     for(unsigned i = 0; i < num_queries; i++) {
-        string query = "sherlock && holmes || ze"; //client.generate_random_query(all_words, size, not_prob, and_prob);
+        string query = client.generate_random_query(all_words, size, not_prob, and_prob);
 
         #ifdef VERBOSE
        // cout << "\n----------------------------\nQuery: " << query << endl;

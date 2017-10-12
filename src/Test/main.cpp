@@ -20,6 +20,20 @@ extern "C" {
 #include "../Iee/types.h"
 }
 
+///////////////////////////// TESTING PARAMETERS /////////////////////////////
+#define NUM_QUERIES 1
+#define DATASET_DIR "../Data/parsed/"
+
+// query size will be aprox. between
+// [QUERY_WORD_COUNT, QUERY_WORD_COUNT * 2]
+#define QUERY_WORD_COUNT 5
+
+// probabilities between 0 and 100
+#define NOT_PROBABILITY 5
+#define AND_PROBABILITY 30
+
+/////////////////////////// END TESTING PARAMETERS ///////////////////////////
+
 // DEBUGGING
 //#include <map>
 //map<int, int> f;
@@ -33,11 +47,6 @@ extern void f(
   const size in_len
 );
 */
-extern int f_assert(
-  size test_index,
-  bytes out,
-  size outlen
-);
 
 void printResults (vector<int> results) {
     #ifdef VERBOSE
@@ -69,9 +78,9 @@ int main(int argc, const char * argv[]) {
     // init_pipes();
 
     // init output file
-    FILE *out_f = fopen("output","rb+");
+    FILE *out_f = fopen("test_all","wb");
     if (!out_f) {
-		printf("Error opening output file!");
+		printf("Error opening output file!\n");
 		exit(-1);
 	}
 
@@ -108,17 +117,9 @@ int main(int argc, const char * argv[]) {
     free(data);
     free(output);
 
-    const string base_dir = "../Data/parsed/";
-    const int num_queries = 100;
-
-    // random query parameters
-    const int size = 5; // size will be about between [size, size * 2]
-    const int not_prob = 5;
-    const int and_prob = 30;
-
     // get list of docs for test
     vector<string> doc_paths;
-    client.listTxtFiles(base_dir, doc_paths);
+    client.listTxtFiles(DATASET_DIR, doc_paths);
 
     ////////////////////////////////////////////////////////////////////////////
     // UPDATE //////////////////////////////////////////////////////////////////
@@ -127,7 +128,7 @@ int main(int argc, const char * argv[]) {
     // add documents from the directory
     set<string> all_words_set; // for client-side random query generation only
     for(string doc : doc_paths){
-        set<string> text = client.extractUniqueKeywords(base_dir + doc);
+        set<string> text = client.extractUniqueKeywords(DATASET_DIR + doc);
 
         // generate the byte* to send to the server
         unsigned char* data;
@@ -159,8 +160,9 @@ int main(int argc, const char * argv[]) {
     vector<string> all_words(all_words_set.size());
     copy(all_words_set.begin(), all_words_set.end(), all_words.begin());
 
-    for(unsigned i = 0; i < num_queries; i++) {
-        string query = client.generate_random_query(all_words, size, not_prob, and_prob);
+    for(unsigned i = 0; i < NUM_QUERIES; i++) {
+        string query = client.generate_random_query(all_words,
+                            QUERY_WORD_COUNT, NOT_PROBABILITY, AND_PROBABILITY);
 
         #ifdef VERBOSE
        // cout << "\n----------------------------\nQuery: " << query << endl;

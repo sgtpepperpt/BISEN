@@ -4,7 +4,7 @@ src/Data/parsed/*
 !src/Data/parsed/.gitkeep
 
 # generated test files
-src/Test/output
+src/Test/test_*
 
 
 # Xcode

@@ -2,7 +2,7 @@ IEE_DIR=../Iee
 CLIENT_DIR=../Client
 COMMON_DIR=../Common
 
-C_FLAGS= -Wall -g -Wno-unused-function -Wno-unused-variable -DVERBOSE
+C_FLAGS= -Wall -g -Wno-unused-function -Wno-unused-variable -fPIC -DVERBOSE
 CPP_FLAGS= $(C_FLAGS) -std=c++11
 
 LIBS= -lsodium-sgx
@@ -21,7 +21,8 @@ common.a: $(COMMON_DIR)/*.cpp
 iee.a: $(IEE_DIR)/*.c
 	cd $(IEE_DIR) && gcc $(C_FLAGS) -c *.c
 	cd $(IEE_DIR)/util && gcc $(C_FLAGS) -c *.c
-	ar rcs iee.a $(IEE_DIR)/*.o $(IEE_DIR)/util/*.o
+	gcc $(C_FLAGS) -c commands.c
+	ar rcs iee.a $(IEE_DIR)/*.o $(IEE_DIR)/util/*.o commands.o
 
 client.a: $(CLIENT_DIR)/*.c $(CLIENT_DIR)/*.cpp
 	cd $(CLIENT_DIR) && gcc $(C_FLAGS) -c *.c

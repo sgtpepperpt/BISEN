@@ -46,19 +46,19 @@ static void init_pipes() {
     char pipeName[256];
 
     //start server-iee pipe
-    strcpy(pipeName, pipeDir);
-    strcpy(pipeName+strlen(pipeName), "server_to_iee");
+    iee_strcpy(pipeName, pipeDir);
+    iee_strcpy(pipeName+strlen(pipeName), "server_to_iee");
 
     ocall_strprint("Opening read pipe!\n");
     readServerPipe = ocall_open(pipeName, O_ASYNC | O_RDONLY);
 
     //start iee-server pipe
     iee_bzero(pipeName, 256);
-    strcpy(pipeName, pipeDir);
-    strcpy(pipeName+strlen(pipeName), "iee_to_server");
+    iee_strcpy(pipeName, pipeDir);
+    iee_strcpy(pipeName+strlen(pipeName), "iee_to_server");
 
     ocall_strprint("Opening write pipe!\n");
-    writeServerPipe = open(pipeName, O_ASYNC | O_WRONLY);
+    writeServerPipe = ocall_open(pipeName, O_ASYNC | O_WRONLY);
     if(writeServerPipe < 0){
         ocall_strprint("everything gone awry\n");
         ocall_exit(-1);

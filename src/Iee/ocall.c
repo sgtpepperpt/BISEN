@@ -3,7 +3,7 @@
 void ocall_printf(const char *fmt, ...)
 {
     //DEBUG ONLY, NOT WORKING IN SGX
-    #undef BUFSIZ
+/*    #undef BUFSIZ
     #define BUFSIZ 512
     #include <stdarg.h>
     char buf[BUFSIZ+1] = {'\0'};
@@ -12,7 +12,7 @@ void ocall_printf(const char *fmt, ...)
     vsnprintf(buf+1, BUFSIZ+1, fmt, ap);
     va_end(ap);
 
-    ocall_strprint(buf);
+    ocall_strprint(buf);*/
 }
 
 void ocall_strprint(const char *str)

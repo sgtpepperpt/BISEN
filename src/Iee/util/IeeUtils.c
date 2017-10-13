@@ -127,3 +127,11 @@ void iee_bzero(void *s, size_t n)
     for(unsigned i = 0; i < n; i++)
         *((char*)(s+i)) = 0x00;
 }
+
+char* iee_strcpy (char* dst, const char* src){
+    unsigned i = 0;
+    do {
+        dst[i] = src[i];
+    } while(src[i++]);
+    return dst;
+}

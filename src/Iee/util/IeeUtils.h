@@ -52,5 +52,6 @@ ssize_t iee_read_ssize_t(const unsigned char * arr, int* pos);
 void *iee_memcpy(void *dest, const void *src, size_t n);
 size_t iee_strlen(const char* str);
 void iee_bzero(void *s, size_t n);
+char* iee_strcpy (char* dst, const char* src);
 
 #endif /* __IEEUTILS_H */

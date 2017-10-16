@@ -29,7 +29,7 @@ int writeServerPipe;
 static void init_pipes();
 static void destroy_pipes();
 
-void f(bytes* out, size* out_len, const unsigned long long pid, const bytes in, const size in_len);
+extern void f(bytes* out, size* out_len, const unsigned long long pid, const bytes in, const size in_len);
 
 static void setup(bytes* out, size* out_len, const bytes in, const size in_len);
 static void add(bytes* out, size* out_len, const bytes in, const size in_len);

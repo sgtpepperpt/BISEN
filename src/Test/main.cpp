@@ -26,7 +26,7 @@ extern "C" {
 
 // query size will be aprox. between
 // [QUERY_WORD_COUNT, QUERY_WORD_COUNT * 2]
-#define QUERY_WORD_COUNT 5
+#define QUERY_WORD_COUNT 1
 
 // probabilities between 0 and 100
 #define NOT_PROBABILITY 5
@@ -37,16 +37,6 @@ extern "C" {
 // DEBUGGING
 //#include <map>
 //map<int, int> f;
-
-/*
-extern void f(
-  bytes *out,
-  size *out_len,
-  const label pid,
-  const bytes in,
-  const size in_len
-);
-*/
 
 void printResults (vector<int> results) {
     #ifdef VERBOSE
@@ -121,11 +111,19 @@ int main(int argc, const char * argv[]) {
     // UPDATE //////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
+    int count = 0;
+
     // add documents from the directory
     set<string> all_words_set; // for client-side random query generation only
     for(string doc : doc_paths){
         set<string> text = client.extractUniqueKeywords(DATASET_DIR + doc);
-
+        cout << "doc " << count << endl;
+        set<string>::iterator iter;
+        for(iter=text.begin(); iter!=text.end();++iter){
+            cout<<(*iter)<< " ";
+        }
+        count++;
+        cout << endl;
         // generate the byte* to send to the server
         unsigned char* data;
         unsigned long long data_size = client.add_new_document(text, &data);
@@ -161,12 +159,18 @@ int main(int argc, const char * argv[]) {
                             QUERY_WORD_COUNT, NOT_PROBABILITY, AND_PROBABILITY);
 
         #ifdef VERBOSE
-       // cout << "\n----------------------------\nQuery: " << query << endl;
+        cout << "\n----------------------------\nQuery: " << query << endl;
         #endif
 
         unsigned char* data;
         unsigned long long data_size = client.search(query, &data);
-
+        for(int i = 0; i < data_size; i++){
+            if(data[i] >= 0x71 && data[i] <= 0x7A)
+                printf("%c ", data[i]);
+            else
+                printf("%02x", data[i]);
+        }
+        printf("\n");
         //print_buffer("Data", data, data_size);
         output_size = 0;
         f(&output, &output_size, 0, (const bytes) data, data_size);

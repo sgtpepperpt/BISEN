@@ -44,9 +44,19 @@ vector<client_token> QueryParser::tokenize(string query) {
                 tkn.word += tolower(query[i]);
                 i++;
             }
+            /*printf("parser word\n");
+            for(int i = 0; i < 5; i++)
+                printf("%c", tkn.word[i]);
+            printf("\n");*/
             // NULL termination is added in serialization
             //tkn.word += '\0';
-            tkn.word = analyzer.stemWord(tkn.word);
+
+            // we don't stem the word here, as in our tests the word supplied here is already stemmed
+            //tkn.word = analyzer.stemWord(tkn.word);
+            /*printf("parser word\n");
+            for(int i = 0; i < 5; i++)
+                printf("%c", tkn.word[i]);
+            printf("\n");*/
         }
 
         result.push_back(tkn);

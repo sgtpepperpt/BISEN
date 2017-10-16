@@ -31,6 +31,6 @@ static void fs_write(bytes* out, size* outlen, const bytes in, const size inlen)
 // misc
 static void fs_exit(bytes* out, size* outlen, const bytes in, const size inlen);
 
-void fserver(bytes* out, size* outlen, const bytes in, const size inlen);
+extern void fserver(bytes* out, size* outlen, const bytes in, const size inlen);
 
 #endif /* __FSERVER_H_ */

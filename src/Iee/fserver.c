@@ -65,7 +65,7 @@ static void fs_read(bytes* out, size* outlen, const bytes in, const size inlen)
     int pos = 1;
     int fildes = iee_readIntFromArr(in, &pos);
     size_t nbytes = iee_read_size_t(in, &pos);
-    printf("nbytes in ocall: %lu\n", nbytes);
+    //printf("nbytes in ocall: %lu\n", nbytes);
 
     // write return value to output
     // TODO this buffer should hold both the return and the read byte array from start
@@ -79,14 +79,14 @@ static void fs_read(bytes* out, size* outlen, const bytes in, const size inlen)
     pos = 0;
     iee_add_ssize_t(res, *out, &pos);
     //iee_addToArr(((const void *)out)+8, sizeof(unsigned char) * nbytes, *out, &pos);
-    for(unsigned i = 0; i < nbytes; i++)
+    /*for(unsigned i = 0; i < nbytes; i++)
         printf("%02x", ((unsigned char*)out)[i+8]);
-    printf("\n");
+    printf("\n");*/
 }
 
 static void fs_write(bytes* out, size* outlen, const bytes in, const size inlen)
 {
-    //printf("Write ocall\n");
+    printf("Write ocall\n");
 
     // read values from buffer
     int pos = 1;
@@ -98,7 +98,7 @@ static void fs_write(bytes* out, size* outlen, const bytes in, const size inlen)
  
     // execute write syscall
     ssize_t res = write(fildes, buf, nbytes);
-    //printf("ret: %lu\n", res);
+    printf("ret: %lu\n", res);
 
     // write output
     pos = 0;

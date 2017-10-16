@@ -11,10 +11,10 @@
 const char* pipeDir = "/tmp/BooleanSSE/";
 
 void print_buffer(const char* name, const unsigned char * buf, const unsigned long long len) {
-    ocall_printf("%s size: %llu\n", name, len);
+    /*ocall_printf("%s size: %llu\n", name, len);
     for(unsigned i = 0; i < len; i++)
         ocall_printf("%02x", buf[i]);
-    ocall_printf("\n");
+    ocall_printf("\n");*/
 }
 
 // IEE entry point
@@ -162,9 +162,9 @@ static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
         iee_socketSend(writeServerPipe, (unsigned char*)label, H_BYTES);
         iee_socketSend(writeServerPipe, (unsigned char*)enc_data, enc_data_size);
 
-        print_buffer("add label", label, H_BYTES);
+        /*print_buffer("add label", label, H_BYTES);
         print_buffer("add enc", enc_data, enc_data_size);
-        ocall_strprint("\n\n");
+        ocall_strprint("\n");*/
         free(label);
         free(enc_data);
     }
@@ -195,14 +195,6 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         if(query->array[i].type != WORD_TOKEN)
             continue;
 
-        /*for(unsigned ii = 0; ii < count_words; ii++) {
-            if(rand[ii])
-                ocall_printf("%c %s\n", rand[ii]->type, rand[ii]->word);
-            else
-                ocall_printf("%d\n", rand[ii]);
-        }
-        ocall_printf("\n");*/
-
         // choose a random unoccupied position from the rand array
         int pos;
         do {
@@ -211,6 +203,14 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
 
         rand[pos] = &(*query).array[i];
     }
+
+    /*for(unsigned ii = 0; ii < count_words; ii++) {
+        if(rand[ii])
+            printf("%c %s\n", rand[ii]->type, rand[ii]->word);
+        else
+            printf("%d\n", rand[ii]);
+    }
+    printf("\n");*/
 
     #ifdef VERBOSE
     ocall_strprint("Randomized positions!\n");
@@ -226,7 +226,7 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
             tkn->docs = dummy;
         }
 
-        ocall_printf("word is %s\n", tkn->word);
+        //printf("word is %s\n", tkn->word);
         //calculate key kW
         unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
         c_hmac(kW, (unsigned char*)tkn->word, strlen(tkn->word), get_kF());
@@ -282,7 +282,6 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
             c_decrypt(data, enc_data, 44, nonce, get_kEnc());
             iee_addToArr((unsigned char*)data, sizeof(int), buff, &pos);
 
-            //cout << "recv ." << buff << "." << endl;
             /** Another way of doing it
                 int d = -1;
                 memcpy(&d, data, sizeof(int));
@@ -304,7 +303,7 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
             int tmp = -1;
             iee_memcpy(&tmp, buff + pos, sizeof(int));
             pos += sizeof(int);
-            ocall_printf("doc %d\n", tmp);
+            //printf("doc %d\n", tmp);
             vi_push_back(&docs, tmp);
         }
 
@@ -324,6 +323,9 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
     #ifdef VERBOSE
     ocall_strprint("Search!\n");
     #endif
+    /*for(int i = 0; i < in_len; i++)
+        printf("%02x", in[i]);
+    printf("\n");*/
 
     vec_token query;
     vt_init(&query, MAX_QUERY_TOKENS);
@@ -363,6 +365,7 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
 
             // guarantee string is terminated
             tkn.word[MAX_WORD_SIZE - 1] = '\0';
+            //printf("got %s word\n", tkn.word);
         } else if(tkn.type == META_TOKEN) {
             nDocs = iee_readIntFromArr(in, &pos);
             continue;

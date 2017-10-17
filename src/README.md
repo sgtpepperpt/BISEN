@@ -1,4 +1,4 @@
-## BISEN source code
+# BISEN source code
 
 ## Dependencies
 To run BISEN, you will need to install libsodium-sgx, along with Intel SGX drivers.
@@ -24,4 +24,7 @@ To run BISEN, you will need to install libsodium-sgx, along with Intel SGX drive
 
 * **Client** generates the queries and the respective byte arrays which are used as inputs to the IEE.
 
-* **Test** contains the benchmark.
+* **Test** contains the benchmark generator, along with an optional 
+simulator to run BISEN without SGX support, as explained above.
+
+* **tsgx** contains the mpc framework to run BISEN with SGX support.

@@ -20,6 +20,7 @@ extern "C" {
 
 void SGX_UBRIDGE(SGX_NOCONVENTION, fserver, (bytes* out, size* outlen, unsigned char* in, size inlen));
 void SGX_UBRIDGE(SGX_NOCONVENTION, untrusted_malloc_bytes, (bytes* pointer, size length));
+void SGX_UBRIDGE(SGX_NOCONVENTION, untrusted_free_bytes, (bytes* pointer));
 int SGX_UBRIDGE(SGX_NOCONVENTION, get_qe_tInfo, (sgx_target_info_t* tInfo));
 void SGX_UBRIDGE(SGX_NOCONVENTION, print_msg, (const char* msg));
 void SGX_UBRIDGE(SGX_NOCONVENTION, print_int, (int val));

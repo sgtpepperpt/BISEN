@@ -24,6 +24,7 @@ void check_initialization(int* check_val);
 
 sgx_status_t SGX_CDECL fserver(bytes* out, size* outlen, unsigned char* in, size inlen);
 sgx_status_t SGX_CDECL untrusted_malloc_bytes(bytes* pointer, size length);
+sgx_status_t SGX_CDECL untrusted_free_bytes(bytes* pointer);
 sgx_status_t SGX_CDECL get_qe_tInfo(int* retval, sgx_target_info_t* tInfo);
 sgx_status_t SGX_CDECL print_msg(const char* msg);
 sgx_status_t SGX_CDECL print_int(int val);

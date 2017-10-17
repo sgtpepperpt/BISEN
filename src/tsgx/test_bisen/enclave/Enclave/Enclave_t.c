@@ -47,6 +47,10 @@ typedef struct ms_untrusted_malloc_bytes_t {
 	size ms_length;
 } ms_untrusted_malloc_bytes_t;
 
+typedef struct ms_untrusted_free_bytes_t {
+	bytes* ms_pointer;
+} ms_untrusted_free_bytes_t;
+
 typedef struct ms_get_qe_tInfo_t {
 	int ms_retval;
 	sgx_target_info_t* ms_tInfo;
@@ -62,6 +66,7 @@ typedef struct ms_print_int_t {
 
 static sgx_status_t SGX_CDECL sgx_sec_mpc_program(void* pms)
 {
+	CHECK_REF_POINTER(pms, sizeof(ms_sec_mpc_program_t));
 	ms_sec_mpc_program_t* ms = SGX_CAST(ms_sec_mpc_program_t*, pms);
 	sgx_status_t status = SGX_SUCCESS;
 	byte** _tmp_omsg = ms->ms_omsg;
@@ -80,7 +85,6 @@ static sgx_status_t SGX_CDECL sgx_sec_mpc_program(void* pms)
 		goto err;
 	}
 
-	CHECK_REF_POINTER(pms, sizeof(ms_sec_mpc_program_t));
 	CHECK_UNIQUE_POINTER(_tmp_omsg, _len_omsg);
 	CHECK_UNIQUE_POINTER(_tmp_omsglen, _len_omsglen);
 	CHECK_UNIQUE_POINTER(_tmp_inmsg, _len_inmsg);
@@ -127,6 +131,7 @@ err:
 
 static sgx_status_t SGX_CDECL sgx_tmp_get_report(void* pms)
 {
+	CHECK_REF_POINTER(pms, sizeof(ms_tmp_get_report_t));
 	ms_tmp_get_report_t* ms = SGX_CAST(ms_tmp_get_report_t*, pms);
 	sgx_status_t status = SGX_SUCCESS;
 	sgx_target_info_t* _tmp_tInfo = ms->ms_tInfo;
@@ -136,7 +141,6 @@ static sgx_status_t SGX_CDECL sgx_tmp_get_report(void* pms)
 	size_t _len_report = sizeof(*_tmp_report);
 	sgx_report_t* _in_report = NULL;
 
-	CHECK_REF_POINTER(pms, sizeof(ms_tmp_get_report_t));
 	CHECK_UNIQUE_POINTER(_tmp_tInfo, _len_tInfo);
 	CHECK_UNIQUE_POINTER(_tmp_report, _len_report);
 
@@ -170,13 +174,13 @@ err:
 
 static sgx_status_t SGX_CDECL sgx_check_initialization(void* pms)
 {
+	CHECK_REF_POINTER(pms, sizeof(ms_check_initialization_t));
 	ms_check_initialization_t* ms = SGX_CAST(ms_check_initialization_t*, pms);
 	sgx_status_t status = SGX_SUCCESS;
 	int* _tmp_check_val = ms->ms_check_val;
 	size_t _len_check_val = sizeof(*_tmp_check_val);
 	int* _in_check_val = NULL;
 
-	CHECK_REF_POINTER(pms, sizeof(ms_check_initialization_t));
 	CHECK_UNIQUE_POINTER(_tmp_check_val, _len_check_val);
 
 	if (_tmp_check_val != NULL) {
@@ -211,10 +215,11 @@ SGX_EXTERNC const struct {
 
 SGX_EXTERNC const struct {
 	size_t nr_ocall;
-	uint8_t entry_table[5][3];
+	uint8_t entry_table[6][3];
 } g_dyn_entry_table = {
-	5,
+	6,
 	{
+		{0, 0, 0, },
 		{0, 0, 0, },
 		{0, 0, 0, },
 		{0, 0, 0, },
@@ -329,6 +334,44 @@ sgx_status_t SGX_CDECL untrusted_malloc_bytes(bytes* pointer, size length)
 	return status;
 }
 
+sgx_status_t SGX_CDECL untrusted_free_bytes(bytes* pointer)
+{
+	sgx_status_t status = SGX_SUCCESS;
+	size_t _len_pointer = sizeof(*pointer);
+
+	ms_untrusted_free_bytes_t* ms = NULL;
+	size_t ocalloc_size = sizeof(ms_untrusted_free_bytes_t);
+	void *__tmp = NULL;
+
+	ocalloc_size += (pointer != NULL && sgx_is_within_enclave(pointer, _len_pointer)) ? _len_pointer : 0;
+
+	__tmp = sgx_ocalloc(ocalloc_size);
+	if (__tmp == NULL) {
+		sgx_ocfree();
+		return SGX_ERROR_UNEXPECTED;
+	}
+	ms = (ms_untrusted_free_bytes_t*)__tmp;
+	__tmp = (void *)((size_t)__tmp + sizeof(ms_untrusted_free_bytes_t));
+
+	if (pointer != NULL && sgx_is_within_enclave(pointer, _len_pointer)) {
+		ms->ms_pointer = (bytes*)__tmp;
+		__tmp = (void *)((size_t)__tmp + _len_pointer);
+		memset(ms->ms_pointer, 0, _len_pointer);
+	} else if (pointer == NULL) {
+		ms->ms_pointer = NULL;
+	} else {
+		sgx_ocfree();
+		return SGX_ERROR_INVALID_PARAMETER;
+	}
+	
+	status = sgx_ocall(2, ms);
+
+	if (pointer) memcpy((void*)pointer, ms->ms_pointer, _len_pointer);
+
+	sgx_ocfree();
+	return status;
+}
+
 sgx_status_t SGX_CDECL get_qe_tInfo(int* retval, sgx_target_info_t* tInfo)
 {
 	sgx_status_t status = SGX_SUCCESS;
@@ -359,7 +402,7 @@ sgx_status_t SGX_CDECL get_qe_tInfo(int* retval, sgx_target_info_t* tInfo)
 		return SGX_ERROR_INVALID_PARAMETER;
 	}
 	
-	status = sgx_ocall(2, ms);
+	status = sgx_ocall(3, ms);
 
 	if (retval) *retval = ms->ms_retval;
 	if (tInfo) memcpy((void*)tInfo, ms->ms_tInfo, _len_tInfo);
@@ -398,7 +441,7 @@ sgx_status_t SGX_CDECL print_msg(const char* msg)
 		return SGX_ERROR_INVALID_PARAMETER;
 	}
 	
-	status = sgx_ocall(3, ms);
+	status = sgx_ocall(4, ms);
 
 
 	sgx_ocfree();
@@ -423,7 +466,7 @@ sgx_status_t SGX_CDECL print_int(int val)
 	__tmp = (void *)((size_t)__tmp + sizeof(ms_print_int_t));
 
 	ms->ms_val = val;
-	status = sgx_ocall(4, ms);
+	status = sgx_ocall(5, ms);
 
 
 	sgx_ocfree();

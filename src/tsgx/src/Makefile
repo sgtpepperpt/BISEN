@@ -26,7 +26,7 @@ AR = ar rcs
 INCLUDES = -I./include -I../include -I$(SGX_SDK)/include
 
 # define the C source files
-PROGSRCS = ae/ae.c attke/attke.c attke/attke_remote.c attke/attke_par.c box/box.c lac/lac_attest.c lac/lac_verify.c mach/mach.c mach/mach_iee.c mpc/mpc_process.c mpc/mpc_program.c mpc/mpc_setup.c untrusted/untrusted_malloc_bytes.c
+PROGSRCS = ae/ae.c attke/attke.c attke/attke_remote.c attke/attke_par.c box/box.c lac/lac_attest.c lac/lac_verify.c mach/mach.c mach/mach_iee.c mpc/mpc_process.c mpc/mpc_program.c mpc/mpc_setup.c untrusted/untrusted_malloc_bytes.c untrusted/untrusted_free_bytes.c
 
 # define the C object files 
 PRPGOBJS =  $(PROGSRCS:.c=.o)
@@ -39,7 +39,7 @@ LIBLOCAL = $(BUILD_PATH)/libsgx_mpc.a
 LOCALOBJS = ae/ae.o attke/attke.o lac/lac_attest.o lac/lac_verify.o mach/mach.o mpc/mpc_process.o
 
 LIBREMOTE =  $(BUILD_PATH)/libremote.a
-REMOTEOBJS = ae/ae.o attke/attke_remote.o attke/attke_par.o box/box.o mach/mach_iee.o mpc/mpc_program.o untrusted/untrusted_malloc_bytes.o
+REMOTEOBJS = ae/ae.o attke/attke_remote.o attke/attke_par.o box/box.o mach/mach_iee.o mpc/mpc_program.o untrusted/untrusted_malloc_bytes.o untrusted/untrusted_free_bytes.o
 
 # The following part of the makefile is generic; it can be used to 
 # build any executable just by changing the definitions above and by

@@ -31,6 +31,10 @@ typedef struct ms_untrusted_malloc_bytes_t {
 	size ms_length;
 } ms_untrusted_malloc_bytes_t;
 
+typedef struct ms_untrusted_free_bytes_t {
+	bytes* ms_pointer;
+} ms_untrusted_free_bytes_t;
+
 typedef struct ms_get_qe_tInfo_t {
 	int ms_retval;
 	sgx_target_info_t* ms_tInfo;
@@ -56,6 +60,14 @@ static sgx_status_t SGX_CDECL Enclave_untrusted_malloc_bytes(void* pms)
 {
 	ms_untrusted_malloc_bytes_t* ms = SGX_CAST(ms_untrusted_malloc_bytes_t*, pms);
 	untrusted_malloc_bytes(ms->ms_pointer, ms->ms_length);
+
+	return SGX_SUCCESS;
+}
+
+static sgx_status_t SGX_CDECL Enclave_untrusted_free_bytes(void* pms)
+{
+	ms_untrusted_free_bytes_t* ms = SGX_CAST(ms_untrusted_free_bytes_t*, pms);
+	untrusted_free_bytes(ms->ms_pointer);
 
 	return SGX_SUCCESS;
 }
@@ -86,12 +98,13 @@ static sgx_status_t SGX_CDECL Enclave_print_int(void* pms)
 
 static const struct {
 	size_t nr_ocall;
-	void * table[5];
+	void * table[6];
 } ocall_table_Enclave = {
-	5,
+	6,
 	{
 		(void*)Enclave_fserver,
 		(void*)Enclave_untrusted_malloc_bytes,
+		(void*)Enclave_untrusted_free_bytes,
 		(void*)Enclave_get_qe_tInfo,
 		(void*)Enclave_print_msg,
 		(void*)Enclave_print_int,

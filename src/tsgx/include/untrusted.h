@@ -8,4 +8,8 @@ void untrusted_malloc_bytes(
   size length
 );
 
+void untrusted_free_bytes(
+  bytes *pointer
+);
+
 #endif

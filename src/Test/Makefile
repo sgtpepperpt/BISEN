@@ -13,6 +13,7 @@ LIBS= -lsodium-sgx
 
 main: main.cpp common.a iee.a client.a
 	g++ $(CPP_FLAGS) -o main main.cpp common.a iee.a client.a $(LIBS)
+	cp iee.a ../tsgx/test_bisen/f/
 
 common.a: $(COMMON_DIR)/*.cpp
 	cd $(COMMON_DIR) && g++ $(CPP_FLAGS) -c *.cpp

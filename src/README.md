@@ -10,4 +10,20 @@
 * **Test** contains the benchmark.
 ```
 
-To produce a test, first check the Data folder.
+# Compiling and running
+
+1. Extract the Enron dataset into the folder _Data/enron_.
+1. Generate the benchmark dataset:
+
+```(cd Data && python parser.py <number-of-docs>)```
+1. Go to folder Server and execute:
+
+```make && ./Server # leave the server always running in background while running the tests```
+1. Go to folder Test and execute:
+
+```make clean && make && ./main```
+1. Go to folder tsgx and execute:
+
+```make clean && make
+
+cd build && ./test_bisen```

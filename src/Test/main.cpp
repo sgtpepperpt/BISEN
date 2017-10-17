@@ -68,7 +68,7 @@ int main(int argc, const char * argv[]) {
     // init_pipes();
 
     // init output file
-    FILE *out_f = fopen("test_all","wb");
+    FILE *out_f = fopen("bisen_benchmark","wb");
     if (!out_f) {
 		printf("Error opening output file!\n");
 		exit(-1);
@@ -94,14 +94,15 @@ int main(int argc, const char * argv[]) {
     printf("Starting IEE communication\n");
     #endif
 
+    #ifdef LOCALTEST
     unsigned char * output;
     unsigned long long output_size;
     f(&output, &output_size, 0, (const bytes) data, data_size);
-
     //print_buffer("Output", output, output_size);
+    free(output);
+    #endif
 
     free(data);
-    free(output);
 
     // get list of docs for test
     vector<string> doc_paths;
@@ -118,29 +119,31 @@ int main(int argc, const char * argv[]) {
     for(string doc : doc_paths){
         set<string> text = client.extractUniqueKeywords(DATASET_DIR + doc);
         cout << "doc " << count << endl;
+
         set<string>::iterator iter;
         for(iter=text.begin(); iter!=text.end();++iter){
             cout<<(*iter)<< " ";
         }
         count++;
         cout << endl;
+
         // generate the byte* to send to the server
         unsigned char* data;
         unsigned long long data_size = client.add_new_document(text, &data);
 
+        #ifdef LOCALTEST
         //print_buffer("Data", data, data_size);
-
         output_size = 0;
         f(&output, &output_size, 0, (const bytes) data, data_size);
-
         //print_buffer("Output", output, output_size);
+        free(output);
+        #endif
 
         // write to benchmark file
         fwrite(&data_size, sizeof(unsigned long long), 1, out_f);
         fwrite(data, sizeof(unsigned char), data_size, out_f);
 
         free(data);
-        free(output);
 
         // add all new words to a set, used later to generate queries
         all_words_set.insert(text.begin(), text.end());
@@ -166,6 +169,8 @@ int main(int argc, const char * argv[]) {
 
         unsigned char* data;
         unsigned long long data_size = client.search(query, &data);
+
+        #ifdef VERBOSE
         for(int i = 0; i < data_size; i++){
             if(data[i] >= 0x71 && data[i] <= 0x7A)
                 printf("%c ", data[i]);
@@ -173,14 +178,17 @@ int main(int argc, const char * argv[]) {
                 printf("%02x", data[i]);
         }
         printf("\n");
-        //print_buffer("Data", data, data_size);
-        output_size = 0;
-        f(&output, &output_size, 0, (const bytes) data, data_size);
-        //print_buffer("Output", output, output_size);
+        #endif
 
         // write to benchmark file
         fwrite(&data_size, sizeof(unsigned long long), 1, out_f);
         fwrite(data, sizeof(unsigned char), data_size, out_f);
+
+        #ifdef LOCALTEST
+        //print_buffer("Data", data, data_size);
+        output_size = 0;
+        f(&output, &output_size, 0, (const bytes) data, data_size);
+        //print_buffer("Output", output, output_size);
 
         //process results
         const int nDocs = output_size / sizeof(int);
@@ -198,7 +206,12 @@ int main(int argc, const char * argv[]) {
         printResults(results);
         free(data);
         free(output);
+        #endif
     }
+    //TODO hack just to compile, no idea why needed, doesn't affect sgx
+    unsigned char dat[1];
+    int posix = 0;
+    int c = readIntFromArr(dat, &posix);
 
     //for (auto const& x : f)
     //    cout << x.first << ':' << x.second << endl;

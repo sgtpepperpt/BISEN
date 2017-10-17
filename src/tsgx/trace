@@ -1,0 +1,46 @@
+guilherme@nuc:~/tsgx$ make clean 
+rm -f keypair
+rm -fr build/
+find . -name "*.o" -exec rm {} \;
+find . -name "*~" -exec rm {} \;
+guilherme@nuc:~/tsgx$ cp ~/BooleanSSE/src/Test/iee.a test_bisen/f/
+guilherme@nuc:~/tsgx$ make
+make -C src/
+make[1]: Entering directory '/home/guilherme/tsgx/src'
+mkdir -p ../build
+gcc -c -Wall -Werror -fPIC -DSGX_MPC_TEST  -I./include -I../include -I/home/guilherme/Downloads/sgxsdk/include -c ae/ae.c -o ae/ae.o
+gcc -c -Wall -Werror -fPIC -DSGX_MPC_TEST  -I./include -I../include -I/home/guilherme/Downloads/sgxsdk/include -c attke/attke.c -o attke/attke.o
+gcc -c -Wall -Werror -fPIC -DSGX_MPC_TEST  -I./include -I../include -I/home/guilherme/Downloads/sgxsdk/include -c lac/lac_attest.c -o lac/lac_attest.o
+gcc -c -Wall -Werror -fPIC -DSGX_MPC_TEST  -I./include -I../include -I/home/guilherme/Downloads/sgxsdk/include -c lac/lac_verify.c -o lac/lac_verify.o
+gcc -c -Wall -Werror -fPIC -DSGX_MPC_TEST  -I./include -I../include -I/home/guilherme/Downloads/sgxsdk/include -c mach/mach.c -o mach/mach.o
+gcc -c -Wall -Werror -fPIC -DSGX_MPC_TEST  -I./include -I../include -I/home/guilherme/Downloads/sgxsdk/include -c mpc/mpc_process.c -o mpc/mpc_process.o
+ar rcs ../build/libsgx_mpc.a ae/ae.o attke/attke.o lac/lac_attest.o lac/lac_verify.o mach/mach.o mpc/mpc_process.o
+gcc -c -Wall -Werror -fPIC -DSGX_MPC_TEST  -I./include -I../include -I/home/guilherme/Downloads/sgxsdk/include -c attke/attke_remote.c -o attke/attke_remote.o
+gcc -c -Wall -Werror -fPIC -DSGX_MPC_TEST  -I./include -I../include -I/home/guilherme/Downloads/sgxsdk/include -c attke/attke_par.c -o attke/attke_par.o
+gcc -c -Wall -Werror -fPIC -DSGX_MPC_TEST  -I./include -I../include -I/home/guilherme/Downloads/sgxsdk/include -c box/box.c -o box/box.o
+gcc -c -Wall -Werror -fPIC -DSGX_MPC_TEST  -I./include -I../include -I/home/guilherme/Downloads/sgxsdk/include -c mach/mach_iee.c -o mach/mach_iee.o
+gcc -c -Wall -Werror -fPIC -DSGX_MPC_TEST  -I./include -I../include -I/home/guilherme/Downloads/sgxsdk/include -c mpc/mpc_program.c -o mpc/mpc_program.o
+gcc -c -Wall -Werror -fPIC -DSGX_MPC_TEST  -I./include -I../include -I/home/guilherme/Downloads/sgxsdk/include -c untrusted/untrusted_malloc_bytes.c -o untrusted/untrusted_malloc_bytes.o
+ar rcs ../build/libremote.a ae/ae.o attke/attke_remote.o attke/attke_par.o box/box.o mach/mach_iee.o mpc/mpc_program.o untrusted/untrusted_malloc_bytes.o
+Sources compiled
+make[1]: Leaving directory '/home/guilherme/tsgx/src'
+make -C test_bisen/f
+make[1]: Entering directory '/home/guilherme/tsgx/test_bisen/f'
+cp iee.a ../../build/libf.a
+make[1]: Leaving directory '/home/guilherme/tsgx/test_bisen/f'
+make -C test_bisen/enclave
+make[1]: Entering directory '/home/guilherme/tsgx/test_bisen/enclave'
+CC   <=  Enclave/Enclave_t.cls
+CXX  <=  Enclave/Enclave.cpp
+g++ Enclave/Enclave_t.o Enclave/Enclave.o  -o ../../build/enclave.a  -m64 -O2 -Wl,--allow-multiple-definition -Wl,--no-undefined -nostdlib -nodefaultlibs -nostartfiles -L/home/guilherme/Downloads/sgxsdk/lib64 -Wl,-rpath=/home/guilherme/tsgx/test_bisen/enclave -Wl,--whole-archive -lsgx_trts -Wl,--no-whole-archive -Wl,--start-group -lsgx_tstdc -lsgx_tstdcxx -lsgx_tkey_exchange -lsgx_tcrypto -lsgx_tservice -Wl,--end-group -Wl,-Bstatic -Wl,-Bsymbolic -Wl,--no-undefined -Wl,-pie,-eenclave_entry -Wl,--export-dynamic -Wl,--defsym,__ImageBase=0 -Wl,--version-script=Enclave/Enclave.lds -L../../build -lremote -lf -lsodium-sgx  
+../../build/libf.a(SseIee.o): In function `init_pipes':
+/home/guilherme/BooleanSSE/src/Iee/SseIee.c:49: undefined reference to `strncpy'
+/home/guilherme/BooleanSSE/src/Iee/SseIee.c:57: undefined reference to `strncpy'
+collect2: error: ld returned 1 exit status
+Makefile:131: recipe for target '../../build/enclave.a' failed
+make[1]: *** [../../build/enclave.a] Error 1
+make[1]: Leaving directory '/home/guilherme/tsgx/test_bisen/enclave'
+makefile:4: recipe for target 'test_bisen' failed
+make: *** [test_bisen] Error 2
+guilherme@nuc:~/tsgx$ 
+

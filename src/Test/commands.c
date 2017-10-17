@@ -3,7 +3,7 @@
 void generate_commands()
 {
     // init output file
-    FILE *in_f = fopen("test_all","rb");
+    FILE *in_f = fopen("bisen_benchmark","rb");
     if (!in_f) {
 		printf("Error opening test file!\n");
 		exit(-1);

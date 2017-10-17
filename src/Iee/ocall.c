@@ -30,6 +30,7 @@ void ocall_strprint(const char *str)
     unsigned char * out;
     unsigned long long outlen;
     fserver(&out, &outlen, in, inlen);
+    free(in);
 
     // read ocall output
     pos = 0;
@@ -39,26 +40,27 @@ void ocall_strprint(const char *str)
 
 int ocall_open(const char *path, int oflags)
 {
-    size_t path_len = iee_strlen(path);
+    size_t path_len = strlen(path)+1;
 
-    size_t inlen = sizeof(int) + (path_len * sizeof(char));
+    size_t inlen = sizeof(int) + sizeof(size_t) + (path_len * sizeof(char));
     unsigned char* in = (unsigned char*)malloc(inlen);
     in[0] = OCALL_OPEN;
 
-    //ocall_printf("before path %lu %s %d\n", path_len, path, oflags);
     int pos = 1;
     iee_addIntToArr(oflags, in, &pos);
+    iee_add_size_t(path_len, in, &pos);
     iee_addToArr((const void *)path, path_len, in, &pos);
 
     // execute ocall
     unsigned char * out;
     unsigned long long outlen;
     fserver(&out, &outlen, in, inlen);
+    free(in);
 
     // read ocall output
     pos = 0;
     int ocall_ret = iee_readIntFromArr(out, &pos);
-    //ocall_printf("ret ocall_open: %d\n", ocall_ret);
+    ocall_printf("ret ocall_open: %d\n", ocall_ret);
 
     return ocall_ret;
 }
@@ -76,6 +78,7 @@ int ocall_close(int fildes)
     unsigned char * out;
     unsigned long long outlen;
     fserver(&out, &outlen, in, inlen);
+    free(in);
 
     // read ocall output
     pos = 0;
@@ -101,6 +104,7 @@ ssize_t ocall_read(int fildes, unsigned char* buf, size_t nbytes)
     unsigned char * out;
     unsigned long long outlen;
     fserver(&out, &outlen, in, inlen);
+    free(in);
 
     // read ocall output
     pos = 0;
@@ -130,14 +134,17 @@ ssize_t ocall_write(int fildes, const void *buf, size_t nbytes)
     unsigned char * output;
     unsigned long long output_size;
     fserver(&output, &output_size, buffer, buf_size);
+    free(buffer);
 
+    //ocall_strprint("done out of ocall\n");
     // read ocall output
     pos = 0;
     ssize_t ocall_ret = iee_read_ssize_t(output, &pos);
     //ocall_printf("ret: %lu\n", ocall_ret);
 
-    free(buffer);
-    free(output);
+    //free(output);
+    //ocall_strprint("here\n");
+
     return ocall_ret;
 }
 
@@ -154,6 +161,7 @@ int ocall_exit(int status)
     unsigned char * out;
     unsigned long long outlen;
     fserver(&out, &outlen, in, inlen);
+    free(in);
 
     // read ocall output
     pos = 0;

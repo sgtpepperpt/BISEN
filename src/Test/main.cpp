@@ -26,7 +26,7 @@ extern "C" {
 
 // query size will be aprox. between
 // [QUERY_WORD_COUNT, QUERY_WORD_COUNT * 2]
-#define QUERY_WORD_COUNT 1
+#define QUERY_WORD_COUNT 2
 
 // probabilities between 0 and 100
 #define NOT_PROBABILITY 5
@@ -145,6 +145,8 @@ int main(int argc, const char * argv[]) {
         // add all new words to a set, used later to generate queries
         all_words_set.insert(text.begin(), text.end());
     }
+
+    cout << "Add queries: " << count << endl;
 
     ////////////////////////////////////////////////////////////////////////////
     // QUERIES /////////////////////////////////////////////////////////////////

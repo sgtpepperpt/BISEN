@@ -46,19 +46,20 @@ static void init_pipes() {
     char pipeName[256];
 
     //start server-iee pipe
-    iee_strcpy(pipeName, pipeDir);
-    iee_strcpy(pipeName+strlen(pipeName), "server_to_iee");
+    ocall_strprint("ola");
+    strncpy(pipeName, pipeDir, strlen(pipeDir));
+    strncpy(pipeName + strlen(pipeName), "server_to_iee", strlen("server_to_iee"));
 
     ocall_strprint("Opening read pipe!\n");
-    readServerPipe = ocall_open(pipeName, O_ASYNC | O_RDONLY);
+    readServerPipe = ocall_open("/tmp/BooleanSSE/server_to_iee", O_ASYNC | O_RDONLY);
 
     //start iee-server pipe
     iee_bzero(pipeName, 256);
-    iee_strcpy(pipeName, pipeDir);
-    iee_strcpy(pipeName+strlen(pipeName), "iee_to_server");
+    strncpy(pipeName, pipeDir, strlen(pipeDir));
+    strncpy(pipeName+strlen(pipeName), "iee_to_server", strlen("iee_to_server"));
 
     ocall_strprint("Opening write pipe!\n");
-    writeServerPipe = ocall_open(pipeName, O_ASYNC | O_WRONLY);
+    writeServerPipe = ocall_open("/tmp/BooleanSSE/iee_to_server", O_ASYNC | O_WRONLY);
     if(writeServerPipe < 0){
         ocall_strprint("everything gone awry\n");
         ocall_exit(-1);
@@ -90,6 +91,9 @@ static void setup(bytes* out, size* out_len, const bytes in, const size in_len) 
     const int kF_size = iee_readIntFromArr(in, &pos);
     unsigned char* kF = (unsigned char*)malloc(sizeof(unsigned char) * kF_size);
     iee_readFromArr(kF, kF_size, in, &pos);
+
+    /*printf("kEnc size %d\n", kEnc_size);
+    printf("kF size %d\n", kF_size);*/
 
     // Keys are  given by the client (as input message)
     setKeys(kEnc, kF);
@@ -143,7 +147,7 @@ static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
         //calculate index position label
         unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
         c_hmac(label, (unsigned char*)&c, sizeof(int), kW);
-        //free(kW);
+        free(kW);
 
         //calculate index value enc_data
         int enc_data_size = sizeof(int) + C_EXPBYTES;
@@ -154,6 +158,7 @@ static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
 
         unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * enc_data_size);
         c_encrypt(enc_data, (unsigned char*)&d, sizeof(int), nonce, get_kEnc());
+        free(nonce);
 
         //send label and enc_data to server
         unsigned char op = '2';
@@ -293,10 +298,12 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
             iee_bzero(data, C_KEYSIZE);
         }
 
+        free(nonce);
+
         // generate int vector
         const int nr_docs = len / sizeof(int);
         vec_int docs; // TODO check if this is always sorted
-                      // else has to be sorted in evaluator; may not be needed for vec_int
+                      // else has to be sorted in evaluator; may not be needed for vec_int (as of October may not really be needed)
         vi_init(&docs, nr_docs);
         pos = 0;
         for (int i = 0; i < nr_docs; i++) {
@@ -310,6 +317,7 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         // insert result into token's struct
         tkn->docs = docs;
 
+        free(buff);
         free(enc_data);
         free(data);
     }
@@ -378,7 +386,7 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
     get_docs_from_server(&query, count_words);
 
     #ifdef VERBOSE
-    ocall_strprint("parsed: ");
+    /*ocall_strprint("parsed: ");
     for(unsigned i = 0; i < vt_size(query); i++) {
         iee_token x = query.array[i];
         if(x.type == WORD_TOKEN) {
@@ -393,7 +401,7 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
             ocall_printf("%c ", x.type);
         }
     }
-    ocall_strprint("\n\n");
+    ocall_strprint("\n\n");*/
     #endif
 
     //calculate boolean formula
@@ -413,6 +421,13 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
         iee_addIntToArr(response_docs.array[i], *out, &pos);
     }
     //ocall_printf("\n");
+
+    /*
+    TODO free words before query
+    for(unsigned i = 0; i < vt_size(query); i++) {
+        iee_token t = query.array[i];
+        free(t.word);
+    }*/
 
     vt_destroy(&query);
     vi_destroy(&response_docs);

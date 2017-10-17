@@ -18,15 +18,24 @@ static void fs_strprint(bytes* out, size* outlen, const bytes in, const size inl
 
 static void fs_open(bytes* out, size* outlen, const bytes in, const size inlen)
 {
-    printf("Open ocall\n");
+    //printf("Open ocall\n");
 
     // read values from buffer
     int pos = 1;
     int oflags = iee_readIntFromArr(in, &pos);
+    size_t path_len = iee_read_size_t(in, &pos)-1;
 
-    printf("path %s %d\n", in+pos, oflags);
+    for(int i=0; i < inlen; i++)
+        printf("%c ", in[i]);
+    printf("\n");
+
+    char* path = (char*)malloc(sizeof(char) * (path_len+1));
+    strncpy(path, (const char *)in + pos, path_len);
+    path[path_len] = 0x00;
+
+    printf("path %s %d %lu %02x\n", path, oflags, path_len,in[pos + path_len-2]);
     // execute open syscall
-    int res = open((const char *)in+pos, oflags);
+    int res = open(path, oflags);
     printf("ret open: %d\n", res);
 
     // prepare response
@@ -39,7 +48,7 @@ static void fs_open(bytes* out, size* outlen, const bytes in, const size inlen)
 
 static void fs_close(bytes* out, size* outlen, const bytes in, const size inlen)
 {
-    printf("CLOSE ocall\n");
+    //printf("CLOSE ocall\n");
 
     // read values from buffer
     int pos = 1;
@@ -47,7 +56,7 @@ static void fs_close(bytes* out, size* outlen, const bytes in, const size inlen)
 
     // execute close syscall
     int res = close(fildes);
-    printf("ret close: %d\n", res);
+    //printf("ret close: %d\n", res);
 
     // prepare response
     pos = 0;
@@ -59,7 +68,7 @@ static void fs_close(bytes* out, size* outlen, const bytes in, const size inlen)
 
 static void fs_read(bytes* out, size* outlen, const bytes in, const size inlen)
 {
-    printf("Read ocall\n");
+    //printf("Read ocall\n");
 
     // read values from buffer
     int pos = 1;
@@ -74,7 +83,7 @@ static void fs_read(bytes* out, size* outlen, const bytes in, const size inlen)
 
     // execute read syscall
     ssize_t res = read(fildes, *out+8, nbytes);
-    printf("ret read: %lu\n", res);
+    //printf("ret read: %lu\n", res);
 
     pos = 0;
     iee_add_ssize_t(res, *out, &pos);
@@ -86,7 +95,7 @@ static void fs_read(bytes* out, size* outlen, const bytes in, const size inlen)
 
 static void fs_write(bytes* out, size* outlen, const bytes in, const size inlen)
 {
-    printf("Write ocall\n");
+    //printf("Write ocall\n");
 
     // read values from buffer
     int pos = 1;
@@ -98,7 +107,7 @@ static void fs_write(bytes* out, size* outlen, const bytes in, const size inlen)
  
     // execute write syscall
     ssize_t res = write(fildes, buf, nbytes);
-    printf("ret: %lu\n", res);
+    //printf("ret: %lu\n", res);
 
     // write output
     pos = 0;
@@ -106,6 +115,7 @@ static void fs_write(bytes* out, size* outlen, const bytes in, const size inlen)
     *outlen = sizeof(ssize_t);
 
     iee_add_ssize_t(res, *out, &pos);
+    //printf("leave write\n");
 }
 
 static void fs_exit(bytes* out, size* outlen, const bytes in, const size inlen)

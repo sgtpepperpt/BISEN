@@ -35,7 +35,7 @@ void ocall_strprint(const char *str)
     // read ocall output
     pos = 0;
     int ocall_ret = iee_readIntFromArr(out, &pos);
-    untrusted_free_bytes(&out);
+/*    untrusted_free_bytes(&out);*/
     //printf("ret ocall: %d\n", ocall_ret);// not ocall_printf, recursion...
 }
 
@@ -61,7 +61,7 @@ int ocall_open(const char *path, int oflags)
     // read ocall output
     pos = 0;
     int ocall_ret = iee_readIntFromArr(out, &pos);
-    untrusted_free_bytes(&out);
+/*    untrusted_free_bytes(&out);*/
     ocall_printf("ret ocall_open: %d\n", ocall_ret);
 
     return ocall_ret;
@@ -85,7 +85,7 @@ int ocall_close(int fildes)
     // read ocall output
     pos = 0;
     int ocall_ret = iee_readIntFromArr(out, &pos);
-    untrusted_free_bytes(&out);
+/*    untrusted_free_bytes(&out);*/
     //ocall_printf("ret close ocall: %d\n", ocall_ret);
 
     return ocall_ret;
@@ -118,7 +118,7 @@ ssize_t ocall_read(int fildes, unsigned char* buf, size_t nbytes)
     
     for(int i = 0; i < ocall_ret; i++)
         buf[i] = (void*)out[i+8];
-    untrusted_free_bytes(&out);
+/*    untrusted_free_bytes(&out);*/
 
     return ocall_ret;
 }
@@ -144,7 +144,7 @@ ssize_t ocall_write(int fildes, const void *buf, size_t nbytes)
     // read ocall output
     pos = 0;
     ssize_t ocall_ret = iee_read_ssize_t(output, &pos);
-    untrusted_free_bytes(&output);
+/*    untrusted_free_bytes(&output);*/
     //ocall_printf("ret: %lu\n", ocall_ret);
 
     //free(output);
@@ -171,7 +171,7 @@ int ocall_exit(int status)
     // read ocall output
     pos = 0;
     int ocall_ret = iee_readIntFromArr(out, &pos);
-    untrusted_free_bytes(&out);
+/*    untrusted_free_bytes(&out);*/
     //ocall_printf("ret status ocall: %d\n", ocall_ret);
 
     return ocall_ret;

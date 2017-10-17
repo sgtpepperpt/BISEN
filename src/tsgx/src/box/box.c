@@ -86,6 +86,10 @@ int box(
   f(&out, &outlen, pid, in, inlen);
 
   res = ae_enc(omsg, omsglen, out, outlen, key, counter_out[pid-1]); 
+
+  free(in);
+  free(out);
+
   if(res != SGX_MPC_OK)
   { *omsg = NULL;
     *omsglen = 0;

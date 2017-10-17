@@ -7,15 +7,19 @@ CPP_FLAGS= $(C_FLAGS) -std=c++11
 
 CONFIG_FLAGS= -DVERBOSE -DLOCALTEST
 
-LIBS= -lsodium-sgx
+LIBS= -lsodium
 
 .PHONY : clean main
 
 ##
 
-main: main.cpp common.a iee.a client.a
-	g++ $(CPP_FLAGS) -o main main.cpp common.a iee.a client.a $(LIBS)
+main: main.cpp common.a iee.a client.a unstrusted.a
+	g++ $(CPP_FLAGS) -o main main.cpp common.a iee.a client.a unstrusted.a $(LIBS)
 	cp iee.a ../tsgx/test_bisen/f/
+
+unstrusted.a: ../tsgx/src/untrusted/untrusted_free_bytes.c
+	gcc $(C_FLAGS) -I../tsgx/include/ -c $<
+	ar rcs $@ untrusted_free_bytes.o
 
 common.a: $(COMMON_DIR)/*.cpp
 	cd $(COMMON_DIR) && g++ $(CPP_FLAGS) -c *.cpp

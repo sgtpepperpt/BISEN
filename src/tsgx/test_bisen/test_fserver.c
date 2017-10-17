@@ -130,6 +130,8 @@ int main(int argc,char **argv)
     printf("Answer Output: Remote -> Local: %llu bytes\n",msg_rl_len);
     printf("Status: %d\n",res);
 
+    free(msg_lr);
+
     res |= mpc_process(&msg_lr,&msg_lr_len,0x82, msg_rl,msg_rl_len,0); /* decrypt first output */
     printf("Output Locally Received\n");
     printf("Status: %d\n",res);
@@ -159,6 +161,9 @@ int main(int argc,char **argv)
         }
         printf("\n");
     }
+
+    free(msg_lr);
+    free(msg_rl);
   }
 
   mach_finalize(handle);

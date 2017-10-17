@@ -108,6 +108,7 @@ static void fs_write(bytes* out, size* outlen, const bytes in, const size inlen)
     // execute write syscall
     ssize_t res = write(fildes, buf, nbytes);
     //printf("ret: %lu\n", res);
+    free(buf);
 
     // write output
     pos = 0;

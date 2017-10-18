@@ -39,7 +39,7 @@ private:
 
     static void* bridgeClientIeeThread(void* threadData);
     vector<unsigned char> fillVector(unsigned char* array, int len);
-    
+
 public:
     SseServer();
     ~SseServer();

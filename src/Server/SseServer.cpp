@@ -39,13 +39,12 @@ SseServer::SseServer() {
         if(errno != EEXIST)
             pee("Fail to mknod");
 
-    printf("gona open  write pipe!\n");
+    printf("Opening write pipe!\n");
 	writeIeePipe = open(pipeName, O_ASYNC | O_WRONLY);
 
 	//start listening on pipes; must open write first as read blocks
-	printf("gona open read pipe!\n");
+	printf("Opening read pipe!\n");
     readIeePipe = open(pipeName2, O_ASYNC | O_RDONLY);
-    printf("done!\n");
     
     //launch client-iee tunnel
 /*	//not being used anymore, client comunicates with iee directly for testing
@@ -62,7 +61,15 @@ SseServer::SseServer() {
         switch (cmd) {
             //setup
             case '1': {
+                if(I) {
+                    delete I;
+                    #ifdef VERBOSE
+                    printf("Cleared map!\n");
+                    #endif
+                }
+
                 I = new map<vector<unsigned char>,vector<unsigned char> >;
+
                 #ifdef VERBOSE
                 printf("Finished Setup!\n");
                 #endif
@@ -104,8 +111,8 @@ SseServer::SseServer() {
                 for (int i = 0; i < counter; i++) {
                     socketReceive(readIeePipe, label, l_size);
                         for(unsigned i = 0; i < l_size; i++)
-        printf("%02x", label[i]);
-    printf("\n");
+                            printf("%02x", label[i]);
+                        printf("\n");
                     vector<unsigned char> l = fillVector(label, l_size);
                     vector<unsigned char> enc_d = (*I)[l];
 

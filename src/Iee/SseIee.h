@@ -22,6 +22,8 @@
 #define OP_ADD 0x61
 #define OP_SRC 0x73
 
+#define RES_OK 0x90
+
 int readServerPipe;
 int writeServerPipe;
 //int clientBridgePipe;

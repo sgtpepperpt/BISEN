@@ -38,6 +38,15 @@ extern "C" {
 //#include <map>
 //map<int, int> f;
 
+int count_occurences(vector<int> v, int elem) {
+    int count = 0;
+    for(unsigned i = 0; i < v.size(); i++) {
+        if(v[i] == elem)
+            count++;
+    }
+    return count;
+}
+
 void printResults (vector<int> results) {
     //#ifdef VERBOSE
     if(!results.size()) {
@@ -45,13 +54,21 @@ void printResults (vector<int> results) {
         return;
     }
 
+    int crisis = 0;
+
     sort(results.begin(), results.end());
-    for(unsigned i = 0; i < results.size(); i++)
+    for(unsigned i = 0; i < results.size(); i++) {
         printf("%i ", results[i]);
+        if(count_occurences(results, results[i]) > 1)
+            crisis = 1;
+    }
 
     printf("\n");
     //f[results.size()]++;
     //#endif
+
+    if(crisis)
+        exit(-1);
 }
 
 void print_buffer(const char* name, const unsigned char * buf, const unsigned long long len) {
@@ -125,7 +142,7 @@ int main(int argc, const char * argv[]) {
             cout<<(*iter)<< " ";
         }
         count++;
-        cout << endl;
+        cout << endl << endl;
 
         // generate the byte* to send to the server
         unsigned char* data;

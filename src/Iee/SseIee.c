@@ -46,7 +46,6 @@ static void init_pipes() {
     char pipeName[256];
 
     //start server-iee pipe
-    ocall_strprint("ola");
     strncpy(pipeName, pipeDir, strlen(pipeDir));
     strncpy(pipeName + strlen(pipeName), "server_to_iee", strlen("server_to_iee"));
 
@@ -61,7 +60,7 @@ static void init_pipes() {
     ocall_strprint("Opening write pipe!\n");
     writeServerPipe = ocall_open("/tmp/BooleanSSE/iee_to_server", O_ASYNC | O_WRONLY);
     if(writeServerPipe < 0){
-        ocall_strprint("everything gone awry\n");
+        ocall_strprint("Write pipe opening error! Terminating...\n");
         ocall_exit(-1);
     }
 
@@ -105,7 +104,7 @@ static void setup(bytes* out, size* out_len, const bytes in, const size in_len) 
     // output message
     *out_len = 1;
     *out = (unsigned char*)malloc(sizeof(unsigned char));
-    (*out)[0] = 0x90;
+    (*out)[0] = RES_OK;
 
     #ifdef VERBOSE
     ocall_strprint("IEE: Finished Setup!\n");
@@ -181,7 +180,7 @@ static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
     // output message
     *out_len = 1;
     *out = (unsigned char*)malloc(sizeof(unsigned char));
-    (*out)[0] = 0x90;
+    (*out)[0] = RES_OK;
 }
 
 static void get_docs_from_server(vec_token *query, unsigned count_words) {
@@ -287,6 +286,10 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
             c_decrypt(data, enc_data, 44, nonce, get_kEnc());
             iee_addToArr((unsigned char*)data, sizeof(int), buff, &pos);
 
+            /*for(unsigned i = 0; i < 44; i++)
+                ocall_printf("%02x ", data[i]);
+            ocall_printf("\n");*/
+
             /** Another way of doing it
                 int d = -1;
                 memcpy(&d, data, sizeof(int));
@@ -316,6 +319,7 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
 
         // insert result into token's struct
         tkn->docs = docs;
+        //printf("docs retrieved %s\n", tkn->word);
 
         free(buff);
         free(enc_data);

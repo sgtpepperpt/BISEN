@@ -30,7 +30,7 @@ vector<client_token> QueryParser::tokenize(string query) {
         client_token tkn;
         if(is_operator(query[i])) {
             tkn.type = query[i];
-            
+
             // eliminate next character if it's the same (&& or ||)
             if((query[i] == '&' || query[i] == '|') && query[i+1] == query[i])
                 i++;

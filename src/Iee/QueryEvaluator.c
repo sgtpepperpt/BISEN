@@ -11,6 +11,7 @@ vec_int get_not_docs(int nDocs, vec_int negate){
 
     // increase the count for elems in the original vector
     for(unsigned i = 0; i < vi_size(negate); i++) {
+        //printf("aa %p\n", negate.array);
         count[negate.array[i]]++;
     }
 
@@ -108,6 +109,8 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             }
 
             vec_int negate = vt_peek_back(eval_stack).docs;
+           // printf("negation");
+            vi_print(negate);
             vt_pop_back(&eval_stack);
             
             // difference between all docs and the docs we don't want

@@ -422,12 +422,11 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
     }
     //ocall_printf("\n");
 
-    /*
-    TODO free words before query
+    // free the buffers in the iee_tokens
     for(unsigned i = 0; i < vt_size(query); i++) {
         iee_token t = query.array[i];
         free(t.word);
-    }*/
+    }
 
     vt_destroy(&query);
     vi_destroy(&response_docs);

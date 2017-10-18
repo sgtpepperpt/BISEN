@@ -21,7 +21,7 @@ extern "C" {
 }
 
 ///////////////////////////// TESTING PARAMETERS /////////////////////////////
-#define NUM_QUERIES 1
+#define NUM_QUERIES 50000
 #define DATASET_DIR "../Data/parsed/"
 
 // query size will be aprox. between
@@ -164,7 +164,7 @@ int main(int argc, const char * argv[]) {
                             QUERY_WORD_COUNT, NOT_PROBABILITY, AND_PROBABILITY);
 
         #ifdef VERBOSE
-        cout << "\n----------------------------\nQuery: " << query << endl;
+        cout << "\n----------------------------\nQuery " << i << " : " << query << endl;
         #endif
 
         unsigned char* data;

@@ -15,7 +15,9 @@
 extern size test_len;
 extern bytes* commands;
 extern size* commands_sizes;
+#define TEST_DOCS 1000 // TODO pass this from the commands.c too
 
+// Utility functions
 void read_arr(const void* val, int size, const unsigned char * arr, int* pos) {
     memcpy((void*)val, &arr[*pos], size);
     *pos += size;
@@ -145,12 +147,13 @@ int main(int argc,char **argv)
       return -1;
     }
 
-    printf("%d OK: Output : %llu\n",cmd_index, msg_lr_len);
+    printf("(%d/%llu) OK: Output : %llu\n", cmd_index, test_len, msg_lr_len);
     for(i=0;i<msg_lr_len;i++)
         printf("%02x", msg_lr[i]);
     printf("\n");
 
-    if(cmd_index > 10001) {
+    // tests are composed of 1 setup, "TEST_DOCS" adds, and then searches
+    if(cmd_index > TEST_DOCS + 1) {
         const int n_docs = msg_lr_len / sizeof(int);
         printf("Search result: %d docs\n", n_docs);
 

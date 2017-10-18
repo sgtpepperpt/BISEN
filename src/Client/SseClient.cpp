@@ -89,7 +89,8 @@ unsigned long long SseClient::add_words(int doc_id, set<string> words, unsigned 
         data_size += 2*sizeof(int) + (int)w.size() + 1;
     }
 
-    //allocate data buffer
+    // allocate data buffer
+    // must be freed in calling function
     *data = new unsigned char[data_size];
 
     unsigned char op = 'a';
@@ -154,7 +155,7 @@ int SseClient::search(string query, unsigned char** data) {
     data_size += sizeof(unsigned char) + sizeof(int);
 
     //prepare query
-    *data = new unsigned char[data_size];
+    *data = (unsigned char*)malloc(sizeof(unsigned char) * data_size);
     int pos = 0;
 
     unsigned char op = 's';

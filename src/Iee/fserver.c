@@ -25,18 +25,14 @@ static void fs_open(bytes* out, size* outlen, const bytes in, const size inlen)
     int oflags = iee_readIntFromArr(in, &pos);
     size_t path_len = iee_read_size_t(in, &pos)-1;
 
-    for(int i=0; i < inlen; i++)
-        printf("%c ", in[i]);
-    printf("\n");
-
     char* path = (char*)malloc(sizeof(char) * (path_len+1));
     strncpy(path, (const char *)in + pos, path_len);
     path[path_len] = 0x00;
 
-    printf("path %s %d %lu %02x\n", path, oflags, path_len,in[pos + path_len-2]);
+    //printf("path %s %d %lu %02x\n", path, oflags, path_len,in[pos + path_len-2]);
     // execute open syscall
     int res = open(path, oflags);
-    printf("ret open: %d\n", res);
+    //printf("ret open: %d\n", res);
 
     // prepare response
     pos = 0;

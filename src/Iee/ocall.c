@@ -17,6 +17,7 @@ void ocall_printf(const char *fmt, ...)
 
 void ocall_strprint(const char *str)
 {
+    #ifdef VERBOSE
     size_t len = iee_strlen(str);
 
     size_t inlen = sizeof(int) + (len * sizeof(char));
@@ -37,6 +38,7 @@ void ocall_strprint(const char *str)
     int ocall_ret = iee_readIntFromArr(out, &pos);
     untrusted_free_bytes(&out);
     //printf("ret ocall: %d\n", ocall_ret);// not ocall_printf, recursion...
+    #endif
 }
 
 int ocall_open(const char *path, int oflags)
@@ -62,6 +64,7 @@ int ocall_open(const char *path, int oflags)
     pos = 0;
     int ocall_ret = iee_readIntFromArr(out, &pos);
     untrusted_free_bytes(&out);
+
     ocall_printf("ret ocall_open: %d\n", ocall_ret);
 
     return ocall_ret;

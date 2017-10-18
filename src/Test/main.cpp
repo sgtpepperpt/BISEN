@@ -39,7 +39,7 @@ extern "C" {
 //map<int, int> f;
 
 void printResults (vector<int> results) {
-    #ifdef VERBOSE
+    //#ifdef VERBOSE
     if(!results.size()) {
         printf("none\n");
         return;
@@ -51,7 +51,7 @@ void printResults (vector<int> results) {
 
     printf("\n");
     //f[results.size()]++;
-    #endif
+    //#endif
 }
 
 void print_buffer(const char* name, const unsigned char * buf, const unsigned long long len) {
@@ -163,21 +163,22 @@ int main(int argc, const char * argv[]) {
         string query = client.generate_random_query(all_words,
                             QUERY_WORD_COUNT, NOT_PROBABILITY, AND_PROBABILITY);
 
-        #ifdef VERBOSE
-        cout << "\n----------------------------\nQuery " << i << " : " << query << endl;
-        #endif
+        //#ifdef VERBOSE
+        printf("\n----------------------------\n");
+        printf("Query %d: %s\n", i, query.c_str());
+        //#endif
 
         unsigned char* data;
         unsigned long long data_size = client.search(query, &data);
 
         #ifdef VERBOSE
-        for(int i = 0; i < data_size; i++){
+        /*for(int i = 0; i < data_size; i++){
             if(data[i] >= 0x71 && data[i] <= 0x7A)
                 printf("%c ", data[i]);
             else
                 printf("%02x", data[i]);
         }
-        printf("\n");
+        printf("\n");*/
         #endif
 
         // write to benchmark file
@@ -193,9 +194,9 @@ int main(int argc, const char * argv[]) {
         //process results
         const int nDocs = output_size / sizeof(int);
 
-        #ifdef VERBOSE
+        //#ifdef VERBOSE
         printf("Number of docs: %d\n", nDocs);
-        #endif
+        //#endif
 
         vector<int> results(nDocs);
         int pos = 0;
@@ -204,14 +205,15 @@ int main(int argc, const char * argv[]) {
         }
 
         printResults(results);
-        free(data);
         free(output);
         #endif
+
+        free(data);
     }
     //TODO hack just to compile, no idea why needed, doesn't affect sgx
-    unsigned char dat[1];
-    int posix = 0;
-    int c = readIntFromArr(dat, &posix);
+    unsigned char x[1];
+    int xx = 0;
+    int xy = readIntFromArr(x, &xx);
 
     //for (auto const& x : f)
     //    cout << x.first << ':' << x.second << endl;

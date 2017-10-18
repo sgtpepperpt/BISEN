@@ -85,7 +85,7 @@ int max(int a, int b)
     return a < b? b : a;
 }
 
-unsigned vi_print(vec_int v) {
+void vi_print(vec_int v) {
     /*for(int i = 0; i < v.counter; i++)
         printf("%d ", v.array[i]);
     printf("\n");*/

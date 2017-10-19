@@ -139,7 +139,7 @@ int SseClient::search(string query, unsigned char** data) {
                 tkn->counter = 0;
 
             //printf("counter %s %d\n", tkn->word.c_str(), tkn->counter);
-            data_size += sizeof(unsigned char) + sizeof(int) + (tkn->word.size() + 1);
+            data_size += sizeof(unsigned char) + sizeof(int) + (H_BYTES * sizeof(unsigned char));
         } else {
             data_size += sizeof(unsigned char);
         }
@@ -169,11 +169,9 @@ int SseClient::search(string query, unsigned char** data) {
         if(tkn.type == WORD_TOKEN) {
             addIntToArr(tkn.counter, *data, &pos);
 
-            for (unsigned i = 0; i < tkn.word.size(); i++)
-                addToArr(&tkn.word[i], sizeof(unsigned char), *data, &pos);
-
-            char term = '\0';
-            addToArr(&term, sizeof(unsigned char), *data, &pos);
+            //calculate key kW (with hmac sha256)
+            client_c_hmac((*data)+pos, (unsigned char*)tkn.word.c_str(), strlen(tkn.word.c_str()), client_get_kF());
+            pos += H_BYTES * sizeof(unsigned char);
         } else if(tkn.type == META_TOKEN) {
             addIntToArr(tkn.counter, *data, &pos);
         }

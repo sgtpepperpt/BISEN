@@ -135,7 +135,8 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
     }
 
     if (vt_size(eval_stack) != 1) {
-        ocall_printf("Wrong number of operands left: %u\n", vt_size(eval_stack));
+        ocall_strprint("Wrong number of operands left\n");
+        //printf("Wrong number of operands left: %u\n", vt_size(eval_stack));
         //ocall_printf("%02x\n", vt_peek_back(eval_stack).type);
         ocall_exit(-1);
     }

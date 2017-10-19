@@ -214,16 +214,11 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
             tkn->docs = dummy;
         }
 
-        //printf("word is %s\n", tkn->word);
-        //calculate key kW
-        unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
-        c_hmac(kW, (unsigned char*)tkn->word, strlen(tkn->word), get_kF());
-
         //calculate relevant index positions
         unsigned char** labels = (unsigned char**)malloc(sizeof(unsigned char*) * tkn->counter);
         unsigned char* l = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
         for (int c = 0; c < tkn->counter; c++) {
-            c_hmac(l, (unsigned char*)&c, sizeof(int), kW);
+            c_hmac(l, (unsigned char*)&c, sizeof(int), tkn->word);
             unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
             for (int i = 0; i < H_BYTES; i++)
                 label[i] = l[i];
@@ -234,7 +229,7 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         }
 
         free(l);
-        free(kW);
+        //free(kW);
 
         //request index positions from server
         int len = sizeof(char) + sizeof(int) + tkn->counter * H_BYTES;
@@ -332,6 +327,7 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
     //read in
     int pos = 1;
     while(pos < in_len) {
+
         iee_token tkn;
         tkn.word = NULL;
 
@@ -347,21 +343,10 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
             // read counter
             tkn.counter = iee_readIntFromArr(in, &pos);
 
-            // read word
-            tkn.word = (char*)malloc(sizeof(char) * MAX_WORD_SIZE);
-            char* tmp = (char*)malloc(sizeof(char)); // TODO could this be more efficient since we're copying from
-                                                     // one char array to another and then to a third one?
-                                                     // (in->tmp->tkn.word)
-            int counter = 0;
-            do {
-                iee_readFromArr(tmp, 1, in, &pos);
-                tkn.word[counter++] = tmp[0];
-            } while(tmp[0] != '\0' && counter < MAX_WORD_SIZE);
-            free(tmp);
+            // read kW
+            tkn.word = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
+            iee_readFromArr(tkn.word, H_BYTES, in, &pos);
 
-            // guarantee string is terminated
-            tkn.word[MAX_WORD_SIZE - 1] = '\0';
-            //printf("got %s word\n", tkn.word);
         } else if(tkn.type == META_TOKEN) {
             nDocs = iee_readIntFromArr(in, &pos);
             continue;

@@ -218,7 +218,7 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         unsigned char** labels = (unsigned char**)malloc(sizeof(unsigned char*) * tkn->counter);
         unsigned char* l = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
         for (int c = 0; c < tkn->counter; c++) {
-            c_hmac(l, (unsigned char*)&c, sizeof(int), tkn->word);
+            c_hmac(l, (unsigned char*)&c, sizeof(int), tkn->kW);
             unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
             for (int i = 0; i < H_BYTES; i++)
                 label[i] = l[i];
@@ -253,16 +253,19 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         len = tkn->counter * sizeof(int);
         buff = (unsigned char*)malloc(sizeof(unsigned char)* len);
 
+        // generate 0-filled nonce
         unsigned char* nonce = (unsigned char*)malloc(sizeof(char)*C_NONCESIZE);
         for(int i= 0; i < C_NONCESIZE; i++) nonce[i] = 0x00;
 
-        unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * 44);
-        unsigned char* data = (unsigned char*)malloc(sizeof(unsigned char) * 44);
-        pos = 0;
-        for (int i = 0; i < tkn->counter; i++) {
-            iee_socketReceive(readServerPipe, enc_data, 44);
+        const unsigned long enc_len = sizeof(int) + C_EXPBYTES; // 44
+        unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * (enc_len * tkn->counter));
+        iee_socketReceive(readServerPipe, enc_data, enc_len * tkn->counter);
 
-            c_decrypt(data, enc_data, 44, nonce, get_kEnc());
+        unsigned char* data = (unsigned char*)malloc(sizeof(unsigned char) * enc_len);
+        pos = 0;
+
+        for (int i = 0; i < tkn->counter; i++) {
+            c_decrypt(data, enc_data + (i * enc_len), enc_len, nonce, get_kEnc());
             iee_addToArr((unsigned char*)data, sizeof(int), buff, &pos);
 
             /*for(unsigned i = 0; i < 44; i++)
@@ -329,7 +332,7 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
     while(pos < in_len) {
 
         iee_token tkn;
-        tkn.word = NULL;
+        tkn.kW = NULL;
 
         char* tmp_type = (char*)malloc(sizeof(char));
         iee_readFromArr(tmp_type, 1, in, &pos);
@@ -344,8 +347,8 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
             tkn.counter = iee_readIntFromArr(in, &pos);
 
             // read kW
-            tkn.word = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
-            iee_readFromArr(tkn.word, H_BYTES, in, &pos);
+            tkn.kW = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
+            iee_readFromArr(tkn.kW, H_BYTES, in, &pos);
 
         } else if(tkn.type == META_TOKEN) {
             nDocs = iee_readIntFromArr(in, &pos);
@@ -398,7 +401,7 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
     // free the buffers in the iee_tokens
     for(unsigned i = 0; i < vt_size(query); i++) {
         iee_token t = query.array[i];
-        free(t.word);
+        free(t.kW);
     }
 
     vt_destroy(&query);

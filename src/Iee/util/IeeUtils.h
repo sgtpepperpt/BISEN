@@ -21,7 +21,7 @@
 typedef struct iee_token {
     char type;
     int counter;
-    char* word;
+    unsigned char* kW;
     vec_int docs;
 } iee_token;
 // END IEE TOKEN DEFINITIONS

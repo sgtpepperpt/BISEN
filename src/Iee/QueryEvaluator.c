@@ -109,7 +109,7 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             }
 
             vec_int negate = vt_peek_back(eval_stack).docs;
-           // printf("negation");
+            // printf("negation");
             vi_print(negate);
             vt_pop_back(&eval_stack);
             

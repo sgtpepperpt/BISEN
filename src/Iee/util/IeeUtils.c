@@ -43,13 +43,13 @@ void iee_socketReceive(int sockfd, unsigned char* buff, unsigned long size) {
 int iee_receiveAll (int socket, unsigned char* buff, unsigned long len) {
     ssize_t r = 0;
     while (r < len) {
-        ocall_printf("calling len %lu; r %ld\n", len, r);
+        //printf("calling len %lu; r %ld\n", len, r);
         ssize_t n = ocall_read(socket, buff + r, len-r);
-        ocall_printf("got %lu\n-------------------------\n", n);
+        //printf("got %lu\n-------------------------\n", n);
         if (n < 0) iee_pee("ERROR reading from socket");
         r+=n;
     }
-    ocall_printf("*********** finish iee_receiveAll ***********\n\n");
+    //printf("*********** finish iee_receiveAll ***********\n\n");
     return r;
 }
 

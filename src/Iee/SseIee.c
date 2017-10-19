@@ -123,25 +123,9 @@ static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
         const int d = iee_readIntFromArr(in, &pos);
         const int c = iee_readIntFromArr(in, &pos);
 
-        // read word
-        char* word = (char*)malloc(sizeof(char) * MAX_WORD_SIZE);
-        char* tmp = (char*)malloc(sizeof(char));
-        int counter = 0;
-
-        do {
-            iee_readFromArr(tmp, 1, in, &pos);
-            word[counter++] = tmp[0];
-        } while(tmp[0] != '\0' && counter < MAX_WORD_SIZE);
-        free(tmp);
-
-        // guarantee string is terminated
-        word[MAX_WORD_SIZE - 1] = '\0';
-        ocall_printf("%s\n", word);
-
-        //calculate key kW (with hmac sha256)
+        // read kW
         unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
-        c_hmac(kW, (unsigned char*)word, strlen(word), get_kF());
-        free(word);
+        iee_readFromArr(kW, H_BYTES, in, &pos);
 
         //calculate index position label
         unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);

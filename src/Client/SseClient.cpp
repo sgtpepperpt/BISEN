@@ -86,7 +86,7 @@ unsigned long long SseClient::add_words(int doc_id, set<string> words, unsigned 
 
     // first iteration: to get the size of the buffer to allocate
     for(string w : words) {
-        data_size += 2*sizeof(int) + (int)w.size() + 1;
+        data_size += 2*sizeof(int) + H_BYTES * sizeof(unsigned char);
     }
 
     // allocate data buffer
@@ -110,11 +110,10 @@ unsigned long long SseClient::add_words(int doc_id, set<string> words, unsigned 
 
         addIntToArr(doc_id, *data, &pos);
         addIntToArr(c - 1, *data, &pos); // counter starts at 1, so -1 for indexing
-        for (unsigned i = 0; i < w.size(); i++)
-            addToArr(&w[i], sizeof(unsigned char), *data, &pos);
-        
-        unsigned char term = '\0';
-        addToArr(&term, sizeof(unsigned char), *data, &pos);
+
+        //calculate key kW (with hmac sha256)
+        client_c_hmac((*data)+pos, (unsigned char*)w.c_str(), strlen(w.c_str()), client_get_kF());
+        pos += H_BYTES * sizeof(unsigned char);
     }
 
     return data_size;

@@ -137,10 +137,10 @@ int main(int argc, const char * argv[]) {
         set<string> text = client.extractUniqueKeywords(DATASET_DIR + doc);
         cout << "doc " << count << endl;
 
-        set<string>::iterator iter;
+        /*set<string>::iterator iter;
         for(iter=text.begin(); iter!=text.end();++iter){
             cout<<(*iter)<< " ";
-        }
+        }*/
         count++;
         cout << endl << endl;
 
@@ -215,13 +215,13 @@ int main(int argc, const char * argv[]) {
         printf("Number of docs: %d\n", nDocs);
         //#endif
 
-        vector<int> results(nDocs);
+        /*vector<int> results(nDocs);
         int pos = 0;
         for (int i = 0; i < nDocs; i++) {
             results[i] = readIntFromArr(output, &pos); // sem esta linha, o client nao compila... porque?? TODO TODO
-        }
+        }*/
 
-        printResults(results);
+        //printResults(results);
         free(output);
         #endif
 

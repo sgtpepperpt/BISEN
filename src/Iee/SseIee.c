@@ -207,6 +207,7 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
     // request the documents from the server
     for(unsigned i = 0; i < count_words; i++) {
         iee_token *tkn = rand[i];
+        printf("word %d/%d\n", i, count_words);
 
         //cout << "counter for " << tkn->word << " is " << tkn->counter << endl;
         if(tkn->counter == 0) {
@@ -287,6 +288,7 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
 
         // generate int vector
         const int nr_docs = len / sizeof(int);
+        printf("nr docs %d\n", nr_docs);
         vec_int docs; // TODO check if this is always sorted
                       // else has to be sorted in evaluator; may not be needed for vec_int (as of October may not really be needed)
         vi_init(&docs, nr_docs);
@@ -306,6 +308,7 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         free(buff);
         free(enc_data);
         free(data);
+        printf("done\n");
     }
 
     #ifdef VERBOSE

@@ -141,5 +141,10 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
         ocall_exit(-1);
     }
 
-    return vt_peek_back(eval_stack).docs;
+    //return vt_peek_back(eval_stack).docs;
+    vec_int ret = vt_peek_back(eval_stack).docs;
+    vt_destroy(&eval_stack);
+    return ret;
 }
+
+

@@ -21,7 +21,7 @@ extern "C" {
 }
 
 ///////////////////////////// TESTING PARAMETERS /////////////////////////////
-#define NUM_QUERIES 50000
+#define NUM_QUERIES 500000
 #define DATASET_DIR "../Data/parsed/"
 
 // query size will be aprox. between
@@ -29,8 +29,8 @@ extern "C" {
 #define QUERY_WORD_COUNT 2
 
 // probabilities between 0 and 100
-#define NOT_PROBABILITY 5
-#define AND_PROBABILITY 30
+#define NOT_PROBABILITY 0
+#define AND_PROBABILITY 50
 
 /////////////////////////// END TESTING PARAMETERS ///////////////////////////
 

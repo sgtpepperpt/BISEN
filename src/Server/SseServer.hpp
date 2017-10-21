@@ -35,7 +35,7 @@ private:
     int readIeePipe;
     int writeIeePipe;
     static int clientSock;
-    map<vector<unsigned char>,vector<unsigned char> >* I;
+    map<vector<unsigned char>,unsigned char*>* I;
 
     static void* bridgeClientIeeThread(void* threadData);
     vector<unsigned char> fillVector(unsigned char* array, int len);

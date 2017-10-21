@@ -68,7 +68,7 @@ SseServer::SseServer() {
                     #endif
                 }
 
-                I = new map<vector<unsigned char>,vector<unsigned char> >;
+                I = new map<vector<unsigned char>, unsigned char*>;
 
                 #ifdef VERBOSE
                 printf("Finished Setup!\n");
@@ -88,10 +88,8 @@ SseServer::SseServer() {
 
                 unsigned char* d = new unsigned char[d_size];
                 socketReceive(readIeePipe, d, d_size);
-                vector<unsigned char> d_vector = fillVector(d, d_size);
-                delete[] d;
+                (*I)[l_vector] = d;
 
-                (*I)[l_vector] = d_vector;
                 #ifdef VERBOSE
                 printf("Finished Add!\n");
                 #endif
@@ -100,54 +98,25 @@ SseServer::SseServer() {
             // search - get index positions
             case '3': {
                 #ifdef VERBOSE
-                printf("Started Search 1st part!\n");
+                printf("Started Search!\n");
                 #endif
                 unsigned char buff[sizeof(int)];
                 socketReceive(readIeePipe, buff, sizeof(int));
                 int pos = 0;
                 const int counter = readIntFromArr(buff, &pos);
                 //cout << "counter size " << counter << endl;
-                unsigned char* label = new unsigned char[l_size];
+                unsigned char* label = new unsigned char[l_size * counter];
+                socketReceive(readIeePipe, label, l_size * counter * sizeof(unsigned char));
+
+                // send the labels for each word occurence
                 for (int i = 0; i < counter; i++) {
-                    socketReceive(readIeePipe, label, l_size);
-                        for(unsigned i = 0; i < l_size; i++)
-                            printf("%02x", label[i]);
-                        printf("\n");
-                    vector<unsigned char> l = fillVector(label, l_size);
-                    vector<unsigned char> enc_d = (*I)[l];
-
-                    cout << "enc_d size " << enc_d.size() << endl;
-                    for (unsigned j = 0; j < enc_d.size(); j++)
-                        socketSend(writeIeePipe, &enc_d[j], sizeof(unsigned char));
+                    vector<unsigned char> l = fillVector(label + i * l_size, l_size);
+                    socketSend(writeIeePipe, (*I)[l], sizeof(unsigned char) * d_size);
                 }
+                free(label);
                 #ifdef VERBOSE
-                printf("Finished Search 1st part!\n");
+                printf("Finished Search!\n");
                 #endif
-                break;
-            }
-            // search - send response to client
-            case '4': {
-                //get data size
-                unsigned char buff[sizeof(int)];
-                socketReceive(readIeePipe, buff, sizeof(int));
-
-                //get data
-                int pos = 0;
-                const int data_size = readIntFromArr(buff, &pos);
-                unsigned char* data = new unsigned char[data_size];
-                socketReceive(readIeePipe, data, data_size);
-
-                //send data to client
-                int sockfd = connectAndSend(buff, sizeof(int));
-                socketSend(sockfd, data, data_size);
-
-                close(sockfd);
-                delete[] data;
-
-                #ifdef VERBOSE
-                printf("Finished Search 2nd part!\n");
-                #endif
-
                 break;
             }
             default:

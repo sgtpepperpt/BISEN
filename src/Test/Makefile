@@ -2,7 +2,7 @@ IEE_DIR=../Iee
 CLIENT_DIR=../Client
 COMMON_DIR=../Common
 
-CONFIG_FLAGS= -DLOCALTEST -DVERBOSE
+CONFIG_FLAGS= -DLOCALTEST
 
 C_FLAGS= -Wall -g -Wno-unused-function -Wno-unused-variable -fPIC $(CONFIG_FLAGS)
 CPP_FLAGS= $(C_FLAGS) -std=c++11

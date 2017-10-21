@@ -61,8 +61,14 @@ SseServer::SseServer() {
         switch (cmd) {
             //setup
             case '1': {
+                // delete existing map, only useful for reruns while debugging
                 if(I) {
+                    map<vector<unsigned char>,unsigned char*>::iterator it;
+                    for(it = I->begin(); it != I->end(); ++it)
+                        free(it->second);
+
                     delete I;
+
                     #ifdef VERBOSE
                     printf("Cleared map!\n");
                     #endif

@@ -179,7 +179,7 @@ int main(int argc, const char * argv[]) {
         all_words_set.insert(text.begin(), text.end());
     }
 
-    cout << "Add queries: " << nr_updates << endl;
+    printf("Add queries: %lu\n", nr_updates);
     printf("Execution time: add = %6.3lf seconds!\n", total_time/1000000.0 );
     //client.list_words();
 

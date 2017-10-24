@@ -126,10 +126,9 @@ int main(int argc,char **argv)
     size_t update_counter = 0;
     size_t search_counter = 0;
 
-    long elapsed_upd = 0;
-    //long elapsed_src = 0;
+    long elapsed = 0;
 
-    printf("nr updates: %lu, nr searches: %lu\n", nr_updates, nr_searches);
+    printf("nr updates: %lu, nr searches: %lu, test len: %llu\n", nr_updates, nr_searches, test_len);
 
     for(cmd_index=0; cmd_index<test_len; cmd_index++) {
         struct timeval start, end;
@@ -137,7 +136,7 @@ int main(int argc,char **argv)
         gettimeofday(&start, NULL);
         res |= mpc_process(&msg_lr,&msg_lr_len,0x82,commands[cmd_index],commands_sizes[cmd_index],1); /* encode first input */
         gettimeofday(&end, NULL);
-        elapsed_upd += timeElapsed(start, end);
+        elapsed += timeElapsed(start, end);
         
         //printf("Send Key:Local -> Remote: %llu bytes\n",msg_lr_len);
         //printf("Status: %d\n",res);
@@ -147,7 +146,7 @@ int main(int argc,char **argv)
         gettimeofday(&start, NULL);
         res |= lac_attest(&msg_rl,&msg_rl_len,handle,0x82,msg_lr,msg_lr_len); /* deliver first input get first output */
         gettimeofday(&end, NULL);
-        elapsed_upd += timeElapsed(start, end);
+        elapsed += timeElapsed(start, end);
         
         //printf("Answer Output: Remote -> Local: %llu bytes\n",msg_rl_len);
         //printf("Status: %d\n",res);
@@ -157,7 +156,7 @@ int main(int argc,char **argv)
         gettimeofday(&start, NULL);
         res |= mpc_process(&msg_lr,&msg_lr_len,0x82, msg_rl,msg_rl_len,0); /* decrypt first output */
         gettimeofday(&end, NULL);
-        elapsed_upd += timeElapsed(start, end);
+        elapsed += timeElapsed(start, end);
 
         //printf("Output Locally Received\n");
         //printf("Status: %d\n",res);
@@ -179,24 +178,33 @@ int main(int argc,char **argv)
         // tests are composed of 1 setup, nr_docs adds, and then searches
         if(cmd_index == 0 ) {
             printf("Did setup\n");
-            elapsed_upd = 0;
+            elapsed = 0;
         } else if(update_counter < nr_updates) {
             //printf("Update %lu/%lu\n", update_counter, nr_updates);
             update_counter++;
 
-            if(update_counter == nr_updates)
-                printf("Execution time: add = %6.3lf seconds!\n", elapsed_upd/1000000.0 );
+            if(update_counter == nr_updates) {
+                printf("Execution time: add = %6.3lf seconds!\n", elapsed/1000000.0 );
+                elapsed = 0;
+            }
 
         } else if(search_counter < nr_searches) {
             const int n_docs = msg_lr_len / sizeof(int);
             printf("Search result: %d docs\n", n_docs);
 
-            //int pos = 0;
-            /*for (int i = 0; i < n_docs; i++) {
+            /*int pos = 0;
+            for (int i = 0; i < n_docs; i++) {
                 int d = read_int(msg_lr, &pos);
                 printf("%d ", d);
-            }*/
-            printf("\n");
+            }
+            printf("\n");*/
+            search_counter++;
+
+            if(search_counter == nr_searches) {
+                printf("Execution time: search = %6.3lf seconds!\n", elapsed/1000000.0 );
+                elapsed = 0;
+            }
+
         } else {
             printf("There shouldn't be more operations here\n");
             exit(-1);

@@ -21,11 +21,11 @@ extern "C" {
 }
 
 ///////////////////////////// TESTING PARAMETERS /////////////////////////////
-#define NUM_QUERIES 0
+#define NUM_QUERIES 1
 
 // query size will be aprox. between
 // [QUERY_WORD_COUNT, QUERY_WORD_COUNT * 2]
-#define QUERY_WORD_COUNT 4
+#define QUERY_WORD_COUNT 5
 
 // probabilities between 0 and 100
 #define NOT_PROBABILITY 0
@@ -181,7 +181,7 @@ int main(int argc, const char * argv[]) {
 
     printf("Add queries: %lu\n", nr_updates);
     printf("Execution time: add = %6.3lf seconds!\n", total_time/1000000.0 );
-    //client.list_words();
+    //client.list_words(); // used to get word frequencies in dataset
 
     ////////////////////////////////////////////////////////////////////////////
     // QUERIES /////////////////////////////////////////////////////////////////
@@ -191,17 +191,27 @@ int main(int argc, const char * argv[]) {
     vector<string> all_words(all_words_set.size());
     copy(all_words_set.begin(), all_words_set.end(), all_words.begin());
 
-    for(unsigned i = 0; i < nr_searches; i++) {
-        string query = client.generate_random_query(all_words,
-                            QUERY_WORD_COUNT, NOT_PROBABILITY, AND_PROBABILITY);
+    total_time = 0;
 
-        //#ifdef VERBOSE
+    for(unsigned i = 0; i < nr_searches; i++) {
+        string query;
+
+        if(getenv("QUERY"))
+            query = getenv("QUERY");
+        else
+            query = client.generate_random_query(all_words, QUERY_WORD_COUNT, NOT_PROBABILITY, AND_PROBABILITY);
+
+        #ifdef VERBOSE
         printf("\n----------------------------\n");
         printf("Query %d: %s\n", i, query.c_str());
-        //#endif
+        #endif
 
+        struct timeval start, end;
+        gettimeofday(&start, NULL);
         unsigned char* data;
         unsigned long long data_size = client.search(query, &data);
+        gettimeofday(&end, NULL);
+        total_time += timeElapsed(start, end);
 
         #ifdef VERBOSE
         /*for(int i = 0; i < data_size; i++){
@@ -226,14 +236,14 @@ int main(int argc, const char * argv[]) {
         //process results
         const int nDocs = output_size / sizeof(int);
 
-        //#ifdef VERBOSE
+        #ifdef VERBOSE
         printf("Number of docs: %d\n", nDocs);
-        //#endif
+        #endif
 
         /*vector<int> results(nDocs);
         int pos = 0;
         for (int i = 0; i < nDocs; i++) {
-            results[i] = readIntFromArr(output, &pos); // sem esta linha, o client nao compila... porque?? TODO TODO
+            results[i] = readIntFromArr(output, &pos);
         }*/
 
         //printResults(results);
@@ -242,6 +252,10 @@ int main(int argc, const char * argv[]) {
 
         free(data);
     }
+
+    printf("Search queries: %lu\n", nr_searches);
+    printf("Execution time: search = %6.3lf seconds!\n", total_time/1000000.0 );
+
     //TODO hack just to compile, no idea why needed, doesn't affect sgx
     unsigned char x[1];
     int xx = 0;

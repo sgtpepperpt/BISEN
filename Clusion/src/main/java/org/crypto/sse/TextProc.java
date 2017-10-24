@@ -41,7 +41,7 @@ public class TextProc {
 
 		// ***********************************************************************************************//
 
-		System.out.println("\nBeginning of text extraction\n");
+		//System.out.println("\nBeginning of text extraction\n");
 
 		File[] listOfFile = listf(pwd);
 		try {

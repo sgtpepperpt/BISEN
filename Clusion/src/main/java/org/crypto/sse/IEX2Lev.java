@@ -151,7 +151,7 @@ public class IEX2Lev implements Serializable {
 
 		long endTime1 = System.nanoTime();
 
-		System.out.println("Time of MM global setup time #(w, id)/#DB " + (endTime1 - startTime1) / lookup2.size());
+		System.out.printf("Time of MM global setup time #(w, id)/#DB %d (%d/%d)\n", (endTime1 - startTime1) / lookup2.size(), (endTime1 - startTime1), lookup2.size());
 
 		numberPairs = numberPairs + lookup.size();
 

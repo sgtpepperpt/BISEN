@@ -149,15 +149,6 @@ public class TextExtractPar implements Serializable {
 		Multimap<String, String> lookup2 = ArrayListMultimap.create();
 
 		for (File file : listOfFile) {
-
-			for (int j = 0; j < 100; j++) {
-
-				if (counter == (int) ((j + 1) * listOfFile.length / 100)) {
-					System.out.println("Number of files read equals " + j + " %");
-					break;
-				}
-			}
-
 			List<String> lines = new ArrayList<String>();
 			counter++;
 			FileInputStream fis = new FileInputStream(file);

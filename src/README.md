@@ -9,12 +9,13 @@ To run BISEN, you will need to install libsodium-sgx, along with Intel SGX drive
 1. Generate the benchmark dataset: ```(cd Data && python parser.py <number-of-docs>)```
 1. Go to folder Server and execute: ```make && ./Server # leave the server always running in background while running the tests```
 1. Go to folder Test and execute: ```make clean && make && ./main```
-  1. If you specified a different _<number-of-docs>_ in 2., do this before compiling: ```export DATASET_SIZE=<number-of-docs>```
+  1. If you specified a different _`<number-of-docs>`_ in 2., do this before compiling: ```export DATASET_SIZE=<number-of-docs>```
 1. Go to folder tsgx and execute: ```make clean && make && (cd build && ./test_bisen)```
 
-**Note:** config flags may be set-up in the Test makefile.
+**Note:** config flags may be set-up in the Test Makefile.
 -DVERBOSE enables verbose output; -DLOCALTEST enables an SGX simulation by running the generated _./main_.
 
+Default dataset size is 10000 in this Makefile. If you generated a different-sized dataset, export the size as in step 4.1.
 
 ## Directory descriptions
 * **Iee** is the trusted dir, to be executed in a trusted environment. Also contains respective ECALLS.

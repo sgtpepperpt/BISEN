@@ -1,5 +1,13 @@
 #include "commands.h"
 
+long timeElapsed (struct timeval start, struct timeval end) {
+  long secs_used,micros_used;
+
+  secs_used = (end.tv_sec - start.tv_sec); //avoid overflow by subtracting first
+  micros_used = ((secs_used*1000000) + end.tv_usec) - (start.tv_usec);
+  return micros_used;
+}
+
 void generate_commands()
 {
     // init output file
@@ -14,7 +22,19 @@ void generate_commands()
     printf("File size: %lu\n", f_size);
 
     // count number of queries
-    test_len = count_queries_file(in_f, f_size);
+    nr_updates = 0;
+    if(fread(&nr_updates, sizeof(size_t), 1, in_f) != 1) {
+        printf("Error reading file!\n");
+        exit(-1);
+    }
+
+    nr_searches = 0;
+    if(fread(&nr_searches, sizeof(size_t), 1, in_f) != 1) {
+        printf("Error reading file!\n");
+        exit(-1);
+    }
+
+    test_len = 1 + nr_updates + nr_searches;
     printf("Number of queries to execute: %llu\n", test_len);
 
     // prepare buffers to hold queries
@@ -24,6 +44,7 @@ void generate_commands()
     // traverse the file to read the commands into the buffers
     unsigned current_query = 0;
     rewind(in_f);
+    fseek(in_f, sizeof(size_t) * 2, SEEK_SET);
 
     for(unsigned current_query = 0; current_query < test_len; current_query++) {
         if(fread(commands_sizes + current_query, sizeof(size), 1, in_f) != 1) {
@@ -53,7 +74,7 @@ void generate_commands()
 
     free(commands);*/
 }
-
+/*
 size count_queries_file(FILE *f, size_t f_size)
 {
     size num_queries = 0;
@@ -78,7 +99,7 @@ size count_queries_file(FILE *f, size_t f_size)
     rewind(f);
     return num_queries;
 }
-
+*/
 size_t get_file_size(FILE *f)
 {
     fseek(f, 0, SEEK_END);

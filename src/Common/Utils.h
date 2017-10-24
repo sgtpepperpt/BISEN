@@ -44,11 +44,7 @@
 
 #define  LOGI(...)  fprintf(stdout,__VA_ARGS__)
 
-struct timespec getTime();
-
-struct timespec diff(struct timespec start, struct timespec end);
-
-double diffSec(struct timespec start, struct timespec end);
+long timeElapsed (struct timeval start, struct timeval end);
 
 std::string getHexRepresentation(const unsigned char * Bytes, size_t Length);
 

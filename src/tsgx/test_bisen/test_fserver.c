@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <sys/time.h>
 
 #include "attke.h"
 #include "lac_attest.h"
@@ -12,10 +13,11 @@
 
 #include "f/commands.h"
 
+extern size_t nr_updates;
+extern size_t nr_searches;
 extern size test_len;
 extern bytes* commands;
 extern size* commands_sizes;
-#define TEST_DOCS 1000 // TODO pass this from the commands.c too
 
 // Utility functions
 void read_arr(const void* val, int size, const unsigned char * arr, int* pos) {
@@ -53,7 +55,7 @@ int main(int argc,char **argv)
   attke_local_state local_st_p2 = lsts[1];
 
   int cmd_index;
-  int i;
+  //int i;
   void *handle = NULL;
   char *filename = "enclave.signed.a";
 
@@ -65,109 +67,144 @@ int main(int argc,char **argv)
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////  
 
-  printf("############### PARTY 1 ATTKE ###############\n");
+  //printf("############### PARTY 1 ATTKE ###############\n");
 
   res = mpc_process_init(NULL,0,NULL,1,sigpk_p1,&local_st_p1);
-  printf("Initialized\n");
-  printf("Status: %d\n",res);
+  //printf("Initialized\n");
+  //printf("Status: %d\n",res);
 
   msg_rl_len = SGX_MPC_AKE_KEYBYTES+16;
   res |= lac_attest(&msg_rl,&msg_rl_len,handle,0x01,NULL,0); /* attested pub params */
-  printf("ATTKE PRMS R: Remote -> Local: %llu bytes\n",msg_rl_len);
-  printf("Status: %d\n",res);
+  //printf("ATTKE PRMS R: Remote -> Local: %llu bytes\n",msg_rl_len);
+  //printf("Status: %d\n",res);
 
   res |= mpc_process(&msg_lr,&msg_lr_len,0x01,msg_rl,msg_rl_len,0); /* signed pub params */
-  printf("ATTKE PRMS L: Local -> Remote: %llu bytes\n",msg_lr_len);
-  printf("Status: %d\n",res);
+  //printf("ATTKE PRMS L: Local -> Remote: %llu bytes\n",msg_lr_len);
+  //printf("Status: %d\n",res);
 
   msg_rl_len = 3+16;
   res |= lac_attest(&msg_rl,&msg_rl_len,handle,0x01,msg_lr,msg_lr_len); /* accept and OK */
-  printf("ATTKE OK R: Remote -> Local: %llu bytes\n",msg_rl_len);
-  printf("Status: %d\n",res);
+  //printf("ATTKE OK R: Remote -> Local: %llu bytes\n",msg_rl_len);
+  //printf("Status: %d\n",res);
 
   res |= mpc_process(&msg_lr,&msg_lr_len,0x01,msg_rl,msg_rl_len,0); /* accept */
-  printf("OK Delivered Locally\n");
-  printf("Status: %d\n",res);
+  //printf("OK Delivered Locally\n");
+  //printf("Status: %d\n",res);
 
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
 
-  printf("############### PARTY 2 ###############\n");
+  //printf("############### PARTY 2 ###############\n");
 
   res = mpc_process_init(NULL,0,NULL,2,sigpk_p2,&local_st_p2);
-  printf("Initialized\n");
-  printf("Status: %d\n",res);
+  //printf("Initialized\n");
+  //printf("Status: %d\n",res);
 
   msg_rl_len = SGX_MPC_AKE_KEYBYTES+16;
   res |= lac_attest(&msg_rl,&msg_rl_len,handle,0x02,NULL,0); /* attested pub params */
-  printf("ATTKE PRMS R: Remote -> Local: %llu bytes\n",msg_rl_len);
-  printf("Status: %d\n",res);
+  //printf("ATTKE PRMS R: Remote -> Local: %llu bytes\n",msg_rl_len);
+  //printf("Status: %d\n",res);
 
   res |= mpc_process(&msg_lr,&msg_lr_len,0x02,msg_rl,msg_rl_len,0); /* signed pub params */
-  printf("ATTKE PRMS L: Local -> Remote: %llu bytes\n",msg_lr_len);
-  printf("Status: %d\n",res);
+  //printf("ATTKE PRMS L: Local -> Remote: %llu bytes\n",msg_lr_len);
+  //printf("Status: %d\n",res);
 
   msg_rl_len = 3+16;
   res |= lac_attest(&msg_rl,&msg_rl_len,handle,0x02,msg_lr,msg_lr_len); /* accept and OK */
-  printf("ATTKE OK R: Remote -> Local: %llu bytes\n",msg_rl_len);
-  printf("Status: %d\n",res);
+  //printf("ATTKE OK R: Remote -> Local: %llu bytes\n",msg_rl_len);
+  //printf("Status: %d\n",res);
 
   res |= mpc_process(&msg_lr,&msg_lr_len,0x02,msg_rl,msg_rl_len,0); /* accept */
-  printf("OK Delivered Locally\n");
-  printf("Status: %d\n",res);
+  //printf("OK Delivered Locally\n");
+  //printf("Status: %d\n",res);
 
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
 
   printf("############### CALLING F ###############\n");
 
-  for(cmd_index=0; cmd_index<test_len; cmd_index++) {
-    res |= mpc_process(&msg_lr,&msg_lr_len,0x82,commands[cmd_index],commands_sizes[cmd_index],1); /* encode first input */
-    printf("Send Key:Local -> Remote: %llu bytes\n",msg_lr_len);
-    printf("Status: %d\n",res);
+    size_t update_counter = 0;
+    size_t search_counter = 0;
 
-    //msg_rl_len = commands_ret_sizes[cmd_index] + SGX_MPC_AEAD_EXPBYTES;
-    msg_rl_len = 0;
-    res |= lac_attest(&msg_rl,&msg_rl_len,handle,0x82,msg_lr,msg_lr_len); /* deliver first input get first output */
-    printf("Answer Output: Remote -> Local: %llu bytes\n",msg_rl_len);
-    printf("Status: %d\n",res);
+    long elapsed_upd = 0;
+    //long elapsed_src = 0;
 
-    free(msg_lr);
+    printf("nr updates: %lu, nr searches: %lu\n", nr_updates, nr_searches);
 
-    res |= mpc_process(&msg_lr,&msg_lr_len,0x82, msg_rl,msg_rl_len,0); /* decrypt first output */
-    printf("Output Locally Received\n");
-    printf("Status: %d\n",res);
+    for(cmd_index=0; cmd_index<test_len; cmd_index++) {
+        struct timeval start, end;
 
-    for(unsigned i = 0; i < msg_lr_len; i++)
-        printf("%02x", msg_lr[i]);
-    printf("\n");
+        gettimeofday(&start, NULL);
+        res |= mpc_process(&msg_lr,&msg_lr_len,0x82,commands[cmd_index],commands_sizes[cmd_index],1); /* encode first input */
+        gettimeofday(&end, NULL);
+        elapsed_upd += timeElapsed(start, end);
+        
+        //printf("Send Key:Local -> Remote: %llu bytes\n",msg_lr_len);
+        //printf("Status: %d\n",res);
 
-    if (!((res == SGX_MPC_OK))) {
-      printf("Error detected: %d, length %llu : \n", res, msg_lr_len);
-      return -1;
-    }
+        //msg_rl_len = commands_ret_sizes[cmd_index] + SGX_MPC_AEAD_EXPBYTES;
+        msg_rl_len = 0;
+        gettimeofday(&start, NULL);
+        res |= lac_attest(&msg_rl,&msg_rl_len,handle,0x82,msg_lr,msg_lr_len); /* deliver first input get first output */
+        gettimeofday(&end, NULL);
+        elapsed_upd += timeElapsed(start, end);
+        
+        //printf("Answer Output: Remote -> Local: %llu bytes\n",msg_rl_len);
+        //printf("Status: %d\n",res);
 
-    printf("(%d/%llu) OK: Output : %llu\n", cmd_index, test_len, msg_lr_len);
-    for(i=0;i<msg_lr_len;i++)
-        printf("%02x", msg_lr[i]);
-    printf("\n");
+        free(msg_lr);
 
-    // tests are composed of 1 setup, "TEST_DOCS" adds, and then searches
-    if(cmd_index > TEST_DOCS + 1) {
-        const int n_docs = msg_lr_len / sizeof(int);
-        printf("Search result: %d docs\n", n_docs);
+        gettimeofday(&start, NULL);
+        res |= mpc_process(&msg_lr,&msg_lr_len,0x82, msg_rl,msg_rl_len,0); /* decrypt first output */
+        gettimeofday(&end, NULL);
+        elapsed_upd += timeElapsed(start, end);
 
-        int pos = 0;
-        for (int i = 0; i < n_docs; i++) {
-            int d = read_int(msg_lr, &pos);
-            printf("%d ", d);
+        //printf("Output Locally Received\n");
+        //printf("Status: %d\n",res);
+
+        /*for(unsigned i = 0; i < msg_lr_len; i++)
+            printf("%02x", msg_lr[i]);
+        printf("\n");*/
+
+        if (!((res == SGX_MPC_OK))) {
+            printf("Error detected: %d, length %llu : \n", res, msg_lr_len);
+            return -1;
         }
-        printf("\n");
-    }
 
-    free(msg_lr);
-    free(msg_rl);
-  }
+        /*printf("(%d/%llu) OK: Output : %llu\n", cmd_index, test_len, msg_lr_len);
+        for(i=0;i<msg_lr_len;i++)
+            printf("%02x", msg_lr[i]);
+        printf("\n");*/
+
+        // tests are composed of 1 setup, nr_docs adds, and then searches
+        if(cmd_index == 0 ) {
+            printf("Did setup\n");
+            elapsed_upd = 0;
+        } else if(update_counter < nr_updates) {
+            //printf("Update %lu/%lu\n", update_counter, nr_updates);
+            update_counter++;
+
+            if(update_counter == nr_updates)
+                printf("Execution time: add = %6.3lf seconds!\n", elapsed_upd/1000000.0 );
+
+        } else if(search_counter < nr_searches) {
+            const int n_docs = msg_lr_len / sizeof(int);
+            printf("Search result: %d docs\n", n_docs);
+
+            //int pos = 0;
+            /*for (int i = 0; i < n_docs; i++) {
+                int d = read_int(msg_lr, &pos);
+                printf("%d ", d);
+            }*/
+            printf("\n");
+        } else {
+            printf("There shouldn't be more operations here\n");
+            exit(-1);
+        }
+
+        free(msg_lr);
+        free(msg_rl);
+    }
 
   mach_finalize(handle);
 

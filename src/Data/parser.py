@@ -51,21 +51,28 @@ def get_payload(filename):
 
 def iterate_folders(dir, max):
     counter = 0
+    total_size = 0
     files = [os.path.join(root, name) for root, dirs, files in os.walk(dir) for name in files]
 
     if(max < 0):
         max = len(files)
+
+    os.mkdir("./parsed/" + str(max) + "/")
 
     while (counter < max):
         chosen = random.choice(files)
         mail = get_payload(chosen)
         
         # write parsed file
-        nfile = open("./parsed/" + chosen[10:-1].replace("/", "_") + ".txt", "w") 
+        filename = "./parsed/" + str(max) + "/" + chosen[10:-1].replace("/", "_") + ".txt"
+        nfile = open(filename, "w")
         nfile.write(mail)
         nfile.close()
-        
+
+        total_size += os.stat(filename).st_size
         counter += 1
+
+    print "Size of dataset: {0} files; {1} MB".format(counter, total_size/1000000.0)
 
 ###############################################################################
 
@@ -75,8 +82,8 @@ if(len(sys.argv) != 2):
     sys.exit(1)
 
 # clear parsed folder
-for f in os.listdir("./parsed/"):
-    if f != ".gitkeep":
-        os.remove("./parsed/" + f)
+#for f in os.listdir("./parsed/"):
+#    if f != ".gitkeep":
+#        os.remove("./parsed/" + f)
 
 iterate_folders("./enron", int(sys.argv[1]))

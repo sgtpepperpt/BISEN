@@ -300,3 +300,18 @@ string SseClient::generate_random_query(vector<string> all_words, const int size
 
     return segments.front();
 }
+
+// http://thispointer.com/how-to-sort-a-map-by-value-in-c/
+typedef function<bool(pair<string, int>, pair<string, int>)> Comparator;
+Comparator compFunctor = [](pair<string, int> elem1 ,pair<string, int> elem2) {
+    return elem1.second < elem2.second;
+};
+
+void SseClient::list_words() {
+    set<pair<string, int>, Comparator> word_set(W->begin(), W->end(), compFunctor);
+
+    map<string,int>::iterator it;
+    for (pair<string, int> el : word_set)
+        printf("%s %d\n", el.first.c_str(), el.second);
+    
+}

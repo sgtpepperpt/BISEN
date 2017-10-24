@@ -45,6 +45,7 @@ public:
     void listTxtFiles (string path, vector<string>& docs);
     set<string> extractUniqueKeywords(string fname);
 
+    void list_words();
 private:
     int newDoc();
     string get_random_segment(vector<string> segments);    

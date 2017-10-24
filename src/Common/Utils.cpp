@@ -12,38 +12,12 @@
 //    return round(val * size);
 //}
 
-struct timespec getTime() {
-    struct timespec ts;
-#ifdef __MACH__ // OS X does not have clock_gettime, use clock_get_time
-    clock_serv_t cclock;
-    mach_timespec_t mts;
-    host_get_clock_service(mach_host_self(), CALENDAR_CLOCK, &cclock);
-    clock_get_time(cclock, &mts);
-    mach_port_deallocate(mach_task_self(), cclock);
-    ts.tv_sec = mts.tv_sec;
-    ts.tv_nsec = mts.tv_nsec;
-#else
-    clock_gettime(CLOCK_REALTIME, &ts);
-#endif
-    return ts;
-}
+long timeElapsed (struct timeval start, struct timeval end) {
+  long secs_used,micros_used;
 
-struct timespec diff(struct timespec start, struct timespec end) {
-    struct timespec temp;
-    if ((end.tv_nsec-start.tv_nsec)<0) {
-        temp.tv_sec = end.tv_sec-start.tv_sec-1;
-        temp.tv_nsec = 1000000000+end.tv_nsec-start.tv_nsec;
-    } else {
-        temp.tv_sec = end.tv_sec-start.tv_sec;
-        temp.tv_nsec = end.tv_nsec-start.tv_nsec;
-    }
-    return temp;
-}
-
-double diffSec(struct timespec start, struct timespec end) {
-    double startNano = start.tv_sec+(start.tv_nsec/1000000000.0);
-    double endNano = end.tv_sec+(end.tv_nsec/1000000000.0);
-    return endNano - startNano;
+  secs_used = (end.tv_sec - start.tv_sec); //avoid overflow by subtracting first
+  micros_used = ((secs_used*1000000) + end.tv_usec) - (start.tv_usec);
+  return micros_used;
 }
 
 

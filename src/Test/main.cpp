@@ -21,8 +21,7 @@ extern "C" {
 }
 
 ///////////////////////////// TESTING PARAMETERS /////////////////////////////
-#define NUM_QUERIES 50000
-#define DATASET_DIR "../Data/parsed/"
+#define NUM_QUERIES 0
 
 // query size will be aprox. between
 // [QUERY_WORD_COUNT, QUERY_WORD_COUNT * 2]
@@ -38,14 +37,14 @@ extern "C" {
 //#include <map>
 //map<int, int> f;
 
-int count_occurences(vector<int> v, int elem) {
+/*int count_occurences(vector<int> v, int elem) {
     int count = 0;
     for(unsigned i = 0; i < v.size(); i++) {
         if(v[i] == elem)
             count++;
     }
     return count;
-}
+}*/
 
 void printResults (vector<int> results) {
     //#ifdef VERBOSE
@@ -59,16 +58,16 @@ void printResults (vector<int> results) {
     sort(results.begin(), results.end());
     for(unsigned i = 0; i < results.size(); i++) {
         printf("%i ", results[i]);
-        if(count_occurences(results, results[i]) > 1)
-            crisis = 1;
+        /*if(count_occurences(results, results[i]) > 1)
+            crisis = 1;*/
     }
 
     printf("\n");
     //f[results.size()]++;
     //#endif
 
-    if(crisis)
-        exit(-1);
+   /* if(crisis)
+        exit(-1);*/
 }
 
 void print_buffer(const char* name, const unsigned char * buf, const unsigned long long len) {
@@ -84,6 +83,11 @@ int main(int argc, const char * argv[]) {
     // init iee
     // init_pipes();
 
+    // init client
+    SseClient client;
+    unsigned char* data;
+    unsigned long long data_size;
+
     // init output file
     FILE *out_f = fopen("bisen_benchmark","wb");
     if (!out_f) {
@@ -91,10 +95,15 @@ int main(int argc, const char * argv[]) {
 		exit(-1);
 	}
 
-    // init client
-    SseClient client;
-    unsigned char* data;
-    unsigned long long data_size;
+    // get list of docs for test
+    vector<string> doc_paths;
+    client.listTxtFiles(DATASET_DIR, doc_paths);
+
+    // write number of adds / updates and searches to benchmark file
+    size_t nr_updates = doc_paths.size();
+    size_t nr_searches = NUM_QUERIES;
+    fwrite(&nr_updates, sizeof(size_t), 1, out_f);
+    fwrite(&nr_searches, sizeof(size_t), 1, out_f);
 
     ////////////////////////////////////////////////////////////////////////////
     // SETUP ///////////////////////////////////////////////////////////////////
@@ -121,32 +130,36 @@ int main(int argc, const char * argv[]) {
 
     free(data);
 
-    // get list of docs for test
-    vector<string> doc_paths;
-    client.listTxtFiles(DATASET_DIR, doc_paths);
-
     ////////////////////////////////////////////////////////////////////////////
     // UPDATE //////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
 
     int count = 0;
 
+    long total_time = 0;
+
     // add documents from the directory
     set<string> all_words_set; // for client-side random query generation only
-    for(string doc : doc_paths){
+    for(unsigned i = 0; i < nr_updates; i++) {
+        //cout << "doc " << count++ << endl;
+
+        string doc = doc_paths[i];
+
+        struct timeval start, end;
+        gettimeofday(&start, NULL);
         set<string> text = client.extractUniqueKeywords(DATASET_DIR + doc);
-        cout << "doc " << count << endl;
+        
 
         /*set<string>::iterator iter;
         for(iter=text.begin(); iter!=text.end();++iter){
             cout<<(*iter)<< " ";
         }*/
-        count++;
-        cout << endl << endl;
 
         // generate the byte* to send to the server
         unsigned char* data;
         unsigned long long data_size = client.add_new_document(text, &data);
+        gettimeofday(&end, NULL);
+        total_time += timeElapsed(start, end);
 
         #ifdef LOCALTEST
         //print_buffer("Data", data, data_size);
@@ -166,7 +179,9 @@ int main(int argc, const char * argv[]) {
         all_words_set.insert(text.begin(), text.end());
     }
 
-    cout << "Add queries: " << count << endl;
+    cout << "Add queries: " << nr_updates << endl;
+    printf("Execution time: add = %6.3lf seconds!\n", total_time/1000000.0 );
+    //client.list_words();
 
     ////////////////////////////////////////////////////////////////////////////
     // QUERIES /////////////////////////////////////////////////////////////////
@@ -176,7 +191,7 @@ int main(int argc, const char * argv[]) {
     vector<string> all_words(all_words_set.size());
     copy(all_words_set.begin(), all_words_set.end(), all_words.begin());
 
-    for(unsigned i = 0; i < NUM_QUERIES; i++) {
+    for(unsigned i = 0; i < nr_searches; i++) {
         string query = client.generate_random_query(all_words,
                             QUERY_WORD_COUNT, NOT_PROBABILITY, AND_PROBABILITY);
 

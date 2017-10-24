@@ -13,6 +13,6 @@ keypair: keypair.c
 clean:
 	rm -f keypair
 	rm -fr build/*
-	find . -name "*.o" -exec rm {} \;
+	find . -name "*.o" -exec rm -rf {} \;
 	find . -name "*~" -exec rm {} \;
 

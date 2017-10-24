@@ -35,6 +35,9 @@
 #include <sys/time.h>
 #include <time.h>
 
+#include <set>
+#include <functional>
+
 #ifdef __MACH__
 #include <mach/clock.h>
 #include <mach/mach.h>

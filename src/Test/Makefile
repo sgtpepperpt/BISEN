@@ -2,7 +2,10 @@ IEE_DIR=../Iee
 CLIENT_DIR=../Client
 COMMON_DIR=../Common
 
-CONFIG_FLAGS= -DLOCALTEST
+DATASET_SIZE ?= 10000
+
+# -DLOCALTEST -DVERBOSE
+CONFIG_FLAGS=-DDATASET_DIR=\"../Data/parsed/$(DATASET_SIZE)/\"
 
 C_FLAGS= -Wall -g -Wno-unused-function -Wno-unused-variable -fPIC $(CONFIG_FLAGS)
 CPP_FLAGS= $(C_FLAGS) -std=c++11
@@ -14,8 +17,8 @@ LIBS= -lsodium
 ##
 
 main: main.cpp common.a iee.a client.a unstrusted.a
-	g++ $(CPP_FLAGS) -o main main.cpp common.a iee.a client.a unstrusted.a $(LIBS)
-	cp iee.a ../tsgx/test_bisen/f/
+	@g++ $(CPP_FLAGS) -o main main.cpp common.a iee.a client.a unstrusted.a $(LIBS)
+	@cp iee.a ../tsgx/test_bisen/f/
 
 unstrusted.a: ../tsgx/src/untrusted/untrusted_free_bytes.c
 	gcc $(C_FLAGS) -I../tsgx/include/ -c $<

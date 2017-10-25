@@ -28,7 +28,7 @@ import java.util.Random;
 import java.util.Set;
 
 public class TestLocalIEX2Lev {
-	private static final String DATASET_DIR = "/home/guilherme/BooleanSSE/src/Data/parsed/5000/"; // EDIT!
+	private static final String DATASET_DIR = "/home/guilherme/BooleanSSE/src/Data/parsed/500/"; // EDIT!
 	private static final int ITERATIONS = 10; // may not need to edit, this is averaged, and the average is what's
 												// printed
 
@@ -79,9 +79,9 @@ public class TestLocalIEX2Lev {
 		// System.out.println("\nSize of the Structure MMg: "+
 		// SizeOf.humanReadable(SizeOf.deepSizeOf(disj.getGlobalMM())));
 
-		conjTest(disj, listSK);
+		/*conjTest(disj, listSK);
 		disjTest(disj, listSK);
-		boolTest(disj, listSK);
+		boolTest(disj, listSK);*/
 
 		System.out.println("Number of docs returned in query: " + docFrequencies);
 	}

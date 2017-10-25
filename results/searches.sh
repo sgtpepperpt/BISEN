@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export DATASET_SIZE=15000
+export DATASET_SIZE=10000
 
 declare -a QUERIES=("enron && time" "enron && time && inform && work && call" "enron && time && inform && work && call && discuss && meet && week && receiv && dai"
                     "enron || time" "enron || time || call || work || inform" "enron || time || inform || work || call || discuss || meet || week || receiv || dai"

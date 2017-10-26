@@ -3,6 +3,8 @@ src/Data/enron/*
 src/Data/parsed/*
 !src/Data/parsed/.gitkeep
 
+Clusion/salt
+
 # generated test files
 src/Test/bisen_benchmark*
 

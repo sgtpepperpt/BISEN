@@ -106,7 +106,7 @@ SseServer::SseServer() {
                 #ifdef VERBOSE
                 printf("Started Search!\n");
                 #endif
-                //printf("Size index %lu\n", (*I).size());
+                printf("Size index %lu\n", (*I).size());
                 unsigned char buff[sizeof(int)];
                 socketReceive(readIeePipe, buff, sizeof(int));
                 int pos = 0;

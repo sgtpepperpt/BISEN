@@ -11,3 +11,16 @@ Total Time elapsed for the entire construction in seconds: 664
 Relative Time elapsed per (w, Id) in s: 889.945
 
 ###############################################################################################
+
+Number of keywords 13717
+
+Number of (w, id) pairs 7822
+
+Total number of stored (w, Id) including in local MM : 1282624
+
+Time elapsed per (w, Id) in ms: 4419
+
+Total Time elapsed for the entire construction in seconds: 5668
+
+Relative Time elapsed per (w, Id) in s: 724.732
+Number of docs returned in query: {}

@@ -5,9 +5,9 @@ COMMON_DIR=../Common
 DATASET_SIZE ?= 10000
 
 # -DLOCALTEST -DVERBOSE
-CONFIG_FLAGS=-DDATASET_DIR=\"../Data/parsed/$(DATASET_SIZE)/\"
+CONFIG_FLAGS=-DDATASET_DIR=\"../Data/parsed/$(DATASET_SIZE)/\" 
 
-C_FLAGS= -Wall -g -Wno-unused-function -Wno-unused-variable -fPIC $(CONFIG_FLAGS)
+C_FLAGS= -Wall -g -Wno-unused-function -Wno-unused-variable -fPIC $(CONFIG_FLAGS
 CPP_FLAGS= $(C_FLAGS) -std=c++11
 
 LIBS= -lsodium

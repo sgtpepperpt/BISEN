@@ -28,7 +28,7 @@ import java.util.Random;
 import java.util.Set;
 
 public class TestLocalIEX2Lev {
-	private static final String DATASET_DIR = "/home/guilherme/BooleanSSE/src/Data/parsed/100/"; // EDIT!
+	private static final String DATASET_DIR = "/home/guilherme/BooleanSSE/src/Data/parsed/200/"; // EDIT!
 	private static final int ITERATIONS = 10; // may not need to edit, this is averaged, and the average is what's
 												// printed
 

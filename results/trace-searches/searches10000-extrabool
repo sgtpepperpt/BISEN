@@ -1,0 +1,256 @@
+############################## QUERY (call && enron) || (time && attach) ##############################
+## Gen test 0 ##
+Add queries: 9905
+Execution time: add =  8.363 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 1 ##
+Add queries: 9905
+Execution time: add =  6.698 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 2 ##
+Add queries: 9905
+Execution time: add =  6.735 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 3 ##
+Add queries: 9905
+Execution time: add =  6.540 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 4 ##
+Add queries: 9905
+Execution time: add =  6.511 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 5 ##
+Add queries: 9905
+Execution time: add =  6.706 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+############################################################
+## SGX test 0 ##
+kill: usage: kill [-s sigspec | -n signum | -sigspec] pid | jobspec ... or kill -l [sigspec]
+The required memory is 9203712B.
+Succeed.
+File size: 26613231
+Number of queries to execute: 9907
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 1, test len: 9907
+Did setup
+Execution time: add = 22.784 seconds!
+Search result: 1078 docs
+Execution time: search =  0.117 seconds!
+enclave destroyed
+
+## SGX test 1 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613231
+Number of queries to execute: 9907
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 1, test len: 9907
+Did setup
+Execution time: add = 24.008 seconds!
+Search result: 1078 docs
+Execution time: search =  0.130 seconds!
+enclave destroyed
+./searches.sh: line 27: 27459 Killed                  ../src/Server/Server > /dev/null
+
+## SGX test 2 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613231
+Number of queries to execute: 9907
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 1, test len: 9907
+Did setup
+Execution time: add = 24.182 seconds!
+Search result: 1078 docs
+Execution time: search =  0.153 seconds!
+enclave destroyed
+./searches.sh: line 27: 27570 Killed                  ../src/Server/Server > /dev/null
+
+## SGX test 3 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613231
+Number of queries to execute: 9907
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 1, test len: 9907
+Did setup
+Execution time: add = 23.801 seconds!
+Search result: 1078 docs
+Execution time: search =  0.109 seconds!
+enclave destroyed
+./searches.sh: line 27: 27702 Killed                  ../src/Server/Server > /dev/null
+
+## SGX test 4 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613231
+Number of queries to execute: 9907
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 1, test len: 9907
+Did setup
+Execution time: add = 23.339 seconds!
+Search result: 1078 docs
+Execution time: search =  0.128 seconds!
+enclave destroyed
+./searches.sh: line 27: 27816 Killed                  ../src/Server/Server > /dev/null
+
+## SGX test 5 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613231
+Number of queries to execute: 9907
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 1, test len: 9907
+Did setup
+Execution time: add = 23.074 seconds!
+Search result: 1078 docs
+Execution time: search =  0.107 seconds!
+enclave destroyed
+./searches.sh: line 27: 27932 Killed                  ../src/Server/Server > /dev/null
+
+
+############################## QUERY (call && enron) || (time && attach) || (inform && work) || (meet && week) ##############################
+## Gen test 0 ##
+Add queries: 9905
+Execution time: add =  7.280 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 1 ##
+Add queries: 9905
+Execution time: add =  7.718 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 2 ##
+Add queries: 9905
+Execution time: add =  7.057 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 3 ##
+Add queries: 9905
+Execution time: add =  7.575 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 4 ##
+Add queries: 9905
+Execution time: add =  8.152 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 5 ##
+Add queries: 9905
+Execution time: add =  7.279 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+############################################################
+## SGX test 0 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613383
+Number of queries to execute: 9907
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 1, test len: 9907
+Did setup
+Execution time: add = 21.532 seconds!
+Search result: 1637 docs
+Execution time: search =  0.196 seconds!
+enclave destroyed
+./searches.sh: line 27: 28045 Killed                  ../src/Server/Server > /dev/null
+
+## SGX test 1 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613383
+Number of queries to execute: 9907
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 1, test len: 9907
+Did setup
+Execution time: add = 21.979 seconds!
+Search result: 1637 docs
+Execution time: search =  0.191 seconds!
+enclave destroyed
+./searches.sh: line 27: 28217 Killed                  ../src/Server/Server > /dev/null
+
+## SGX test 2 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613383
+Number of queries to execute: 9907
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 1, test len: 9907
+Did setup
+Execution time: add = 22.574 seconds!
+Search result: 1637 docs
+Execution time: search =  0.194 seconds!
+enclave destroyed
+./searches.sh: line 27: 28331 Killed                  ../src/Server/Server > /dev/null
+
+## SGX test 3 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613383
+Number of queries to execute: 9907
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 1, test len: 9907
+Did setup
+Execution time: add = 22.634 seconds!
+Search result: 1637 docs
+Execution time: search =  0.190 seconds!
+enclave destroyed
+./searches.sh: line 27: 28441 Killed                  ../src/Server/Server > /dev/null
+
+## SGX test 4 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613383
+Number of queries to execute: 9907
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 1, test len: 9907
+Did setup
+Execution time: add = 22.776 seconds!
+Search result: 1637 docs
+Execution time: search =  0.194 seconds!
+enclave destroyed
+./searches.sh: line 27: 28563 Killed                  ../src/Server/Server > /dev/null
+
+## SGX test 5 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613383
+Number of queries to execute: 9907
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 1, test len: 9907
+Did setup
+Execution time: add = 22.170 seconds!
+Search result: 1637 docs
+Execution time: search =  0.199 seconds!
+enclave destroyed
+./searches.sh: line 27: 28680 Killed                  ../src/Server/Server > /dev/null

@@ -1,3 +1,8 @@
+Index sizes:
+15k docs: 972671
+10k docs: 663096
+5k docs: 324352
+
 guilherme@nuc:~/BooleanSSE/src/Data$ python parser.py 5000
 Size of dataset: 5000 files; 6.587754 MB
 guilherme@nuc:~/BooleanSSE/src/Data$ python parser.py 10000
@@ -11,6 +16,3 @@ Size of dataset: 100000 files; 137.51298 MB
 guilherme@nuc:~/BooleanSSE/src/Data$ python parser.py 200000
 Size of dataset: 200000 files; 260.369636 MB
 guilherme@nuc:~/BooleanSSE/src/Data$ 
-
-Updates (includes client query generator + sgx)
-5000(4968) docs     10000(9905) docs    20000(19609) docs   50000(47566) docs   100000(90838) docs  200000(165746) docs

@@ -28,7 +28,7 @@ import java.util.Random;
 import java.util.Set;
 
 public class TestLocalIEX2Lev {
-	private static final String DATASET_DIR = "/home/guilherme/BooleanSSE/src/Data/parsed/200/"; // EDIT!
+	private static final String DATASET_DIR = "/home/guilherme/BooleanSSE/src/Data/parsed/150/"; // EDIT!
 	private static final int ITERATIONS = 10; // may not need to edit, this is averaged, and the average is what's
 												// printed
 
@@ -93,11 +93,9 @@ public class TestLocalIEX2Lev {
 		// Conjunctive test for Selectivity: w AND x
 		System.out.println("\n-- Conjunctive Test --");
 		for (int i = 0; i < limit; i++) {
-			String word = getRandomWord();
-
 			String[][] bool = new String[2][1];
-			bool[0][0] = getRandomWord();
-			bool[1][0] = word;
+			bool[0][0] = "enron";
+			bool[1][0] = "time";
 			test(disj, listSK, bool);
 		}
 
@@ -114,11 +112,9 @@ public class TestLocalIEX2Lev {
 		sumTime = 0;
 		counterTime = 0;
 		for (int i = 0; i < limit; i++) {
-			String word = getRandomWord();
-
 			String[][] bool = new String[1][2];
-			bool[0][0] = getRandomWord();
-			bool[0][1] = word;
+			bool[0][0] = "enron";
+			bool[0][1] = "time";
 			test(disj, listSK, bool);
 		}
 

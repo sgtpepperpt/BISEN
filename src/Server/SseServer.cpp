@@ -54,6 +54,8 @@ SseServer::SseServer() {
  */   
     //start listening for iee calls
     printf("Finished Server init! Gonna start listening for IEE requests!\n");
+    long total_time = 0;
+
     while (true) {
         unsigned char cmd;
         socketReceive(readIeePipe, &cmd, sizeof(unsigned char));
@@ -83,10 +85,12 @@ SseServer::SseServer() {
             }
             // add
             case '2': {
+                struct timeval start, end;
                 #ifdef VERBOSE
                 printf("Started Add!\n");
                 #endif
 
+                gettimeofday(&start, NULL);
                 unsigned char* l = new unsigned char[l_size];
                 socketReceive(readIeePipe, l, l_size);
                 vector<unsigned char> l_vector = fillVector(l, l_size);
@@ -95,6 +99,8 @@ SseServer::SseServer() {
                 unsigned char* d = new unsigned char[d_size];
                 socketReceive(readIeePipe, d, d_size);
                 (*I)[l_vector] = d;
+                gettimeofday(&end, NULL);
+                total_time += timeElapsed(start, end);
 
                 #ifdef VERBOSE
                 printf("Finished Add!\n");
@@ -107,6 +113,8 @@ SseServer::SseServer() {
                 printf("Started Search!\n");
                 #endif
                 printf("Size index %lu\n", (*I).size());
+                printf("Execution time: sv add = %6.3lf seconds!\n", total_time/1000000.0 );
+
                 unsigned char buff[sizeof(int)];
                 socketReceive(readIeePipe, buff, sizeof(int));
                 int pos = 0;

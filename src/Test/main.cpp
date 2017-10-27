@@ -180,7 +180,7 @@ int main(int argc, const char * argv[]) {
     }
 
     printf("Add queries: %lu\n", nr_updates);
-    printf("Execution time: add = %6.3lf seconds!\n", total_time/1000000.0 );
+    printf("Execution time: client add = %6.3lf seconds!\n", total_time/1000000.0 );
     //client.list_words(); // used to get word frequencies in dataset
 
     ////////////////////////////////////////////////////////////////////////////

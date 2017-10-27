@@ -1,0 +1,630 @@
+############################## DATASET SIZE 5000 ##############################
+## Gen test 0 ##
+Add queries: 4968
+Execution time: add = 3.041 seconds!
+
+## Gen test 1 ##
+Add queries: 4968
+Execution time: add = 3.057 seconds!
+
+## Gen test 2 ##
+Add queries: 4968
+Execution time: add = 3.050 seconds!
+
+## Gen test 3 ##
+Add queries: 4968
+Execution time: add = 3.115 seconds!
+
+## Gen test 4 ##
+Add queries: 4968
+Execution time: add = 3.047 seconds!
+
+## Gen test 5 ##
+Add queries: 4968
+Execution time: add = 3.032 seconds!
+
+############################################################
+## SGX test 0 ##
+The required memory is 9203712B.
+Succeed.
+File size: 13018873
+Number of queries to execute: 4969
+File totally read!
+############### CALLING F ###############
+nr updates: 4968, nr searches: 0
+Did setup
+Execution time: add = 10.988 seconds!
+enclave destroyed
+
+## SGX test 1 ##
+The required memory is 9203712B.
+Succeed.
+File size: 13018873
+Number of queries to execute: 4969
+File totally read!
+############### CALLING F ###############
+nr updates: 4968, nr searches: 0
+Did setup
+Execution time: add = 10.870 seconds!
+enclave destroyed
+./updates.sh: line 19: 4208 Killed ../src/Server/Server > /dev/null
+
+## SGX test 2 ##
+The required memory is 9203712B.
+Succeed.
+File size: 13018873
+Number of queries to execute: 4969
+File totally read!
+############### CALLING F ###############
+nr updates: 4968, nr searches: 0
+Did setup
+Execution time: add = 10.612 seconds!
+enclave destroyed
+./updates.sh: line 19: 4315 Killed ../src/Server/Server > /dev/null
+
+## SGX test 3 ##
+The required memory is 9203712B.
+Succeed.
+File size: 13018873
+Number of queries to execute: 4969
+File totally read!
+############### CALLING F ###############
+nr updates: 4968, nr searches: 0
+Did setup
+Execution time: add = 10.237 seconds!
+enclave destroyed
+./updates.sh: line 19: 4425 Killed ../src/Server/Server > /dev/null
+
+## SGX test 4 ##
+The required memory is 9203712B.
+Succeed.
+File size: 13018873
+Number of queries to execute: 4969
+File totally read!
+############### CALLING F ###############
+nr updates: 4968, nr searches: 0
+Did setup
+Execution time: add = 10.669 seconds!
+enclave destroyed
+./updates.sh: line 19: 4537 Killed ../src/Server/Server > /dev/null
+
+## SGX test 5 ##
+The required memory is 9203712B.
+Succeed.
+File size: 13018873
+Number of queries to execute: 4969
+File totally read!
+############### CALLING F ###############
+nr updates: 4968, nr searches: 0
+Did setup
+Execution time: add = 10.346 seconds!
+enclave destroyed
+./updates.sh: line 19: 4644 Killed ../src/Server/Server > /dev/null
+
+
+############################## DATASET SIZE 10000 ##############################
+## Gen test 0 ##
+Add queries: 9905
+Execution time: add = 6.501 seconds!
+
+## Gen test 1 ##
+Add queries: 9905
+Execution time: add = 6.529 seconds!
+
+## Gen test 2 ##
+Add queries: 9905
+Execution time: add = 6.499 seconds!
+
+## Gen test 3 ##
+Add queries: 9905
+Execution time: add = 6.487 seconds!
+
+## Gen test 4 ##
+Add queries: 9905
+Execution time: add = 6.520 seconds!
+
+## Gen test 5 ##
+Add queries: 9905
+Execution time: add = 6.478 seconds!
+
+############################################################
+## SGX test 0 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613066
+Number of queries to execute: 9906
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 0
+Did setup
+Execution time: add = 20.920 seconds!
+enclave destroyed
+./updates.sh: line 19: 4752 Killed ../src/Server/Server > /dev/null
+
+## SGX test 1 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613066
+Number of queries to execute: 9906
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 0
+Did setup
+Execution time: add = 21.629 seconds!
+enclave destroyed
+./updates.sh: line 19: 4923 Killed ../src/Server/Server > /dev/null
+
+## SGX test 2 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613066
+Number of queries to execute: 9906
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 0
+Did setup
+Execution time: add = 21.305 seconds!
+enclave destroyed
+./updates.sh: line 19: 5035 Killed ../src/Server/Server > /dev/null
+
+## SGX test 3 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613066
+Number of queries to execute: 9906
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 0
+Did setup
+Execution time: add = 21.660 seconds!
+enclave destroyed
+./updates.sh: line 19: 5148 Killed ../src/Server/Server > /dev/null
+
+## SGX test 4 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613066
+Number of queries to execute: 9906
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 0
+Did setup
+Execution time: add = 21.208 seconds!
+enclave destroyed
+./updates.sh: line 19: 5257 Killed ../src/Server/Server > /dev/null
+
+## SGX test 5 ##
+The required memory is 9203712B.
+Succeed.
+File size: 26613066
+Number of queries to execute: 9906
+File totally read!
+############### CALLING F ###############
+nr updates: 9905, nr searches: 0
+Did setup
+Execution time: add = 21.327 seconds!
+enclave destroyed
+./updates.sh: line 19: 5373 Killed ../src/Server/Server > /dev/null
+
+
+############################## DATASET SIZE 20000 ##############################
+## Gen test 0 ##
+Add queries: 19609
+Execution time: add = 13.322 seconds!
+
+## Gen test 1 ##
+Add queries: 19609
+Execution time: add = 13.295 seconds!
+
+## Gen test 2 ##
+Add queries: 19609
+Execution time: add = 13.319 seconds!
+
+## Gen test 3 ##
+Add queries: 19609
+Execution time: add = 13.320 seconds!
+
+## Gen test 4 ##
+Add queries: 19609
+Execution time: add = 13.640 seconds!
+
+## Gen test 5 ##
+Add queries: 19609
+Execution time: add = 13.410 seconds!
+
+############################################################
+## SGX test 0 ##
+The required memory is 9203712B.
+Succeed.
+File size: 52400882
+Number of queries to execute: 19610
+File totally read!
+############### CALLING F ###############
+nr updates: 19609, nr searches: 0
+Did setup
+Execution time: add = 42.252 seconds!
+enclave destroyed
+./updates.sh: line 19: 5504 Killed ../src/Server/Server > /dev/null
+
+## SGX test 1 ##
+The required memory is 9203712B.
+Succeed.
+File size: 52400882
+Number of queries to execute: 19610
+File totally read!
+############### CALLING F ###############
+nr updates: 19609, nr searches: 0
+Did setup
+Execution time: add = 42.317 seconds!
+enclave destroyed
+./updates.sh: line 19: 5682 Killed ../src/Server/Server > /dev/null
+
+## SGX test 2 ##
+The required memory is 9203712B.
+Succeed.
+File size: 52400882
+Number of queries to execute: 19610
+File totally read!
+############### CALLING F ###############
+nr updates: 19609, nr searches: 0
+Did setup
+Execution time: add = 41.891 seconds!
+enclave destroyed
+./updates.sh: line 19: 5793 Killed ../src/Server/Server > /dev/null
+
+## SGX test 3 ##
+The required memory is 9203712B.
+Succeed.
+File size: 52400882
+Number of queries to execute: 19610
+File totally read!
+############### CALLING F ###############
+nr updates: 19609, nr searches: 0
+Did setup
+Execution time: add = 43.847 seconds!
+enclave destroyed
+./updates.sh: line 19: 5901 Killed ../src/Server/Server > /dev/null
+
+## SGX test 4 ##
+The required memory is 9203712B.
+Succeed.
+File size: 52400882
+Number of queries to execute: 19610
+File totally read!
+############### CALLING F ###############
+nr updates: 19609, nr searches: 0
+Did setup
+Execution time: add = 43.803 seconds!
+enclave destroyed
+./updates.sh: line 19: 6012 Killed ../src/Server/Server > /dev/null
+
+## SGX test 5 ##
+The required memory is 9203712B.
+Succeed.
+File size: 52400882
+Number of queries to execute: 19610
+File totally read!
+############### CALLING F ###############
+nr updates: 19609, nr searches: 0
+Did setup
+Execution time: add = 43.401 seconds!
+enclave destroyed
+./updates.sh: line 19: 6123 Killed ../src/Server/Server > /dev/null
+
+
+############################## DATASET SIZE 50000 ##############################
+## Gen test 0 ##
+Add queries: 47566
+Execution time: add = 30.583 seconds!
+
+## Gen test 1 ##
+Add queries: 47566
+Execution time: add = 30.547 seconds!
+
+## Gen test 2 ##
+Add queries: 47566
+Execution time: add = 30.697 seconds!
+
+## Gen test 3 ##
+Add queries: 47566
+Execution time: add = 30.466 seconds!
+
+## Gen test 4 ##
+Add queries: 47566
+Execution time: add = 30.552 seconds!
+
+## Gen test 5 ##
+Add queries: 47566
+Execution time: add = 30.514 seconds!
+
+############################################################
+## SGX test 0 ##
+The required memory is 9203712B.
+Succeed.
+File size: 126059935
+Number of queries to execute: 47567
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 0
+Did setup
+Execution time: add = 101.856 seconds!
+enclave destroyed
+./updates.sh: line 19: 6233 Killed ../src/Server/Server > /dev/null
+
+## SGX test 1 ##
+The required memory is 9203712B.
+Succeed.
+File size: 126059935
+Number of queries to execute: 47567
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 0
+Did setup
+Execution time: add = 101.604 seconds!
+enclave destroyed
+./updates.sh: line 19: 6415 Killed ../src/Server/Server > /dev/null
+
+## SGX test 2 ##
+The required memory is 9203712B.
+Succeed.
+File size: 126059935
+Number of queries to execute: 47567
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 0
+Did setup
+Execution time: add = 99.347 seconds!
+enclave destroyed
+./updates.sh: line 19: 6532 Killed ../src/Server/Server > /dev/null
+
+## SGX test 3 ##
+The required memory is 9203712B.
+Succeed.
+File size: 126059935
+Number of queries to execute: 47567
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 0
+Did setup
+Execution time: add = 99.325 seconds!
+enclave destroyed
+./updates.sh: line 19: 6648 Killed ../src/Server/Server > /dev/null
+
+## SGX test 4 ##
+The required memory is 9203712B.
+Succeed.
+File size: 126059935
+Number of queries to execute: 47567
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 0
+Did setup
+Execution time: add = 99.926 seconds!
+enclave destroyed
+./updates.sh: line 19: 6765 Killed ../src/Server/Server > /dev/null
+
+## SGX test 5 ##
+The required memory is 9203712B.
+Succeed.
+File size: 126059935
+Number of queries to execute: 47567
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 0
+Did setup
+Execution time: add = 101.175 seconds!
+enclave destroyed
+./updates.sh: line 19: 6875 Killed ../src/Server/Server > /dev/null
+
+
+############################## DATASET SIZE 100000 ##############################
+## Gen test 0 ##
+Add queries: 90838
+Execution time: add = 61.103 seconds!
+
+## Gen test 1 ##
+Add queries: 90838
+Execution time: add = 61.472 seconds!
+
+## Gen test 2 ##
+Add queries: 90838
+Execution time: add = 62.821 seconds!
+
+## Gen test 3 ##
+Add queries: 90838
+Execution time: add = 62.571 seconds!
+
+## Gen test 4 ##
+Add queries: 90838
+Execution time: add = 62.392 seconds!
+
+## Gen test 5 ##
+Add queries: 90838
+Execution time: add = 62.869 seconds!
+
+############################################################
+## SGX test 0 ##
+The required memory is 9203712B.
+Succeed.
+File size: 243155703
+Number of queries to execute: 90839
+File totally read!
+############### CALLING F ###############
+nr updates: 90838, nr searches: 0
+Did setup
+Execution time: add = 194.274 seconds!
+enclave destroyed
+./updates.sh: line 19: 6992 Killed ../src/Server/Server > /dev/null
+
+## SGX test 1 ##
+The required memory is 9203712B.
+Succeed.
+File size: 243155703
+Number of queries to execute: 90839
+File totally read!
+############### CALLING F ###############
+nr updates: 90838, nr searches: 0
+Did setup
+Execution time: add = 191.909 seconds!
+enclave destroyed
+./updates.sh: line 19: 7248 Killed ../src/Server/Server > /dev/null
+
+## SGX test 2 ##
+The required memory is 9203712B.
+Succeed.
+File size: 243155703
+Number of queries to execute: 90839
+File totally read!
+############### CALLING F ###############
+nr updates: 90838, nr searches: 0
+Did setup
+Execution time: add = 193.340 seconds!
+enclave destroyed
+./updates.sh: line 19: 7371 Killed ../src/Server/Server > /dev/null
+
+## SGX test 3 ##
+The required memory is 9203712B.
+Succeed.
+File size: 243155703
+Number of queries to execute: 90839
+File totally read!
+############### CALLING F ###############
+nr updates: 90838, nr searches: 0
+Did setup
+Execution time: add = 197.790 seconds!
+enclave destroyed
+./updates.sh: line 19: 7497 Killed ../src/Server/Server > /dev/null
+
+## SGX test 4 ##
+The required memory is 9203712B.
+Succeed.
+File size: 243155703
+Number of queries to execute: 90839
+File totally read!
+############### CALLING F ###############
+nr updates: 90838, nr searches: 0
+Did setup
+Execution time: add = 191.017 seconds!
+enclave destroyed
+./updates.sh: line 19: 7653 Killed ../src/Server/Server > /dev/null
+
+## SGX test 5 ##
+The required memory is 9203712B.
+Succeed.
+File size: 243155703
+Number of queries to execute: 90839
+File totally read!
+############### CALLING F ###############
+nr updates: 90838, nr searches: 0
+Did setup
+Execution time: add = 192.253 seconds!
+enclave destroyed
+./updates.sh: line 19: 7773 Killed ../src/Server/Server > /dev/null
+
+
+############################## DATASET SIZE 200000 ##############################
+## Gen test 0 ##
+Add queries: 165745
+Execution time: add = 136.122 seconds!
+
+## Gen test 1 ##
+Add queries: 165745
+Execution time: add = 108.750 seconds!
+
+## Gen test 2 ##
+Add queries: 165745
+Execution time: add = 108.680 seconds!
+
+## Gen test 3 ##
+Add queries: 165745
+Execution time: add = 108.512 seconds!
+
+## Gen test 4 ##
+Add queries: 165745
+Execution time: add = 108.515 seconds!
+
+## Gen test 5 ##
+Add queries: 165745
+Execution time: add = 108.421 seconds!
+
+############################################################
+## SGX test 0 ##
+The required memory is 9203712B.
+Succeed.
+File size: 434189146
+Number of queries to execute: 165746
+File totally read!
+############### CALLING F ###############
+nr updates: 165745, nr searches: 0
+Did setup
+Execution time: add = 349.978 seconds!
+enclave destroyed
+./updates.sh: line 19: 7902 Killed ../src/Server/Server > /dev/null
+
+## SGX test 1 ##
+The required memory is 9203712B.
+Succeed.
+File size: 434189146
+Number of queries to execute: 165746
+File totally read!
+############### CALLING F ###############
+nr updates: 165745, nr searches: 0
+Did setup
+Execution time: add = 339.482 seconds!
+enclave destroyed
+./updates.sh: line 19: 8172 Killed ../src/Server/Server > /dev/null
+
+## SGX test 2 ##
+The required memory is 9203712B.
+Succeed.
+File size: 434189146
+Number of queries to execute: 165746
+File totally read!
+############### CALLING F ###############
+nr updates: 165745, nr searches: 0
+Did setup
+Execution time: add = 348.079 seconds!
+enclave destroyed
+./updates.sh: line 19: 8317 Killed ../src/Server/Server > /dev/null
+
+## SGX test 3 ##
+The required memory is 9203712B.
+Succeed.
+File size: 434189146
+Number of queries to execute: 165746
+File totally read!
+############### CALLING F ###############
+nr updates: 165745, nr searches: 0
+Did setup
+Execution time: add = 348.522 seconds!
+enclave destroyed
+./updates.sh: line 19: 8457 Killed ../src/Server/Server > /dev/null
+
+## SGX test 4 ##
+The required memory is 9203712B.
+Succeed.
+File size: 434189146
+Number of queries to execute: 165746
+File totally read!
+############### CALLING F ###############
+nr updates: 165745, nr searches: 0
+Did setup
+Execution time: add = 343.751 seconds!
+enclave destroyed
+./updates.sh: line 19: 8605 Killed ../src/Server/Server > /dev/null
+
+## SGX test 5 ##
+The required memory is 9203712B.
+Succeed.
+File size: 434189146
+Number of queries to execute: 165746
+File totally read!
+############### CALLING F ###############
+nr updates: 165745, nr searches: 0
+Did setup
+Execution time: add = 338.776 seconds!
+enclave destroyed
+./updates.sh: line 19: 8753 Killed ../src/Server/Server > /dev/null
+
+
+

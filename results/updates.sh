@@ -2,6 +2,8 @@
 
 SIZES=(5000 10000 20000 50000 100000 200000)
 
+#SIZES=(50 100 150)
+
 for DATASET_SIZE in "${SIZES[@]}"
 do
     echo "############################## DATASET SIZE $DATASET_SIZE ##############################"
@@ -19,7 +21,7 @@ do
     for i in {0..5}
     do
         echo "## SGX test $i ##"
-        kill -9 `pidof Server` ; ../src/Server/Server > /dev/null &
+        kill -9 `pidof Server` ; ../src/Server/Server &
         (cd ../src/tsgx/ && make clean > /dev/null && make > /dev/null && (cd build && ./test_bisen))
         echo ""
     done

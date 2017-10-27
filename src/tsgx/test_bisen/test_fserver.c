@@ -184,7 +184,7 @@ int main(int argc,char **argv)
             update_counter++;
 
             if(update_counter == nr_updates) {
-                printf("Execution time: add = %6.3lf seconds!\n", elapsed/1000000.0 );
+                printf("Execution time: iee add = %6.3lf seconds!\n", elapsed/1000000.0 );
                 elapsed = 0;
             }
 

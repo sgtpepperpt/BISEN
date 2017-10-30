@@ -28,31 +28,29 @@ import java.util.Random;
 import java.util.Set;
 
 public class TestLocalIEX2Lev {
-	private static final String DATASET_DIR = "/home/guilherme/BooleanSSE/src/Data/parsed/150/"; // EDIT!
-	private static final int ITERATIONS = 10; // may not need to edit, this is averaged, and the average is what's
-												// printed
-
-	// these two come from the terminal
-	private static int andMax;
-	private static int orMax;
+	private static final String DATASET_DIR = "/home/guilherme/BooleanSSE/src/Data/parsed/"; // EDIT!
+	private static final int TESTS = 6;
 
 	private static Map<Integer, Integer> docFrequencies = new HashMap<Integer, Integer>();
-	private static long sumTime, sumWords;
-	private static int counterTime, counterWords;
 
 	public static void main(String[] args) throws Exception {
-		if (args.length != 2) {
-			System.err.println("Usage: TestLocalIEX2Lev <max-and> <max-or>");
+		if (args.length != 1) {
+			System.err.println("Usage: TestLocalIEX2Lev <dataset-size>");
 			System.exit(1);
 		}
 
-		andMax = Integer.parseInt(args[0]);
-		orMax = Integer.parseInt(args[1]);
-
+		int datasetSize = Integer.parseInt(args[0]);
+		
+		//runTest(50);
+		//System.out.println("#################################");
+		runTest(100);
+	}
+	
+	public static void runTest(int datasetSize) throws Exception {
 		String pass = "1234";
 		List<byte[]> listSK = IEX2Lev.keyGen(256, pass, "salt/salt", 100);
 
-		TextProc.process(false, DATASET_DIR);
+		TextProc.process(false, DATASET_DIR + datasetSize + "/");
 
 		long startTime2 = System.nanoTime();
 		IEX2Lev disj = IEX2Lev.setup(listSK, TextExtractPar.lp1, TextExtractPar.lp2, 1000, 100, 0);
@@ -79,85 +77,184 @@ public class TestLocalIEX2Lev {
 		// System.out.println("\nSize of the Structure MMg: "+
 		// SizeOf.humanReadable(SizeOf.deepSizeOf(disj.getGlobalMM())));
 
-		/*conjTest(disj, listSK);
+		conjTest(disj, listSK);
 		disjTest(disj, listSK);
-		boolTest(disj, listSK);*/
+		boolTest(disj, listSK);
 
 		System.out.println("Number of docs returned in query: " + docFrequencies);
 	}
 
 	public static void conjTest(IEX2Lev disj, List<byte[]> listSK) throws Exception {
-		// Beginning of test phase
-		int limit = ITERATIONS / 10;
-
 		// Conjunctive test for Selectivity: w AND x
 		System.out.println("\n-- Conjunctive Test --");
-		for (int i = 0; i < limit; i++) {
+
+		long start = 0;
+		long total = 0;
+
+		for (int i = 0; i < TESTS; i++) {
+			start = System.currentTimeMillis();
 			String[][] bool = new String[2][1];
 			bool[0][0] = "enron";
 			bool[1][0] = "time";
 			test(disj, listSK, bool);
+			total += System.currentTimeMillis() - start;
 		}
 
-		System.out.printf("Average search time: %.2f ms\n", (((double) sumTime) / counterTime) / 1000.0);
-		System.out.printf("Average word size of queries: %.0f\n\n", (((double) sumWords) / counterWords));
+		System.out.printf("AND 2 words: %dms\n", total / TESTS);
+
+		start = 0;
+		total = 0;
+		for (int i = 0; i < TESTS; i++) {
+			start = System.currentTimeMillis();
+			String[][] bool = new String[5][1];
+			bool[0][0] = "enron";
+			bool[1][0] = "time";
+			bool[2][0] = "inform";
+			bool[3][0] = "work";
+			bool[4][0] = "call";
+			test(disj, listSK, bool);
+			total += System.currentTimeMillis() - start;
+		}
+
+		System.out.printf("AND 5 words: %dms\n", total / TESTS);
+
+		start = 0;
+		total = 0;
+		for (int i = 0; i < TESTS; i++) {
+			start = System.currentTimeMillis();
+			String[][] bool = new String[10][1];
+			bool[0][0] = "enron";
+			bool[1][0] = "time";
+			bool[2][0] = "inform";
+			bool[3][0] = "work";
+			bool[4][0] = "call";
+			bool[5][0] = "discuss";
+			bool[6][0] = "meet";
+			bool[7][0] = "week";
+			bool[8][0] = "receive";
+			bool[9][0] = "day";
+			test(disj, listSK, bool);
+			total += System.currentTimeMillis() - start;
+		}
+
+		System.out.printf("AND 10 words: %dms\n", total / TESTS);
+
+		// System.out.printf("Average search time: %.2f ms\n", (((double) sumTime) /
+		// counterTime) / 1000.0);
+		// System.out.printf("Average word size of queries: %.0f\n\n", (((double)
+		// sumWords) / counterWords));
 	}
 
 	public static void disjTest(IEX2Lev disj, List<byte[]> listSK) throws Exception {
-		// Beginning of test phase
-		int limit = ITERATIONS / 10;
-
 		// Disjunctive test for Selectivity: w OR x
 		System.out.println("-- Disjunctive Test --");
-		sumTime = 0;
-		counterTime = 0;
-		for (int i = 0; i < limit; i++) {
+
+		long start = 0;
+		long total = 0;
+
+		for (int i = 0; i < TESTS; i++) {
+			start = System.currentTimeMillis();
 			String[][] bool = new String[1][2];
 			bool[0][0] = "enron";
 			bool[0][1] = "time";
 			test(disj, listSK, bool);
+			total += System.currentTimeMillis() - start;
 		}
 
-		System.out.printf("Average search time: %.2f ms\n", (((double) sumTime) / counterTime) / 1000.0);
-		System.out.printf("Average word size of queries: %.0f\n\n", (((double) sumWords) / counterWords));
+		System.out.printf("OR 2 words: %dms\n", total / TESTS);
+
+		start = 0;
+		total = 0;
+		for (int i = 0; i < TESTS; i++) {
+			start = System.currentTimeMillis();
+			String[][] bool = new String[1][5];
+			bool[0][0] = "enron";
+			bool[0][1] = "time";
+			bool[0][2] = "inform";
+			bool[0][3] = "work";
+			bool[0][4] = "call";
+			test(disj, listSK, bool);
+			total += System.currentTimeMillis() - start;
+		}
+
+		System.out.printf("OR 5 words: %dms\n", total / TESTS);
+
+		start = 0;
+		total = 0;
+		for (int i = 0; i < TESTS; i++) {
+			start = System.currentTimeMillis();
+			String[][] bool = new String[1][10];
+			bool[0][0] = "enron";
+			bool[0][1] = "time";
+			bool[0][2] = "inform";
+			bool[0][3] = "work";
+			bool[0][4] = "call";
+			bool[0][5] = "discuss";
+			bool[0][6] = "meet";
+			bool[0][7] = "week";
+			bool[0][8] = "receive";
+			bool[0][9] = "day";
+			test(disj, listSK, bool);
+			total += System.currentTimeMillis() - start;
+		}
+
+		System.out.printf("OR 10 words: %dms\n", total / TESTS);
+
+		// System.out.printf("Average search time: %.2f ms\n", (((double) sumTime) /
+		// counterTime) / 1000.0);
+		// System.out.printf("Average word size of queries: %.0f\n\n", (((double)
+		// sumWords) / counterWords));
 	}
 
 	public static void boolTest(IEX2Lev disj, List<byte[]> listSK) throws Exception {
-		// Beginning of test phase
-		int limit = ITERATIONS / 10;
-
 		// Boolean test for selectivity: (w OR x) AND (y or z)
 		System.out.println("-- Boolean Test --");
-		sumTime = 0;
-		counterTime = 0;
-		for (int i = 0; i < limit; i++) {
-			String word = getRandomWord();
 
-			Random r = new Random();
-			int andNum = r.nextInt(andMax) + 1;
-			int orNum = r.nextInt(orMax) + 1;
+		long start = 0;
+		long total = 0;
 
-			sumWords += andNum + orNum;
-			counterWords++;
-
-			String[][] bool = new String[andNum][orNum];
-			for (int j = 0; j < andNum; j++) {
-				for (int k = 0; k < orNum; k++) {
-					bool[j][k] = getRandomWord();
-				}
-			}
-
+		for (int i = 0; i < TESTS; i++) {
+			start = System.currentTimeMillis();
+			String[][] bool = new String[2][2];
+			bool[0][0] = "call";
+			bool[0][1] = "enron";
+			bool[1][0] = "time";
+			bool[1][1] = "attach";
 			test(disj, listSK, bool);
+			total += System.currentTimeMillis() - start;
 		}
 
-		System.out.printf("Average search time: %.2f ms\n", (((double) sumTime) / counterTime) / 1000.0);
-		System.out.printf("Average word size of queries: %.0f\n\n", (((double) sumWords) / counterWords));
+		System.out.printf("BOOL 2 words: %dms\n", total / TESTS);
+
+		start = 0;
+		total = 0;
+		for (int i = 0; i < TESTS; i++) {
+			start = System.currentTimeMillis();
+			String[][] bool = new String[4][2];
+			bool[0][0] = "call";
+			bool[0][1] = "enron";
+			bool[1][0] = "time";
+			bool[1][1] = "attach";
+			bool[2][0] = "inform";
+			bool[2][1] = "work";
+			bool[3][0] = "meet";
+			bool[3][1] = "week";
+			test(disj, listSK, bool);
+			total += System.currentTimeMillis() - start;
+		}
+
+		System.out.printf("BOOL 8 words: %dms\n", total / TESTS);
+
+		// System.out.printf("Average search time: %.2f ms\n", (((double) sumTime) /
+		// counterTime) / 1000.0);
+		// System.out.printf("Average word size of queries: %.0f\n\n", (((double)
+		// sumWords) / counterWords));
 	}
 
 	public static void test(IEX2Lev disj, List<byte[]> listSK, String[][] bool) throws Exception {
-		long minimum = 1000000000;
-		long maximum = 0;
-		long average = 0;
+		// long minimum = 1000000000;
+		// long maximum = 0;
+		// long average = 0;
 
 		// Generate the IEX token
 		List<String> searchBol = new ArrayList<String>();
@@ -165,84 +262,78 @@ public class TestLocalIEX2Lev {
 			searchBol.add(bool[0][i]);
 		}
 
-		for (int g = 0; g < ITERATIONS; g++) {
-			// Generation of stream file to measure size of the token
-			long startTime3 = System.nanoTime();
+		// Generation of stream file to measure size of the token
+		// long startTime3 = System.nanoTime();
 
-			// System.out.println(searchBol);
+		// System.out.println(searchBol);
 
-			Set<String> tmpBol = IEX2Lev.query(IEX2Lev.token(listSK, searchBol), disj);
+		Set<String> tmpBol = IEX2Lev.query(IEX2Lev.token(listSK, searchBol), disj);
 
-			// System.out.println(tmpBol);
+		// System.out.println(tmpBol);
 
-			for (int i = 1; i < bool.length; i++) {
-				Set<String> finalResult = new HashSet<String>();
-				for (int k = 0; k < bool[0].length; k++) {
-					List<String> searchTMP = new ArrayList<String>();
-					searchTMP.add(bool[0][k]);
-					for (int r = 0; r < bool[i].length; r++) {
-						searchTMP.add(bool[i][r]);
-					}
-
-					List<TokenDIS> tokenTMP = IEX2Lev.token(listSK, searchTMP);
-
-					Set<String> result = new HashSet<String>(RR2Lev.query(tokenTMP.get(0).getTokenMMGlobal(),
-							disj.getGlobalMM().getDictionary(), disj.getGlobalMM().getArray()));
-
-					if (!(tmpBol.size() == 0)) {
-						List<Integer> temp = new ArrayList<Integer>(
-								disj.getDictionaryForMM().get(new String(tokenTMP.get(0).getTokenDIC())));
-
-						if (!(temp.size() == 0)) {
-							int pos = temp.get(0);
-
-							for (int j = 0; j < tokenTMP.get(0).getTokenMMLocal().size(); j++) {
-
-								Set<String> temporary = new HashSet<String>();
-								List<String> tempoList = RR2Lev.query(tokenTMP.get(0).getTokenMMLocal().get(j),
-										disj.getLocalMultiMap()[pos].getDictionary(),
-										disj.getLocalMultiMap()[pos].getArray());
-
-								if (!(tempoList == null)) {
-									temporary = new HashSet<String>(
-											RR2Lev.query(tokenTMP.get(0).getTokenMMLocal().get(j),
-													disj.getLocalMultiMap()[pos].getDictionary(),
-													disj.getLocalMultiMap()[pos].getArray()));
-								}
-
-								finalResult.addAll(temporary);
-
-								if (tmpBol.isEmpty()) {
-									break;
-								}
-
-							}
-						}
-
-					}
+		for (int i = 1; i < bool.length; i++) {
+			Set<String> finalResult = new HashSet<String>();
+			for (int k = 0; k < bool[0].length; k++) {
+				List<String> searchTMP = new ArrayList<String>();
+				searchTMP.add(bool[0][k]);
+				for (int r = 0; r < bool[i].length; r++) {
+					searchTMP.add(bool[i][r]);
 				}
-				tmpBol.retainAll(finalResult);
 
+				List<TokenDIS> tokenTMP = IEX2Lev.token(listSK, searchTMP);
+
+				Set<String> result = new HashSet<String>(RR2Lev.query(tokenTMP.get(0).getTokenMMGlobal(),
+						disj.getGlobalMM().getDictionary(), disj.getGlobalMM().getArray()));
+
+				if (!(tmpBol.size() == 0)) {
+					List<Integer> temp = new ArrayList<Integer>(
+							disj.getDictionaryForMM().get(new String(tokenTMP.get(0).getTokenDIC())));
+
+					if (!(temp.size() == 0)) {
+						int pos = temp.get(0);
+
+						for (int j = 0; j < tokenTMP.get(0).getTokenMMLocal().size(); j++) {
+
+							Set<String> temporary = new HashSet<String>();
+							List<String> tempoList = RR2Lev.query(tokenTMP.get(0).getTokenMMLocal().get(j),
+									disj.getLocalMultiMap()[pos].getDictionary(),
+									disj.getLocalMultiMap()[pos].getArray());
+
+							if (!(tempoList == null)) {
+								temporary = new HashSet<String>(RR2Lev.query(tokenTMP.get(0).getTokenMMLocal().get(j),
+										disj.getLocalMultiMap()[pos].getDictionary(),
+										disj.getLocalMultiMap()[pos].getArray()));
+							}
+
+							finalResult.addAll(temporary);
+
+							if (tmpBol.isEmpty()) {
+								break;
+							}
+
+						}
+					}
+
+				}
 			}
+			tmpBol.retainAll(finalResult);
 
-			if (docFrequencies.containsKey(tmpBol.size()))
-				docFrequencies.put(tmpBol.size(), docFrequencies.get(tmpBol.size()) + 1);
-			else
-				docFrequencies.put(tmpBol.size(), 1);
-
-			long endTime3 = System.nanoTime();
-			long totalTime3 = endTime3 - startTime3;
-
-			if (totalTime3 < minimum) {
-				minimum = totalTime3;
-			}
-
-			if (totalTime3 > maximum) {
-				maximum = totalTime3;
-			}
-
-			average += totalTime3;
 		}
+
+		if (docFrequencies.containsKey(tmpBol.size()))
+			docFrequencies.put(tmpBol.size(), docFrequencies.get(tmpBol.size()) + 1);
+		else
+			docFrequencies.put(tmpBol.size(), 1);
+
+		// long totalTime3 = System.nanoTime() - startTime3;
+
+		/*
+		 * if (totalTime3 < minimum) { minimum = totalTime3; }
+		 * 
+		 * if (totalTime3 > maximum) { maximum = totalTime3; }
+		 */
+
+		// average += totalTime3;
 
 		// System.out.printf("\nWord %s minimum: %.2f s\n", word, (double) (minimum /
 		// 1000000.0));
@@ -250,8 +341,8 @@ public class TestLocalIEX2Lev {
 		// 1000000.0));
 		// System.out.printf("Word %s minimum: %.2f s\n", word, (double) (average /
 		// numberIterations / 1000000.0));
-		sumTime += average;
-		counterTime += ITERATIONS;
+		// sumTime += average;
+		// counterTime += 1;
 	}
 
 	public static String getRandomWord() {

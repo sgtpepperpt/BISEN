@@ -1,0 +1,888 @@
+############################## QUERY enron && time ##############################
+## Gen test 0 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 1 ##
+Add queries: 100
+Execution time: client add =  0.051 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 2 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 3 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 4 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 5 ##
+Add queries: 100
+Execution time: client add =  0.051 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+############################################################
+## SGX test 0 ##
+File size: 217110
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.181 seconds!
+Search result: 8 docs
+Execution time: search =  0.000 seconds!
+enclave destroyed
+
+## SGX test 1 ##
+File size: 217110
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.165 seconds!
+Search result: 8 docs
+Execution time: search =  0.000 seconds!
+enclave destroyed
+
+## SGX test 2 ##
+File size: 217110
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.166 seconds!
+Search result: 8 docs
+Execution time: search =  0.000 seconds!
+enclave destroyed
+
+## SGX test 3 ##
+File size: 217110
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.163 seconds!
+Search result: 8 docs
+Execution time: search =  0.000 seconds!
+enclave destroyed
+
+## SGX test 4 ##
+File size: 217110
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.182 seconds!
+Search result: 8 docs
+Execution time: search =  0.000 seconds!
+enclave destroyed
+
+## SGX test 5 ##
+File size: 217110
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.181 seconds!
+Search result: 8 docs
+Execution time: search =  0.000 seconds!
+enclave destroyed
+
+
+############################## QUERY enron && time && inform && work && call ##############################
+## Gen test 0 ##
+Add queries: 100
+Execution time: client add =  0.050 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 1 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 2 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 3 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 4 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 5 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+############################################################
+## SGX test 0 ##
+File size: 217224
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.174 seconds!
+Search result: 1 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 1 ##
+File size: 217224
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.164 seconds!
+Search result: 1 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 2 ##
+File size: 217224
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.171 seconds!
+Search result: 1 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 3 ##
+File size: 217224
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.167 seconds!
+Search result: 1 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 4 ##
+File size: 217224
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.166 seconds!
+Search result: 1 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 5 ##
+File size: 217224
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.163 seconds!
+Search result: 1 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+
+############################## QUERY enron && time && inform && work && call && discuss && meet && week && receiv && dai ##############################
+## Gen test 0 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 1 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 2 ##
+Add queries: 100
+Execution time: client add =  0.050 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 3 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 4 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 5 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+############################################################
+## SGX test 0 ##
+File size: 217414
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.172 seconds!
+Search result: 0 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 1 ##
+File size: 217414
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.169 seconds!
+Search result: 0 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 2 ##
+File size: 217414
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.174 seconds!
+Search result: 0 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 3 ##
+File size: 217414
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.162 seconds!
+Search result: 0 docs
+Execution time: search =  0.002 seconds!
+enclave destroyed
+
+## SGX test 4 ##
+File size: 217414
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.169 seconds!
+Search result: 0 docs
+Execution time: search =  0.002 seconds!
+enclave destroyed
+
+## SGX test 5 ##
+File size: 217414
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.166 seconds!
+Search result: 0 docs
+Execution time: search =  0.002 seconds!
+enclave destroyed
+
+
+############################## QUERY enron || time ##############################
+## Gen test 0 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 1 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 2 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 3 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 4 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 5 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+############################################################
+## SGX test 0 ##
+File size: 217110
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.172 seconds!
+Search result: 39 docs
+Execution time: search =  0.000 seconds!
+enclave destroyed
+
+## SGX test 1 ##
+File size: 217110
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.163 seconds!
+Search result: 39 docs
+Execution time: search =  0.000 seconds!
+enclave destroyed
+
+## SGX test 2 ##
+File size: 217110
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.182 seconds!
+Search result: 39 docs
+Execution time: search =  0.000 seconds!
+enclave destroyed
+
+## SGX test 3 ##
+File size: 217110
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.160 seconds!
+Search result: 39 docs
+Execution time: search =  0.000 seconds!
+enclave destroyed
+
+## SGX test 4 ##
+File size: 217110
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.161 seconds!
+Search result: 39 docs
+Execution time: search =  0.000 seconds!
+enclave destroyed
+
+## SGX test 5 ##
+File size: 217110
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.169 seconds!
+Search result: 39 docs
+Execution time: search =  0.000 seconds!
+enclave destroyed
+
+
+############################## QUERY enron || time || call || work || inform ##############################
+## Gen test 0 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 1 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 2 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 3 ##
+Add queries: 100
+Execution time: client add =  0.050 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 4 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 5 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+############################################################
+## SGX test 0 ##
+File size: 217224
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.179 seconds!
+Search result: 57 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 1 ##
+File size: 217224
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.184 seconds!
+Search result: 57 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 2 ##
+File size: 217224
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.177 seconds!
+Search result: 57 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 3 ##
+File size: 217224
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.161 seconds!
+Search result: 57 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 4 ##
+File size: 217224
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.162 seconds!
+Search result: 57 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 5 ##
+File size: 217224
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.172 seconds!
+Search result: 57 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+
+############################## QUERY enron || time || inform || work || call || discuss || meet || week || receiv || dai ##############################
+## Gen test 0 ##
+Add queries: 100
+Execution time: client add =  0.050 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 1 ##
+Add queries: 100
+Execution time: client add =  0.050 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 2 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 3 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 4 ##
+Add queries: 100
+Execution time: client add =  0.050 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 5 ##
+Add queries: 100
+Execution time: client add =  0.050 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+############################################################
+## SGX test 0 ##
+File size: 217414
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.163 seconds!
+Search result: 65 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 1 ##
+File size: 217414
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.165 seconds!
+Search result: 65 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 2 ##
+File size: 217414
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.163 seconds!
+Search result: 65 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 3 ##
+File size: 217414
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.168 seconds!
+Search result: 65 docs
+Execution time: search =  0.002 seconds!
+enclave destroyed
+
+## SGX test 4 ##
+File size: 217414
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.169 seconds!
+Search result: 65 docs
+Execution time: search =  0.002 seconds!
+enclave destroyed
+
+## SGX test 5 ##
+File size: 217414
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.166 seconds!
+Search result: 65 docs
+Execution time: search =  0.002 seconds!
+enclave destroyed
+
+
+############################## QUERY (call || enron) && (time || attach) ##############################
+## Gen test 0 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 1 ##
+Add queries: 100
+Execution time: client add =  0.051 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 2 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 3 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 4 ##
+Add queries: 100
+Execution time: client add =  0.060 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 5 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+############################################################
+## SGX test 0 ##
+File size: 217186
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.177 seconds!
+Search result: 15 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 1 ##
+File size: 217186
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.188 seconds!
+Search result: 15 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 2 ##
+File size: 217186
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.181 seconds!
+Search result: 15 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 3 ##
+File size: 217186
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.175 seconds!
+Search result: 15 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 4 ##
+File size: 217186
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.175 seconds!
+Search result: 15 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 5 ##
+File size: 217186
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.165 seconds!
+Search result: 15 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+
+############################## QUERY (call || enron) && (time || attach) && (inform || work) && (meet || week) ##############################
+## Gen test 0 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 1 ##
+Add queries: 100
+Execution time: client add =  0.050 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 2 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 3 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 4 ##
+Add queries: 100
+Execution time: client add =  0.049 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+## Gen test 5 ##
+Add queries: 100
+Execution time: client add =  0.052 seconds!
+Search queries: 1
+Execution time: search =  0.000 seconds!
+
+############################################################
+## SGX test 0 ##
+File size: 217338
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.161 seconds!
+Search result: 3 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 1 ##
+File size: 217338
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.178 seconds!
+Search result: 3 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 2 ##
+File size: 217338
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.163 seconds!
+Search result: 3 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 3 ##
+File size: 217338
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.172 seconds!
+Search result: 3 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 4 ##
+File size: 217338
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.179 seconds!
+Search result: 3 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+## SGX test 5 ##
+File size: 217338
+Number of queries to execute: 102
+File totally read!
+############### CALLING F ###############
+nr updates: 100, nr searches: 1, test len: 102
+Did setup
+Execution time: iee add =  0.162 seconds!
+Search result: 3 docs
+Execution time: search =  0.001 seconds!
+enclave destroyed
+
+

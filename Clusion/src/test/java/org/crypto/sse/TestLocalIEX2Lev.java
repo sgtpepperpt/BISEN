@@ -28,7 +28,7 @@ import java.util.Random;
 import java.util.Set;
 
 public class TestLocalIEX2Lev {
-	private static final String DATASET_DIR = "/home/guilherme/BooleanSSE/src/Data/parsed/"; // EDIT!
+	private static final String DATASET_DIR = "/home/gborges/enron-dataset/"; // EDIT!
 	private static final int TESTS = 6;
 
 	private static Map<Integer, Integer> docFrequencies = new HashMap<Integer, Integer>();

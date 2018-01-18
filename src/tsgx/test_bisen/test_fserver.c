@@ -201,7 +201,7 @@ int main(int argc,char **argv)
             search_counter++;
 
             if(search_counter == nr_searches) {
-                printf("Execution time: search = %6.3lf seconds!\n", elapsed/1000000.0 );
+                printf("Execution time: iee search = %6.3lf seconds!\n", elapsed/1000000.0 );
                 elapsed = 0;
             }
 

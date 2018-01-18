@@ -211,7 +211,7 @@ int main(int argc, const char * argv[]) {
         unsigned char* data;
         unsigned long long data_size = client.search(query, &data);
         gettimeofday(&end, NULL);
-        total_time += timeElapsed(start, end);
+        printf("Execution time: client search = %6.6lf s!\n", timeElapsed(start, end)/1000000.0 );
 
         #ifdef VERBOSE
         /*for(int i = 0; i < data_size; i++){
@@ -254,7 +254,7 @@ int main(int argc, const char * argv[]) {
     }
 
     printf("Search queries: %lu\n", nr_searches);
-    printf("Execution time: search = %6.3lf seconds!\n", total_time/1000000.0 );
+    
 
     //TODO hack just to compile, no idea why needed, doesn't affect sgx
     unsigned char x[1];

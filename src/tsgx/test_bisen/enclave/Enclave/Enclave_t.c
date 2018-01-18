@@ -80,7 +80,8 @@ static sgx_status_t SGX_CDECL sgx_sec_mpc_program(void* pms)
 	size_t _len_inmsg = _tmp_inmsglen * sizeof(*_tmp_inmsg);
 	byte* _in_inmsg = NULL;
 
-	if ((size_t)_tmp_inmsglen > (SIZE_MAX / sizeof(*_tmp_inmsg))) {
+	if (sizeof(*_tmp_inmsg) != 0 &&
+		(size_t)_tmp_inmsglen > (SIZE_MAX / sizeof(*_tmp_inmsg))) {
 		status = SGX_ERROR_INVALID_PARAMETER;
 		goto err;
 	}
@@ -89,7 +90,7 @@ static sgx_status_t SGX_CDECL sgx_sec_mpc_program(void* pms)
 	CHECK_UNIQUE_POINTER(_tmp_omsglen, _len_omsglen);
 	CHECK_UNIQUE_POINTER(_tmp_inmsg, _len_inmsg);
 
-	if (_tmp_omsg != NULL) {
+	if (_tmp_omsg != NULL && _len_omsg != 0) {
 		if ((_in_omsg = (byte**)malloc(_len_omsg)) == NULL) {
 			status = SGX_ERROR_OUT_OF_MEMORY;
 			goto err;
@@ -97,7 +98,7 @@ static sgx_status_t SGX_CDECL sgx_sec_mpc_program(void* pms)
 
 		memset((void*)_in_omsg, 0, _len_omsg);
 	}
-	if (_tmp_omsglen != NULL) {
+	if (_tmp_omsglen != NULL && _len_omsglen != 0) {
 		if ((_in_omsglen = (size*)malloc(_len_omsglen)) == NULL) {
 			status = SGX_ERROR_OUT_OF_MEMORY;
 			goto err;
@@ -105,7 +106,7 @@ static sgx_status_t SGX_CDECL sgx_sec_mpc_program(void* pms)
 
 		memset((void*)_in_omsglen, 0, _len_omsglen);
 	}
-	if (_tmp_inmsg != NULL) {
+	if (_tmp_inmsg != NULL && _len_inmsg != 0) {
 		_in_inmsg = (byte*)malloc(_len_inmsg);
 		if (_in_inmsg == NULL) {
 			status = SGX_ERROR_OUT_OF_MEMORY;
@@ -144,7 +145,7 @@ static sgx_status_t SGX_CDECL sgx_tmp_get_report(void* pms)
 	CHECK_UNIQUE_POINTER(_tmp_tInfo, _len_tInfo);
 	CHECK_UNIQUE_POINTER(_tmp_report, _len_report);
 
-	if (_tmp_tInfo != NULL) {
+	if (_tmp_tInfo != NULL && _len_tInfo != 0) {
 		_in_tInfo = (sgx_target_info_t*)malloc(_len_tInfo);
 		if (_in_tInfo == NULL) {
 			status = SGX_ERROR_OUT_OF_MEMORY;
@@ -153,7 +154,7 @@ static sgx_status_t SGX_CDECL sgx_tmp_get_report(void* pms)
 
 		memcpy(_in_tInfo, _tmp_tInfo, _len_tInfo);
 	}
-	if (_tmp_report != NULL) {
+	if (_tmp_report != NULL && _len_report != 0) {
 		if ((_in_report = (sgx_report_t*)malloc(_len_report)) == NULL) {
 			status = SGX_ERROR_OUT_OF_MEMORY;
 			goto err;
@@ -183,7 +184,7 @@ static sgx_status_t SGX_CDECL sgx_check_initialization(void* pms)
 
 	CHECK_UNIQUE_POINTER(_tmp_check_val, _len_check_val);
 
-	if (_tmp_check_val != NULL) {
+	if (_tmp_check_val != NULL && _len_check_val != 0) {
 		if ((_in_check_val = (int*)malloc(_len_check_val)) == NULL) {
 			status = SGX_ERROR_OUT_OF_MEMORY;
 			goto err;

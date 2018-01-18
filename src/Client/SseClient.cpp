@@ -170,8 +170,13 @@ int SseClient::search(string query, unsigned char** data) {
             addIntToArr(tkn.counter, *data, &pos);
 
             //calculate key kW (with hmac sha256)
+            //struct timeval start, end;
+            //gettimeofday(&start, NULL);
             client_c_hmac((*data)+pos, (unsigned char*)tkn.word.c_str(), strlen(tkn.word.c_str()), client_get_kF());
             pos += H_BYTES * sizeof(unsigned char);
+            //gettimeofday(&end, NULL);
+            //printf("hmac = %6.6lf s!\n", timeElapsed(start, end)/1000000.0 );
+
         } else if(tkn.type == META_TOKEN) {
             addIntToArr(tkn.counter, *data, &pos);
         }

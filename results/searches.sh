@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export DATASET_SIZE=100
+export DATASET_SIZE=15000
 
 #declare -a QUERIES=("enron && time" "enron && time && inform && work && call" "enron && time && inform && work && call && discuss && meet && week && receiv && dai"
 #                    "enron || time" "enron || time || call || work || inform" "enron || time || inform || work || call || discuss || meet || week || receiv || dai"
@@ -9,10 +9,17 @@ export DATASET_SIZE=100
 #                    "!enron && !time" "!(enron && time)" "!enron || !time" "!(enron || time)"
 #                    )
 
-declare -a QUERIES=("enron && time" "enron && time && inform && work && call" "enron && time && inform && work && call && discuss && meet && week && receiv && dai"
-                    "enron || time" "enron || time || call || work || inform" "enron || time || inform || work || call || discuss || meet || week || receiv || dai"
-                    "(call || enron) && (time || attach)" "(call || enron) && (time || attach) && (inform || work) && (meet || week)"
-                    )
+#declare -a QUERIES=("enron && time" "enron && time && inform && work && call" "enron && time && inform && work && call && discuss && meet && week && receiv && dai"
+#                    "enron || time" "enron || time || call || work || inform" "enron || time || inform || work || call || discuss || meet || week || receiv || dai"
+#                    "(call || enron) && (time || attach)" "(call || enron) && (time || attach) && (inform || work) && (meet || week)"
+#                    )
+
+declare -a QUERIES=("enron && time && inform && work && call && discuss && meet && week && receiv && dai")
+
+#declare -a QUERIES=("!enron && !time"
+#                    "!enron && !time && !inform && !work && !call"
+#                    "!enron && !time && !inform && !work && !call && !discuss && !meet && !week && !receiv && !dai"
+#                    )
 
 for QRY in "${QUERIES[@]}"
 do
@@ -30,7 +37,7 @@ do
     for i in {0..5}
     do
         echo "## SGX test $i ##"
-        kill -9 `pidof Server` ; ../src/Server/Server > /dev/null &
+        kill -9 `pidof Server` ; ../src/Server/Server &
         (cd ../src/tsgx/ && make clean > /dev/null && make > /dev/null && (cd build && ./test_bisen))
         echo ""
     done

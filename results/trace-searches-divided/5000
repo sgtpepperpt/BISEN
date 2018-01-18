@@ -1,0 +1,309 @@
+############################## QUERY enron && time && inform && work && call && discuss && meet && week && receiv && dai ##############################
+## Gen test 0 ##
+Add queries: 4968
+Execution time: client add =  3.111 seconds!
+Search queries: 1
+Execution time: client search =  0.000 seconds!
+
+## Gen test 1 ##
+Add queries: 4968
+Execution time: client add =  3.047 seconds!
+Search queries: 1
+Execution time: client search =  0.000 seconds!
+
+## Gen test 2 ##
+Add queries: 4968
+Execution time: client add =  3.038 seconds!
+Search queries: 1
+Execution time: client search =  0.000 seconds!
+
+## Gen test 3 ##
+Add queries: 4968
+Execution time: client add =  3.038 seconds!
+Search queries: 1
+Execution time: client search =  0.000 seconds!
+
+## Gen test 4 ##
+Add queries: 4968
+Execution time: client add =  3.032 seconds!
+Search queries: 1
+Execution time: client search =  0.000 seconds!
+
+## Gen test 5 ##
+Add queries: 4968
+Execution time: client add =  3.042 seconds!
+Search queries: 1
+Execution time: client search =  0.000 seconds!
+
+############################################################
+## SGX test 0 ##
+Opening write pipe!
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+Size index 324352
+Execution time: sv add =  7.831 seconds!
+Execution time: sv search =  0.005 seconds!
+Size index 324352
+Execution time: sv add =  7.831 seconds!
+Execution time: sv search =  0.011 seconds!
+Size index 324352
+Execution time: sv add =  7.831 seconds!
+Execution time: sv search =  0.018 seconds!
+Size index 324352
+Execution time: sv add =  7.831 seconds!
+Execution time: sv search =  0.024 seconds!
+Size index 324352
+Execution time: sv add =  7.831 seconds!
+Execution time: sv search =  0.030 seconds!
+Size index 324352
+Execution time: sv add =  7.831 seconds!
+Execution time: sv search =  0.034 seconds!
+Size index 324352
+Execution time: sv add =  7.831 seconds!
+Execution time: sv search =  0.037 seconds!
+Size index 324352
+Execution time: sv add =  7.831 seconds!
+Execution time: sv search =  0.041 seconds!
+Size index 324352
+Execution time: sv add =  7.831 seconds!
+Execution time: sv search =  0.044 seconds!
+Size index 324352
+Execution time: sv add =  7.831 seconds!
+Execution time: sv search =  0.048 seconds!
+File size: 13019266
+Number of queries to execute: 4970
+File totally read!
+############### CALLING F ###############
+nr updates: 4968, nr searches: 1, test len: 4970
+Did setup
+Execution time: iee add = 10.527 seconds!
+Search result: 9 docs
+Execution time: iee search =  0.086 seconds!
+enclave destroyed
+
+## SGX test 1 ##
+Opening write pipe!
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+Size index 324352
+Execution time: sv add =  7.721 seconds!
+Execution time: sv search =  0.004 seconds!
+Size index 324352
+Execution time: sv add =  7.721 seconds!
+Execution time: sv search =  0.009 seconds!
+Size index 324352
+Execution time: sv add =  7.721 seconds!
+Execution time: sv search =  0.014 seconds!
+Size index 324352
+Execution time: sv add =  7.721 seconds!
+Execution time: sv search =  0.020 seconds!
+Size index 324352
+Execution time: sv add =  7.721 seconds!
+Execution time: sv search =  0.026 seconds!
+Size index 324352
+Execution time: sv add =  7.721 seconds!
+Execution time: sv search =  0.030 seconds!
+Size index 324352
+Execution time: sv add =  7.721 seconds!
+Execution time: sv search =  0.034 seconds!
+Size index 324352
+Execution time: sv add =  7.721 seconds!
+Execution time: sv search =  0.037 seconds!
+Size index 324352
+Execution time: sv add =  7.721 seconds!
+Execution time: sv search =  0.041 seconds!
+Size index 324352
+Execution time: sv add =  7.721 seconds!
+Execution time: sv search =  0.049 seconds!
+File size: 13019266
+Number of queries to execute: 4970
+File totally read!
+############### CALLING F ###############
+nr updates: 4968, nr searches: 1, test len: 4970
+Did setup
+Execution time: iee add = 10.340 seconds!
+Search result: 9 docs
+Execution time: iee search =  0.087 seconds!
+enclave destroyed
+
+## SGX test 2 ##
+Opening write pipe!
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+Size index 324352
+Execution time: sv add =  7.806 seconds!
+Execution time: sv search =  0.005 seconds!
+Size index 324352
+Execution time: sv add =  7.806 seconds!
+Execution time: sv search =  0.009 seconds!
+Size index 324352
+Execution time: sv add =  7.806 seconds!
+Execution time: sv search =  0.014 seconds!
+Size index 324352
+Execution time: sv add =  7.806 seconds!
+Execution time: sv search =  0.018 seconds!
+Size index 324352
+Execution time: sv add =  7.806 seconds!
+Execution time: sv search =  0.024 seconds!
+Size index 324352
+Execution time: sv add =  7.806 seconds!
+Execution time: sv search =  0.028 seconds!
+Size index 324352
+Execution time: sv add =  7.806 seconds!
+Execution time: sv search =  0.032 seconds!
+Size index 324352
+Execution time: sv add =  7.806 seconds!
+Execution time: sv search =  0.035 seconds!
+Size index 324352
+Execution time: sv add =  7.806 seconds!
+Execution time: sv search =  0.041 seconds!
+Size index 324352
+Execution time: sv add =  7.806 seconds!
+Execution time: sv search =  0.046 seconds!
+File size: 13019266
+Number of queries to execute: 4970
+File totally read!
+############### CALLING F ###############
+nr updates: 4968, nr searches: 1, test len: 4970
+Did setup
+Execution time: iee add = 10.463 seconds!
+Search result: 9 docs
+Execution time: iee search =  0.084 seconds!
+enclave destroyed
+
+## SGX test 3 ##
+Opening write pipe!
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+Size index 324352
+Execution time: sv add =  7.909 seconds!
+Execution time: sv search =  0.006 seconds!
+Size index 324352
+Execution time: sv add =  7.909 seconds!
+Execution time: sv search =  0.011 seconds!
+Size index 324352
+Execution time: sv add =  7.909 seconds!
+Execution time: sv search =  0.017 seconds!
+Size index 324352
+Execution time: sv add =  7.909 seconds!
+Execution time: sv search =  0.021 seconds!
+Size index 324352
+Execution time: sv add =  7.909 seconds!
+Execution time: sv search =  0.025 seconds!
+Size index 324352
+Execution time: sv add =  7.909 seconds!
+Execution time: sv search =  0.030 seconds!
+Size index 324352
+Execution time: sv add =  7.909 seconds!
+Execution time: sv search =  0.035 seconds!
+Size index 324352
+Execution time: sv add =  7.909 seconds!
+Execution time: sv search =  0.038 seconds!
+Size index 324352
+Execution time: sv add =  7.909 seconds!
+Execution time: sv search =  0.042 seconds!
+Size index 324352
+Execution time: sv add =  7.909 seconds!
+Execution time: sv search =  0.046 seconds!
+File size: 13019266
+Number of queries to execute: 4970
+File totally read!
+############### CALLING F ###############
+nr updates: 4968, nr searches: 1, test len: 4970
+Did setup
+Execution time: iee add = 10.627 seconds!
+Search result: 9 docs
+Execution time: iee search =  0.084 seconds!
+enclave destroyed
+
+## SGX test 4 ##
+Opening write pipe!
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+Size index 324352
+Execution time: sv add =  7.722 seconds!
+Execution time: sv search =  0.006 seconds!
+Size index 324352
+Execution time: sv add =  7.722 seconds!
+Execution time: sv search =  0.010 seconds!
+Size index 324352
+Execution time: sv add =  7.722 seconds!
+Execution time: sv search =  0.014 seconds!
+Size index 324352
+Execution time: sv add =  7.722 seconds!
+Execution time: sv search =  0.020 seconds!
+Size index 324352
+Execution time: sv add =  7.722 seconds!
+Execution time: sv search =  0.024 seconds!
+Size index 324352
+Execution time: sv add =  7.722 seconds!
+Execution time: sv search =  0.028 seconds!
+Size index 324352
+Execution time: sv add =  7.722 seconds!
+Execution time: sv search =  0.033 seconds!
+Size index 324352
+Execution time: sv add =  7.722 seconds!
+Execution time: sv search =  0.036 seconds!
+Size index 324352
+Execution time: sv add =  7.722 seconds!
+Execution time: sv search =  0.040 seconds!
+Size index 324352
+Execution time: sv add =  7.722 seconds!
+Execution time: sv search =  0.045 seconds!
+File size: 13019266
+Number of queries to execute: 4970
+File totally read!
+############### CALLING F ###############
+nr updates: 4968, nr searches: 1, test len: 4970
+Did setup
+Execution time: iee add = 10.320 seconds!
+Search result: 9 docs
+Execution time: iee search =  0.083 seconds!
+enclave destroyed
+
+## SGX test 5 ##
+Opening write pipe!
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+Size index 324352
+Execution time: sv add =  7.949 seconds!
+Execution time: sv search =  0.007 seconds!
+Size index 324352
+Execution time: sv add =  7.949 seconds!
+Execution time: sv search =  0.015 seconds!
+Size index 324352
+Execution time: sv add =  7.949 seconds!
+Execution time: sv search =  0.019 seconds!
+Size index 324352
+Execution time: sv add =  7.949 seconds!
+Execution time: sv search =  0.025 seconds!
+Size index 324352
+Execution time: sv add =  7.949 seconds!
+Execution time: sv search =  0.029 seconds!
+Size index 324352
+Execution time: sv add =  7.949 seconds!
+Execution time: sv search =  0.035 seconds!
+Size index 324352
+Execution time: sv add =  7.949 seconds!
+Execution time: sv search =  0.039 seconds!
+Size index 324352
+Execution time: sv add =  7.949 seconds!
+Execution time: sv search =  0.044 seconds!
+Size index 324352
+Execution time: sv add =  7.949 seconds!
+Execution time: sv search =  0.047 seconds!
+Size index 324352
+Execution time: sv add =  7.949 seconds!
+Execution time: sv search =  0.053 seconds!
+File size: 13019266
+Number of queries to execute: 4970
+File totally read!
+############### CALLING F ###############
+nr updates: 4968, nr searches: 1, test len: 4970
+Did setup
+Execution time: iee add = 10.690 seconds!
+Search result: 9 docs
+Execution time: iee search =  0.092 seconds!
+enclave destroyed
+
+

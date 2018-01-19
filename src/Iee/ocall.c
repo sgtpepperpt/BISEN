@@ -3,7 +3,7 @@
 void ocall_printf(const char *fmt, ...)
 {
     //DEBUG ONLY, NOT WORKING IN SGX
-/*    #undef BUFSIZ
+    #undef BUFSIZ
     #define BUFSIZ 512
     #include <stdarg.h>
     char buf[BUFSIZ+1] = {'\0'};
@@ -12,7 +12,7 @@ void ocall_printf(const char *fmt, ...)
     vsnprintf(buf+1, BUFSIZ+1, fmt, ap);
     va_end(ap);
 
-    ocall_strprint(buf);*/
+    ocall_strprint(buf);
 }
 
 void ocall_strprint(const char *str)
@@ -118,7 +118,7 @@ ssize_t ocall_read(int fildes, unsigned char* buf, size_t nbytes)
     //ocall_printf("ret ocall_read: %lu\n", ocall_ret);
 
     //ocall_printf("%ld\n", ocall_ret);
-    
+
     for(int i = 0; i < ocall_ret; i++)
         buf[i] = (void*)out[i+8];
     untrusted_free_bytes(&out);

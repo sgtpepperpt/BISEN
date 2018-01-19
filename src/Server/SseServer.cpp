@@ -14,14 +14,14 @@ const char* SseServer::pipeDir = "/tmp/BooleanSSE/";
 int SseServer::clientSock;
 
 const int l_size = 32;
-const int d_size = 44;
+const int d_size = 76;
 
 SseServer::SseServer() {
     //init pipe directory
     if(mkdir(pipeDir, 0770) == -1)
         if(errno != EEXIST)
             pee("Failed to mkdir");
-    
+
     //create server-iee pipe
     char pipeName[256];
     bzero(pipeName,256);
@@ -45,13 +45,13 @@ SseServer::SseServer() {
 	//start listening on pipes; must open write first as read blocks
 	printf("Opening read pipe!\n");
     readIeePipe = open(pipeName2, O_ASYNC | O_RDONLY);
-    
+
     //launch client-iee tunnel
 /*	//not being used anymore, client comunicates with iee directly for testing
 	pthread_t t;
     if (pthread_create(&t, NULL, bridgeClientIeeThread, NULL) != 0)
         pee("Error: unable to create bridgeClientTeeThread");
- */   
+ */
     //start listening for iee calls
     printf("Finished Server init! Gonna start listening for IEE requests!\n");
     long total_time = 0;
@@ -60,7 +60,7 @@ SseServer::SseServer() {
     while (true) {
         unsigned char cmd;
         socketReceive(readIeePipe, &cmd, sizeof(unsigned char));
-        
+
         switch (cmd) {
             //setup
             case '1': {
@@ -162,7 +162,7 @@ void* SseServer::bridgeClientIeeThread(void* threadData) {
     if (bind(clientSock, (const struct sockaddr *) &serv_addr,(socklen_t)sizeof(serv_addr)) < 0)
         pee("ERROR on binding");
     listen(clientSock,5);
-    
+
     //start iee pipe
     char pipeName[256];
     strcpy(pipeName, pipeDir);
@@ -171,7 +171,7 @@ void* SseServer::bridgeClientIeeThread(void* threadData) {
         if(errno != EEXIST)
             pee("SseServer::bridgeClientIeeThread: Fail to mknod");
     int pipefd = open(pipeName, O_ASYNC | O_WRONLY);
-    
+
     printf("Finished Server-IEE bridge init! Gonna start listening for client requests!\n");
     while (true) {
         //start listening for client calls
@@ -191,18 +191,18 @@ void* SseServer::bridgeClientIeeThread(void* threadData) {
         }
         int pos = 0;
         int len = readIntFromArr(buf, &pos);
-        
+
         unsigned char* bufAll = new unsigned char[len];
         if (receiveAll(newsockfd, bufAll, len) < 0) {
             close(newsockfd);
             pee("ERROR reading from tee pipe");
         }
         close(newsockfd);
-        
+
         //redirect to iee
         socketSend(pipefd, buf, sizeof(int));
         socketSend(pipefd, bufAll, len);
-        
+
         delete[] buf;
         delete[] bufAll;
     }

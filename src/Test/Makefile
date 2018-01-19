@@ -2,10 +2,11 @@ IEE_DIR=../Iee
 CLIENT_DIR=../Client
 COMMON_DIR=../Common
 
-DATASET_SIZE ?= 10000
+DATASET_SIZE ?= 2
 
 # -DLOCALTEST -DVERBOSE
-CONFIG_FLAGS=-DDATASET_DIR=\"../Data/parsed/$(DATASET_SIZE)/\" 
+CONFIG_FLAGS=-DDATASET_DIR=\"../Data/parsed/$(DATASET_SIZE)/\"
+CONFIG_FLAGS+= -DVERBOSE
 
 C_FLAGS= -Wall -g -Wno-unused-function -Wno-unused-variable -fPIC $(CONFIG_FLAGS)
 CPP_FLAGS= $(C_FLAGS) -std=c++11

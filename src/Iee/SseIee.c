@@ -132,23 +132,33 @@ static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
         c_hmac(label, (unsigned char*)&c, sizeof(int), kW);
         free(kW);
 
-        //calculate index value enc_data
-        int enc_data_size = sizeof(int) + C_EXPBYTES;
+        /*for(unsigned xx = 0; xx < H_BYTES; xx++)
+            printf("%02x ", label[xx]);
+        printf(" : %d %d\n", d, c);*/
 
+        // generate nonce
         unsigned char* nonce = (unsigned char*)malloc(sizeof(unsigned char) * C_NONCESIZE);
-        for(int i= 0; i < C_NONCESIZE; i++)
+        for(int i = 0; i < C_NONCESIZE; i++)
             nonce[i] = 0x00;
 
-        unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * enc_data_size);
-        c_encrypt(enc_data, (unsigned char*)&d, sizeof(int), nonce, get_kEnc());
+        //calculate index value - enc_data
+        const size_t unenc_size = H_BYTES + sizeof(int);
+        unsigned char* unenc_data = (unsigned char*)malloc(sizeof(unsigned char) * unenc_size);
+        iee_memcpy(unenc_data, label, H_BYTES);
+        iee_memcpy(unenc_data + H_BYTES, &d, sizeof(int));
+
+        const size_t enc_size = unenc_size + C_EXPBYTES;
+        unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * enc_size);
+        c_encrypt(enc_data, unenc_data, unenc_size, nonce, get_kEnc());
         free(nonce);
+        free(unenc_data);
 
         //send label and enc_data to server
         unsigned char op = '2';
         //ocall_printf("add %d %d\n", H_BYTES, enc_data_size);
         iee_socketSend(writeServerPipe, &op, sizeof(unsigned char));
         iee_socketSend(writeServerPipe, (unsigned char*)label, H_BYTES);
-        iee_socketSend(writeServerPipe, (unsigned char*)enc_data, enc_data_size);
+        iee_socketSend(writeServerPipe, (unsigned char*)enc_data, enc_size);
 
         /*print_buffer("add label", label, H_BYTES);
         print_buffer("add enc", enc_data, enc_data_size);
@@ -217,19 +227,12 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
 
         //calculate relevant index positions
         unsigned char** labels = (unsigned char**)malloc(sizeof(unsigned char*) * tkn->counter);
-        unsigned char* l = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
         for (int c = 0; c < tkn->counter; c++) {
-            c_hmac(l, (unsigned char*)&c, sizeof(int), tkn->kW);
-            unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
-            for (int i = 0; i < H_BYTES; i++)
-                label[i] = l[i];
-
-            labels[c] = label;
-            print_buffer("label", label, H_BYTES);
-            iee_bzero(l, H_BYTES);
+            labels[c] = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
+            c_hmac(labels[c], (unsigned char*)&c, sizeof(int), tkn->kW);
+            print_buffer("label", labels[c], H_BYTES);
         }
 
-        free(l);
         //free(kW);
 
         //request index positions from server
@@ -246,48 +249,62 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         iee_socketSend(writeServerPipe, buff, len);
         free(buff);
 
+        // generate 0-filled nonce
+        unsigned char* nonce = (unsigned char*)malloc(sizeof(unsigned char) * C_NONCESIZE);
+        for(unsigned i = 0; i < C_NONCESIZE; i++)
+            nonce[i] = 0x00;
+
+        const size_t enc_len = H_BYTES + sizeof(int) + C_EXPBYTES; // 44 + H_BYTES (32)
+        unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * (enc_len * tkn->counter));
+        iee_socketReceive(readServerPipe, enc_data, enc_len * tkn->counter);
+
+        const size_t unenc_len = H_BYTES + sizeof(int);
+        unsigned char* unenc_data = (unsigned char*)malloc(sizeof(unsigned char) * unenc_len);
+
+        // holds doc ids as ints
+        size_t doc_buff_len = tkn->counter * (H_BYTES + sizeof(int));
+        unsigned char* doc_buff = (unsigned char*)malloc(sizeof(unsigned char) * doc_buff_len);
+        pos = 0;
+
+        for (int i = 0; i < tkn->counter; i++) {
+            c_decrypt(unenc_data, enc_data + (enc_len * i), enc_len, nonce, get_kEnc());
+
+            unsigned char* label_verif = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
+            iee_memcpy(label_verif, unenc_data, H_BYTES);
+            iee_memcpy(doc_buff, unenc_data + H_BYTES, sizeof(int));
+            pos += sizeof(int);
+
+            /*for(unsigned x = 0; x < H_BYTES; x++)
+                printf("%02x ", label_verif[x]);
+            printf(" : %d\n", doc);
+
+            for(unsigned y = 0; y < H_BYTES; y++)
+                printf("%02x ", labels[i][y]);
+            printf(" : %d\n", doc);*/
+
+            for(unsigned x = 0; x < H_BYTES; x++) {
+                if(label_verif[x] != labels[i][x]) {
+                    //printf("Label verification doesn't match! Exit\n");
+                    ocall_exit(-1);
+                }
+            }
+
+            ocall_strprint("Verification made, ok\n");
+
+            // delete keys from memory
+            iee_bzero(enc_data, C_KEYSIZE);
+            iee_bzero(unenc_data, C_KEYSIZE);
+
+            free(label_verif);
+        }
+
+        free(nonce);
         for (int i = 0; i < tkn->counter; i++)
             free(labels[i]);
         free(labels);
 
-        //decrypt query results
-        len = tkn->counter * sizeof(int);
-        buff = (unsigned char*)malloc(sizeof(unsigned char)* len);
-
-        // generate 0-filled nonce
-        unsigned char* nonce = (unsigned char*)malloc(sizeof(char)*C_NONCESIZE);
-        for(int i= 0; i < C_NONCESIZE; i++) nonce[i] = 0x00;
-
-        const unsigned long enc_len = sizeof(int) + C_EXPBYTES; // 44
-        unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * (enc_len * tkn->counter));
-        iee_socketReceive(readServerPipe, enc_data, enc_len * tkn->counter);
-
-        unsigned char* data = (unsigned char*)malloc(sizeof(unsigned char) * enc_len);
-        pos = 0;
-
-        for (int i = 0; i < tkn->counter; i++) {
-            c_decrypt(data, enc_data + (i * enc_len), enc_len, nonce, get_kEnc());
-            iee_addToArr((unsigned char*)data, sizeof(int), buff, &pos);
-
-            /*for(unsigned i = 0; i < 44; i++)
-                ocall_printf("%02x ", data[i]);
-            ocall_printf("\n");*/
-
-            /** Another way of doing it
-                int d = -1;
-                memcpy(&d, data, sizeof(int));
-                iee_addIntToArr(d, buff, &pos);
-            **/
-
-            // delete keys from memory
-            iee_bzero(enc_data, C_KEYSIZE);
-            iee_bzero(data, C_KEYSIZE);
-        }
-
-        free(nonce);
-
         // generate int vector
-        const int nr_docs = len / sizeof(int);
+        const int nr_docs = doc_buff_len / sizeof(int);
         //printf("nr docs %d\n", nr_docs);
         vec_int docs; // TODO check if this is always sorted
                       // else has to be sorted in evaluator; may not be needed for vec_int (as of October may not really be needed)
@@ -295,7 +312,7 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         pos = 0;
         for (int i = 0; i < nr_docs; i++) {
             int tmp = -1;
-            iee_memcpy(&tmp, buff + pos, sizeof(int));
+            iee_memcpy(&tmp, doc_buff + pos, sizeof(int));
             pos += sizeof(int);
             //printf("doc %d\n", tmp);
             vi_push_back(&docs, tmp);
@@ -305,9 +322,9 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         tkn->docs = docs;
         //printf("docs retrieved %s\n", tkn->word);
 
-        free(buff);
+        free(doc_buff);
         free(enc_data);
-        free(data);
+        free(unenc_data);
         //printf("done\n");
     }
 

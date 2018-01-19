@@ -21,7 +21,7 @@ extern "C" {
 }
 
 ///////////////////////////// TESTING PARAMETERS /////////////////////////////
-#define NUM_QUERIES 1
+#define NUM_QUERIES 2
 
 // query size will be aprox. between
 // [QUERY_WORD_COUNT, QUERY_WORD_COUNT * 2]
@@ -148,7 +148,7 @@ int main(int argc, const char * argv[]) {
         struct timeval start, end;
         gettimeofday(&start, NULL);
         set<string> text = client.extractUniqueKeywords(DATASET_DIR + doc);
-        
+
 
         /*set<string>::iterator iter;
         for(iter=text.begin(); iter!=text.end();++iter){
@@ -254,7 +254,7 @@ int main(int argc, const char * argv[]) {
     }
 
     printf("Search queries: %lu\n", nr_searches);
-    
+
 
     //TODO hack just to compile, no idea why needed, doesn't affect sgx
     unsigned char x[1];

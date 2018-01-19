@@ -3,6 +3,9 @@ src/Data/enron/*
 src/Data/parsed/*
 !src/Data/parsed/.gitkeep
 
+src/tsgx/build/*
+!src/tsgx/build/.gitkeep
+
 Clusion/salt
 
 # generated test files

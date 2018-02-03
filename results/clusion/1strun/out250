@@ -1,0 +1,86 @@
+
+ Beginning of text extraction 
+
+Number of Threads 64
+Number of files read equals 0 %
+Number of files read equals 33 %
+Number of files read equals 66 %
+Number of files read equals 99 %
+Number of (w, id) pairs 27446
+Number of keywords 9057
+Number of documents 248
+
+Beginning of Global MM creation 
+
+Start of Local Multi-Map construction
+Number of total keywords processed equals 00 % 
+
+Number of total keywords processed equals 10 % 
+
+Number of total keywords processed equals 20 % 
+
+Number of total keywords processed equals 30 % 
+
+Number of total keywords processed equals 40 % 
+
+Number of total keywords processed equals 50 % 
+
+Number of total keywords processed equals 60 % 
+
+Number of total keywords processed equals 70 % 
+
+Number of total keywords processed equals 80 % 
+
+Time to construct LMM 13250
+
+!*****************************************************************
+
+		!STATS
+
+!*****************************************************************
+
+Number of (w, id) pairs 27446
+
+Total number of stored (w, Id) including in local MM : 11078512
+
+Time elapsed per (w, Id) in ns: 1196519
+
+Total Time elapsed for the entire construction in seconds: 13255
+
+Relative Time elapsed per (w, Id) in ns: 482972424
+
+!DONE UPDATE
+
+!AND TEST 10 kw 250 docs
+Final result []
+
+!elapsed 969093
+
+
+
+!OR TEST 10 kw 250 docs
+Final result [ackleton-s_all_documents_4824.txt, ackleton-s_all_documents_8898.txt, ackleton-s_all_documents_9641.txt, ackleton-s_sent_1011.txt, air-l_inbox_97.txt, air-l_sent_items_197.txt, al-s_all_documents_612.txt, al-s_inbox_43.txt, al-s_sent_items_99.txt, alley-l_discussion_threads_198.txt, an-c_discussion_threads_348.txt, an-c_inbox_52.txt, an-s_all_documents_5292.txt, an-s_archiving_untitled_1622.txt, an-s_archiving_untitled_305.txt, an-s_calendar_untitled_2099.txt, an-s_deleted_items_81.txt, an-s_sent_1610.txt, an-s_sent_items_467.txt, ankman-j_deleted_items_617.txt, apiro-r_personnel_17.txt, apiro-r_venezuela_colombia_17.txt, ard-m_inbox_77.txt, att-k_deleted_items_237.txt, awner-s__sent_mail_3.txt, awner-s_deleted_items_217.txt, ck-s__sent_mail_221.txt, ck-s_all_documents_2027.txt, ck-s_discussion_threads_4219.txt, ck-s_sent_items_360.txt, connell-m_discussion_threads_50.txt, deer-r_capx_5.txt, edicke-m_notes_inbox_84.txt, effes-j_sent_items_444.txt, ger-e_all_documents_1250.txt, ger-e_all_documents_255.txt, gers-b_all_documents_1741.txt, gers-b_all_documents_919.txt, gers-b_enron_news_97.txt, gers-b_motley_fool_e_mails_100.txt, ggi-m_deleted_items_691.txt, holtes-d_west_bank_28.txt, ibi-e_inbox_78.txt, igley-d_deleted_items_85.txt, igley-d_inbox_122.txt, illing-j_discussion_threads_250.txt, illing-j_notes_inbox_90.txt, in-m_all_documents_485.txt, in-m_discussion_threads_792.txt, iser-k_deleted_items_265.txt, ith-m_inbox_421.txt, key-t_inbox_857.txt, lainey-d_all_documents_541.txt, lainey-d_discussion_threads_360.txt, lainey-d_discussion_threads_603.txt, mec-g_notes_inbox_1752.txt, mec-g_sent_2070.txt, mes-k_all_documents_2760.txt, minski-v__sent_mail_1092.txt, minski-v__sent_mail_1262.txt, minski-v__sent_mail_3958.txt, minski-v__sent_mail_4531.txt, minski-v__sent_mail_991.txt, minski-v_deleted_items_556.txt, minski-v_discussion_threads_1297.txt, minski-v_discussion_threads_2753.txt, minski-v_discussion_threads_3376.txt, minski-v_london_81.txt, minski-v_resumes_321.txt, minski-v_sent_515.txt, minski-v_sent_items_651.txt, mpbell-l_notes_inbox_688.txt, ms-thurston-p__sent_mail_286.txt, nders-r_all_documents_1047.txt, nders-r_all_documents_1708.txt, nes-t_all_documents_10940.txt, nes-t_all_documents_11663.txt, nes-t_inbox_1058.txt, nes-t_notes_inbox_2818.txt, nn-k__sent_mail_1287.txt, nn-k__sent_mail_2448.txt, nn-k__sent_mail_256.txt, nn-k_all_documents_1752.txt, nn-k_all_documents_1906.txt, nn-k_all_documents_5153.txt, nn-k_all_documents_887.txt, nn-k_discussion_threads_1477.txt, nn-k_discussion_threads_4791.txt, nn-k_sent_3695.txt, nold-j__sent_mail_779.txt, ott-s_discussion_threads_222.txt, ott-s_discussion_threads_525.txt, ott-s_inbox_121.txt, ott-s_sent_81.txt, rd-k_deleted_items_101.txt, rland-c_all_documents_242.txt, rland-c_discussion_threads_146.txt, rland-c_sent_items_471.txt, rmany-c_all_documents_2747.txt, rmany-c_discussion_threads_651.txt, rmany-c_transport_56.txt, rmer-d_all_documents_1260.txt, rnandez-j_notes_inbox_241.txt, rriss-s_notes_inbox_446.txt, rtin-t__sent_mail_17.txt, sh-m_deleted_items_15.txt, sovich-j_all_documents_10021.txt, sovich-j_all_documents_10571.txt, sovich-j_all_documents_12377.txt, sovich-j_all_documents_3672.txt, sovich-j_deleted_items_1897.txt, sovich-j_inbox_1664.txt, sovich-j_notes_inbox_1023.txt, sovich-j_notes_inbox_5620.txt, sovich-j_notes_inbox_595.txt, ss-e__sent_mail_1406.txt, ss-e_discussion_threads_433.txt, ss-e_sent_548.txt, ss-e_sent_items_179.txt, ssum-d__sent_mail_1317.txt, ssum-d__sent_mail_1395.txt, ssum-d_all_documents_1045.txt, tchen-l__americas_mrha_ooc_126.txt, tson-k_deleted_items_31.txt, vis-d_all_documents_469.txt, vis-d_fyi_8.txt, vl-d_all_documents_1169.txt, vl-d_all_documents_1217.txt, vl-d_all_documents_250.txt, vorato-j_discussion_threads_111.txt, wis-a_deleted_items_177.txt, ylor-m_all_documents_1485.txt, ylor-m_sent_1132.txt, ylor-m_sent_items_173.txt, ylor-m_sent_items_326.txt, ylor-m_travel_90.txt]
+
+!elapsed 2104240
+
+
+
+!CNF TEST 8 kw 250 docs
+Final result [an-s_all_documents_5292.txt, ankman-j_deleted_items_617.txt, in-m_all_documents_485.txt, sovich-j_all_documents_12377.txt, sovich-j_deleted_items_1897.txt, ssum-d__sent_mail_1317.txt]
+
+!elapsed 242114
+
+
+
+!DNF TEST 8 kw 250 docs
+Final result [ackleton-s_all_documents_4824.txt, ackleton-s_all_documents_9641.txt, ackleton-s_sent_1011.txt, air-l_inbox_97.txt, al-s_inbox_43.txt, an-c_inbox_52.txt, an-s_all_documents_5292.txt, an-s_archiving_untitled_1622.txt, an-s_archiving_untitled_305.txt, an-s_calendar_untitled_2099.txt, an-s_sent_1610.txt, ankman-j_deleted_items_617.txt, awner-s_deleted_items_217.txt, ck-s_sent_items_360.txt, connell-m_discussion_threads_50.txt, edicke-m_notes_inbox_84.txt, effes-j_sent_items_444.txt, ger-e_all_documents_255.txt, gers-b_enron_news_97.txt, illing-j_notes_inbox_90.txt, in-m_all_documents_485.txt, in-m_discussion_threads_792.txt, key-t_inbox_857.txt, lainey-d_discussion_threads_360.txt, lainey-d_discussion_threads_603.txt, mec-g_notes_inbox_1752.txt, minski-v__sent_mail_3958.txt, minski-v__sent_mail_4531.txt, minski-v_discussion_threads_2753.txt, minski-v_london_81.txt, minski-v_sent_515.txt, nn-k__sent_mail_1287.txt, nn-k_all_documents_1752.txt, nn-k_all_documents_1906.txt, nn-k_all_documents_887.txt, nn-k_discussion_threads_1477.txt, nold-j__sent_mail_779.txt, ott-s_discussion_threads_525.txt, rland-c_sent_items_471.txt, rmany-c_all_documents_2747.txt, rmer-d_all_documents_1260.txt, sovich-j_all_documents_10021.txt, sovich-j_all_documents_10571.txt, sovich-j_all_documents_12377.txt, sovich-j_deleted_items_1897.txt, ssum-d__sent_mail_1317.txt, ssum-d_all_documents_1045.txt, vl-d_all_documents_1217.txt, vorato-j_discussion_threads_111.txt, wis-a_deleted_items_177.txt, ylor-m_travel_90.txt]
+
+!elapsed 258963
+
+
+
+!END
+
+real	221m4.750s
+user	3362m11.272s
+sys	62m33.008s

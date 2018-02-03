@@ -1,0 +1,98 @@
+/localssd/gborges/BISEN/Data/parsed/600
+
+ Beginning of text extraction 
+
+Number of Threads 64
+Number of files read equals 0 %
+Number of files read equals 11 %
+Number of files read equals 22 %
+Number of files read equals 33 %
+Number of files read equals 44 %
+Number of files read equals 55 %
+Number of files read equals 66 %
+Number of files read equals 77 %
+Number of files read equals 88 %
+Number of files read equals 99 %
+Number of (w, id) pairs 56238
+Number of keywords 13854
+Number of documents 593
+
+Beginning of Global MM creation 
+
+Counter 10000
+Start of Local Multi-Map construction
+Counter 10000
+Number of total keywords processed equals 00 % 
+
+Counter 10000
+Number of total keywords processed equals 10 % 
+
+Counter 10000
+Number of total keywords processed equals 20 % 
+
+Number of total keywords processed equals 30 % 
+
+Number of total keywords processed equals 40 % 
+
+Counter 10000
+Number of total keywords processed equals 50 % 
+
+Counter 10000
+Number of total keywords processed equals 60 % 
+
+Number of total keywords processed equals 70 % 
+
+Number of total keywords processed equals 80 % 
+
+Counter 10000
+Counter 10000
+Counter 10000
+Time to construct LMM 29266
+
+!*****************************************************************
+
+		!STATS
+
+!*****************************************************************
+
+Number of (w, id) pairs 56238
+
+Total number of stored (w, Id) including in local MM : 19819622
+
+Time elapsed per (w, Id) in ns: 1477024
+
+Total Time elapsed for the entire construction in seconds: 29274
+
+Relative Time elapsed per (w, Id) in ns: 520538849
+
+!DONE UPDATE
+
+!AND TEST 10 kw 600 docs
+Final result []
+
+!elapsed 784602
+
+
+
+!OR TEST 10 kw 600 docs
+Final result [ackleton-s_all_documents_288.txt, ackleton-s_all_documents_3866.txt, ackleton-s_all_documents_5007.txt, ackleton-s_all_documents_5186.txt, ackleton-s_nelson_89.txt, ackleton-s_notes_inbox_1299.txt, ackleton-s_notes_inbox_2134.txt, ackleton-s_notes_inbox_2838.txt, ackleton-s_organizational_changes_18.txt, ackleton-s_organizational_changes_36.txt, ackleton-s_sent_5867.txt, ackleton-s_sent_852.txt, ackleton-s_sent_items_741.txt, air-l_deleted_items_593.txt, air-l_inbox_131.txt, air-l_meetings_738.txt, air-l_sent_items_627.txt, air-l_sent_items_748.txt, an-c_discussion_threads_103.txt, an-s_all_documents_1794.txt, an-s_all_documents_4708.txt, an-s_all_documents_5094.txt, an-s_all_documents_6393.txt, an-s_all_documents_85.txt, an-s_archiving_untitled_1834.txt, an-s_archiving_untitled_8961.txt, an-s_archiving_untitled_903.txt, an-s_archiving_untitled_924.txt, an-s_calendar_untitled_1211.txt, an-s_calendar_untitled_1479.txt, an-s_calendar_untitled_1803.txt, an-s_corporate_responsibility_26.txt, an-s_discussion_threads_2426.txt, an-s_discussion_threads_3361.txt, an-s_discussion_threads_7230.txt, an-s_notes_inbox_161.txt, an-s_sent_5077.txt, ankman-j_discussion_threads_410.txt, ankman-j_inbox_31.txt, apiro-r_california_legal_issues_3.txt, apiro-r_deleted_items_1002.txt, apiro-r_rto_campaign_47.txt, ard-m_deleted_items_169.txt, ard-m_inbox_116.txt, ard-m_inbox_274.txt, ard-m_sent_items_366.txt, att-k_deleted_items_so_trails_3.txt, avey-p_all_documents_343.txt, avey-p_discussion_threads_281.txt, avey-p_notes_inbox_80.txt, carty-d_deleted_items_31.txt, chey-c_sent_items_55.txt, ck-s__sent_mail_678.txt, ck-s_all_documents_2012.txt, ck-s_all_documents_3622.txt, ck-s_discussion_threads_591.txt, ck-s_sent_828.txt, clair-c_all_documents_103.txt, clair-c_sent_101.txt, connell-m__sent_mail_190.txt, connell-m__sent_mail_823.txt, connell-m_all_documents_1127.txt, connell-m_all_documents_484.txt, dge-j_sent_items_91.txt, drique-r_all_documents_42.txt, drique-r_discussion_threads_157.txt, edicke-m_all_documents_529.txt, edicke-m_all_documents_945.txt, edicke-m_sent_854.txt, esto-k_deleted_items_1337.txt, esto-k_sent_items_277.txt, fferli-j_sent_items_24.txt, fferli-j_sent_items_261.txt, ger-e_inbox_47.txt, ger-e_inbox_726.txt, ger-e_notes_inbox_195.txt, gers-b__sent_mail_606.txt, gers-b_all_documents_423.txt, gers-b_ctg_deals_192.txt, gers-b_discussion_threads_1456.txt, gers-b_discussion_threads_1687.txt, gers-b_discussion_threads_565.txt, gers-b_sent_791.txt, ggi-m_deleted_items_684.txt, holtes-d_ferc_25.txt, hoolcraft-d_deleted_items_239.txt, hoolcraft-d_sent_items_143.txt, hwieger-j_discussion_threads_68.txt, igley-d_sent_items_250.txt, igsby-m__sent_mail_231.txt, iley-s_deleted_items_194.txt, iley-s_deleted_items_410.txt, illing-j__sent_mail_340.txt, illing-j_discussion_threads_1194.txt, illing-j_inbox_995.txt, in-m_all_documents_426.txt, in-m_discussion_threads_198.txt, in-m_discussion_threads_527.txt, in-m_discussion_threads_789.txt, ite-s_andersen_requests_13.txt, ite-s_deleted_items_120.txt, ite-s_meetings_540.txt, ite-s_meetings_702.txt, ith-m_inbox_391.txt, ith-m_inbox_68.txt, itt-m_sent_items_198.txt, ively-h_deleted_items_514.txt, kay-m_all_documents_478.txt, kay-m_corporate_479.txt, kay-m_corporate_593.txt, kay-m_tw_commercial_group_198.txt, lainey-d__sent_mail_747.txt, laughlin-e_inbox_186.txt, laughlin-e_inbox_416.txt, laughlin-e_private_folders_personal_stuff_2.txt, ldon-c_deleted_items_7.txt, len-p_discussion_threads_142.txt, len-p_sent_items_244.txt, len-p_sent_items_97.txt, lisbury-h_inbox_610.txt, lliams-w3_sent_items_365.txt, mec-g_all_documents_1460.txt, mec-g_all_documents_1776.txt, mec-g_all_documents_5009.txt, mec-g_inbox_1735.txt, mec-g_notes_inbox_3815.txt, mec-g_sent_2064.txt, mes-k__sent_mail_1140.txt, mes-k_all_documents_3081.txt, minski-v__sent_mail_2189.txt, minski-v_all_documents_2720.txt, minski-v_all_documents_3141.txt, minski-v_all_documents_3431.txt, minski-v_all_documents_5884.txt, minski-v_discussion_threads_3366.txt, minski-v_discussion_threads_5197.txt, minski-v_evaluation_12.txt, minski-v_resumes_147.txt, minski-v_resumes_366.txt, minski-v_resumes_411.txt, minski-v_sent_1561.txt, minski-v_sent_4067.txt, minski-v_sent_items_2241.txt, minski-v_stanford_60.txt, minski-v_universities_53.txt, mis-f_all_documents_53.txt, mpbell-l_discussion_threads_1574.txt, mpbell-l_notes_inbox_555.txt, ms-thurston-p_inbox_239.txt, nchez-m_deleted_items_25.txt, nchez-m_sent_items_62.txt, nders-r_all_documents_1998.txt, nders-r_all_documents_360.txt, nders-r_all_documents_707.txt, nders-r_nsm_66.txt, nders-r_sent_629.txt, ndrickson-s_deleted_items_85.txt, nes-t_all_documents_11616.txt, nes-t_all_documents_1212.txt, nes-t_all_documents_1675.txt, nes-t_all_documents_9012.txt, nes-t_all_documents_9103.txt, nes-t_notes_inbox_1994.txt, nes-t_notes_inbox_2291.txt, nes-t_notes_inbox_2678.txt, nes-t_notes_inbox_4178.txt, nes-t_notes_inbox_5157.txt, nes-t_online_trading_66.txt, nes-t_sent_2128.txt, nhart-m_sent_1767.txt, nn-k__sent_mail_1075.txt, nn-k_all_documents_1707.txt, nn-k_all_documents_4084.txt, nn-k_all_documents_4546.txt, nn-k_all_documents_6334.txt, nn-k_deleted_items_158.txt, nn-k_discussion_threads_1234.txt, nn-k_discussion_threads_2219.txt, nn-k_discussion_threads_2370.txt, nn-k_discussion_threads_2605.txt, nn-k_discussion_threads_4174.txt, nn-k_discussion_threads_4416.txt, nn-k_discussion_threads_4958.txt, nn-k_discussion_threads_967.txt, nn-k_inbox_124.txt, nn-k_notes_inbox_132.txt, nn-k_off_balance_sheet_form_contracts_15.txt, nn-k_sent_1536.txt, nn-k_sent_4395.txt, nn-k_sent_985.txt, nson-r_notes_inbox_38.txt, okley-c_chris_stokley_sent_445.txt, omas-p_inbox_400.txt, ott-s__sent_mail_26.txt, ott-s_all_documents_1236.txt, ott-s_all_documents_1458.txt, ott-s_discussion_threads_1441.txt, ott-s_inbox_162.txt, ott-s_sent_542.txt, pper-a_sent_items_287.txt, pper-a_tq_7.txt, rd-k__sent_mail_187.txt, reira-s_discussion_threads_36.txt, rks-j_inbox_685.txt, rks-j_sent_items_26.txt, rlingiere-d_all_documents_2087.txt, rlingiere-d_all_documents_2485.txt, rlingiere-d_all_documents_2506.txt, rlingiere-d_all_documents_725.txt, rlingiere-d_all_documents_779.txt, rlingiere-d_sent_2264.txt, rlingiere-d_sent_2358.txt, rlingiere-d_sent_2384.txt, rlingiere-d_sent_807.txt, rman-s_deleted_items_394.txt, rman-s_inbox_archives_9.txt, rmany-c__sent_mail_1204.txt, rmany-c__sent_mail_1618.txt, rmany-c_all_documents_1305.txt, rmany-c_all_documents_763.txt, rmany-c_deleted_items_254.txt, rmany-c_inbox_134.txt, rmer-d_all_documents_3833.txt, rmer-d_discussion_threads_2702.txt, rmer-d_discussion_threads_97.txt, rmer-d_sent_557.txt, rmer-d_tufco_536.txt, rnandez-j_discussion_threads_620.txt, rnandez-j_notes_inbox_21.txt, rney-j_sent_items_230.txt, rney-j_sent_items_88.txt, ron-d_inbox_142.txt, ron-d_inbox_247.txt, rson-m_notes_inbox_3.txt, rtin-t_deleted_items_195.txt, scher-m_all_documents_335.txt, scher-m_discussion_threads_228.txt, scher-m_discussion_threads_256.txt, scher-m_notes_inbox_287.txt, sh-m_deleted_items_212.txt, sovich-j_all_documents_10447.txt, sovich-j_all_documents_11671.txt, sovich-j_all_documents_11984.txt, sovich-j_all_documents_1975.txt, sovich-j_all_documents_2657.txt, sovich-j_all_documents_4437.txt, sovich-j_all_documents_514.txt, sovich-j_all_documents_9411.txt, sovich-j_deleted_items_1731.txt, sovich-j_deleted_items_1896.txt, sovich-j_deleted_items_925.txt, sovich-j_general_rate_case_s__6.txt, sovich-j_inbox_337.txt, sovich-j_mba__macroeconomics_44.txt, sovich-j_notes_inbox_11696.txt, sovich-j_notes_inbox_12500.txt, sovich-j_notes_inbox_1811.txt, sovich-j_notes_inbox_1813.txt, sovich-j_notes_inbox_355.txt, sovich-j_notes_inbox_4787.txt, sovich-j_notes_inbox_5789.txt, sovich-j_sent_12170.txt, sovich-j_sent_items_238.txt, ss-e__sent_mail_1374.txt, ss-e_all_documents_1657.txt, ss-e_all_documents_461.txt, ss-e_all_documents_629.txt, ss-e_inbox_194.txt, ss-e_notes_inbox_430.txt, ss-e_sent_1277.txt, ssum-d_discussion_threads_71.txt, ssum-d_discussion_threads_793.txt, ssum-d_discussion_threads_9.txt, tchen-l__americas_esvl_614.txt, tchen-l__americas_portland_156.txt, tson-k_e_mail_bin_38.txt, tson-k_inbox_102.txt, ughman-d_deleted_items_249.txt, ughman-d_deleted_items_335.txt, usholli-m_inbox_136.txt, ve-p_all_documents_304.txt, vis-d_discussion_threads_294.txt, vl-d_all_documents_1058.txt, vl-d_all_documents_1151.txt, vl-d_all_documents_1416.txt, vl-d_gas_10.txt, vl-d_gas_crestar_41.txt, vorato-j_all_documents_202.txt, vorato-j_discussion_threads_219.txt, vorato-j_inbox_94.txt, vorato-j_sent_items_377.txt, wis-a_deleted_items_1135.txt, wis-a_deleted_items_1138.txt, wis-a_notes_inbox_32.txt, wnsend-j_inbox_71.txt, y-k__sent_28.txt, y-k__sent_9.txt, y-k_all_documents_353.txt, y-k_all_documents_608.txt, y-k_deleted_items_1096.txt, y-k_deleted_items_385.txt, y-l_notes_inbox_48.txt, y-r_deleted_items_83.txt, y-r_inbox_22.txt, y-r_sent_370.txt, ykendall-t_sent_33.txt, ylor-m_all_documents_2293.txt, ylor-m_all_documents_467.txt, ylor-m_all_documents_7544.txt, ylor-m_all_documents_8452.txt, ylor-m_notes_inbox_1326.txt, ylor-m_notes_inbox_2415.txt, ylor-m_notes_inbox_2593.txt, zman-m_all_documents_1631.txt, zman-m_discussion_threads_1171.txt]
+
+!elapsed 1044115
+
+
+
+!CNF TEST 8 kw 600 docs
+Final result [air-l_inbox_131.txt, an-s_corporate_responsibility_26.txt, connell-m__sent_mail_190.txt, connell-m_all_documents_484.txt, fferli-j_sent_items_24.txt, igsby-m__sent_mail_231.txt, illing-j_discussion_threads_1194.txt, kay-m_all_documents_478.txt, mec-g_inbox_1735.txt, minski-v_stanford_60.txt, nders-r_nsm_66.txt, rmer-d_sent_557.txt, sovich-j_deleted_items_1731.txt, sovich-j_notes_inbox_11696.txt, tson-k_inbox_102.txt, y-r_deleted_items_83.txt]
+
+!elapsed 216412
+
+
+
+!DNF TEST 8 kw 600 docs
+Final result [ackleton-s_all_documents_288.txt, ackleton-s_all_documents_3866.txt, ackleton-s_all_documents_5007.txt, ackleton-s_notes_inbox_2134.txt, ackleton-s_sent_852.txt, air-l_deleted_items_593.txt, air-l_inbox_131.txt, air-l_sent_items_627.txt, air-l_sent_items_748.txt, an-c_discussion_threads_103.txt, an-s_all_documents_1794.txt, an-s_archiving_untitled_1834.txt, an-s_archiving_untitled_924.txt, an-s_calendar_untitled_1479.txt, an-s_corporate_responsibility_26.txt, an-s_discussion_threads_2426.txt, an-s_discussion_threads_3361.txt, an-s_discussion_threads_7230.txt, ankman-j_discussion_threads_410.txt, apiro-r_california_legal_issues_3.txt, apiro-r_rto_campaign_47.txt, ard-m_inbox_116.txt, avey-p_all_documents_343.txt, avey-p_notes_inbox_80.txt, ck-s__sent_mail_678.txt, ck-s_all_documents_3622.txt, connell-m__sent_mail_190.txt, connell-m__sent_mail_823.txt, connell-m_all_documents_484.txt, dge-j_sent_items_91.txt, fferli-j_sent_items_24.txt, ger-e_notes_inbox_195.txt, gers-b_discussion_threads_1456.txt, gers-b_discussion_threads_1687.txt, igley-d_sent_items_250.txt, igsby-m__sent_mail_231.txt, illing-j_discussion_threads_1194.txt, illing-j_inbox_995.txt, in-m_discussion_threads_198.txt, kay-m_all_documents_478.txt, kay-m_corporate_593.txt, ldon-c_deleted_items_7.txt, len-p_sent_items_244.txt, len-p_sent_items_97.txt, lisbury-h_inbox_610.txt, mec-g_all_documents_5009.txt, mec-g_inbox_1735.txt, minski-v_resumes_366.txt, minski-v_stanford_60.txt, minski-v_universities_53.txt, nchez-m_deleted_items_25.txt, nders-r_all_documents_360.txt, nders-r_all_documents_707.txt, nders-r_nsm_66.txt, nders-r_sent_629.txt, nes-t_all_documents_1212.txt, nes-t_all_documents_9012.txt, nes-t_notes_inbox_1994.txt, nes-t_notes_inbox_5157.txt, nn-k__sent_mail_1075.txt, nn-k_deleted_items_158.txt, okley-c_chris_stokley_sent_445.txt, pper-a_tq_7.txt, rd-k__sent_mail_187.txt, rlingiere-d_sent_2264.txt, rman-s_deleted_items_394.txt, rman-s_inbox_archives_9.txt, rmany-c__sent_mail_1204.txt, rmany-c_all_documents_763.txt, rmer-d_sent_557.txt, rnandez-j_discussion_threads_620.txt, ron-d_inbox_142.txt, ron-d_inbox_247.txt, rson-m_notes_inbox_3.txt, scher-m_discussion_threads_228.txt, scher-m_notes_inbox_287.txt, sovich-j_all_documents_514.txt, sovich-j_all_documents_9411.txt, sovich-j_deleted_items_1731.txt, sovich-j_deleted_items_925.txt, sovich-j_inbox_337.txt, sovich-j_notes_inbox_11696.txt, sovich-j_notes_inbox_5789.txt, sovich-j_sent_items_238.txt, ss-e_all_documents_461.txt, ss-e_all_documents_629.txt, ssum-d_discussion_threads_9.txt, tson-k_e_mail_bin_38.txt, tson-k_inbox_102.txt, ughman-d_deleted_items_249.txt, wis-a_deleted_items_1135.txt, y-k__sent_28.txt, y-k__sent_9.txt, y-k_all_documents_353.txt, y-l_notes_inbox_48.txt, y-r_deleted_items_83.txt, y-r_inbox_22.txt, ykendall-t_sent_33.txt, ylor-m_all_documents_2293.txt, ylor-m_all_documents_467.txt, ylor-m_all_documents_7544.txt, ylor-m_all_documents_8452.txt]
+
+!elapsed 77917
+
+
+
+!END

@@ -1,0 +1,84 @@
+
+ Beginning of text extraction 
+
+Number of Threads 10
+Number of files read equals 0 %
+Number of files read equals 99 %
+Number of (w, id) pairs 948
+Number of keywords 810
+Number of documents 10
+
+Beginning of Global MM creation 
+
+Start of Local Multi-Map construction
+Number of total keywords processed equals 00 % 
+
+Number of total keywords processed equals 10 % 
+
+Number of total keywords processed equals 20 % 
+
+Number of total keywords processed equals 30 % 
+
+Number of total keywords processed equals 40 % 
+
+Number of total keywords processed equals 50 % 
+
+Number of total keywords processed equals 60 % 
+
+Number of total keywords processed equals 70 % 
+
+Number of total keywords processed equals 80 % 
+
+Time to construct LMM 588
+
+!*****************************************************************
+
+		!STATS
+
+!*****************************************************************
+
+Number of (w, id) pairs 948
+
+Total number of stored (w, Id) including in local MM : 165780
+
+Time elapsed per (w, Id) in ns: 3563443
+
+Total Time elapsed for the entire construction in seconds: 590
+
+Relative Time elapsed per (w, Id) in ns: 623151507
+
+!DONE UPDATE
+
+!AND TEST 10 kw 10 docs
+Final result []
+
+!elapsed 13957
+
+
+
+!OR TEST 10 kw 10 docs
+Final result [ackleton-s_sent_1627.txt, mes-k_all_documents_2760.txt, minski-v__sent_mail_1504.txt, sovich-j_notes_inbox_913.txt]
+
+!elapsed 21709
+
+
+
+!CNF TEST 8 kw 10 docs
+Final result []
+
+!elapsed 2092
+
+
+
+!DNF TEST 8 kw 10 docs
+Final result [ackleton-s_sent_1627.txt, sovich-j_notes_inbox_913.txt]
+
+!elapsed 6174
+
+
+
+!END
+
+real	9m52.106s
+user	58m20.772s
+sys	1m37.800s

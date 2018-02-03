@@ -21,7 +21,7 @@ extern "C" {
 }
 
 ///////////////////////////// TESTING PARAMETERS /////////////////////////////
-#define NUM_QUERIES 2
+#define NUM_QUERIES 1
 
 // query size will be aprox. between
 // [QUERY_WORD_COUNT, QUERY_WORD_COUNT * 2]
@@ -137,6 +137,9 @@ int main(int argc, const char * argv[]) {
     int count = 0;
 
     long total_time = 0;
+    long total_time_ltest = 0;
+    
+    struct timeval start, end;
 
     // add documents from the directory
     set<string> all_words_set; // for client-side random query generation only
@@ -145,7 +148,6 @@ int main(int argc, const char * argv[]) {
 
         string doc = doc_paths[i];
 
-        struct timeval start, end;
         gettimeofday(&start, NULL);
         set<string> text = client.extractUniqueKeywords(DATASET_DIR + doc);
 
@@ -162,11 +164,17 @@ int main(int argc, const char * argv[]) {
         total_time += timeElapsed(start, end);
 
         #ifdef LOCALTEST
+        gettimeofday(&start, NULL);
+        
         //print_buffer("Data", data, data_size);
         output_size = 0;
         f(&output, &output_size, 0, (const bytes) data, data_size);
         //print_buffer("Output", output, output_size);
         free(output);
+        
+        gettimeofday(&end, NULL);
+        total_time_ltest += timeElapsed(start, end);
+        //print_buffer("Output", output, output_size);
         #endif
 
         // write to benchmark file
@@ -181,6 +189,7 @@ int main(int argc, const char * argv[]) {
 
     printf("Add queries: %lu\n", nr_updates);
     printf("Execution time: client add = %6.3lf seconds!\n", total_time/1000000.0 );
+    printf("LTEST Execution time: client add = %6.3lf seconds!\n", total_time_ltest/1000000.0 );
     //client.list_words(); // used to get word frequencies in dataset
 
     ////////////////////////////////////////////////////////////////////////////
@@ -206,7 +215,6 @@ int main(int argc, const char * argv[]) {
         printf("Query %d: %s\n", i, query.c_str());
         #endif
 
-        struct timeval start, end;
         gettimeofday(&start, NULL);
         unsigned char* data;
         unsigned long long data_size = client.search(query, &data);
@@ -229,9 +237,13 @@ int main(int argc, const char * argv[]) {
 
         #ifdef LOCALTEST
         //print_buffer("Data", data, data_size);
+        gettimeofday(&start, NULL);
         output_size = 0;
         f(&output, &output_size, 0, (const bytes) data, data_size);
+        gettimeofday(&end, NULL);
         //print_buffer("Output", output, output_size);
+        printf("LTEST Execution time: search = %6.6lf s!\n", timeElapsed(start, end)/1000000.0 );
+        
 
         //process results
         const int nDocs = output_size / sizeof(int);
@@ -244,9 +256,9 @@ int main(int argc, const char * argv[]) {
         int pos = 0;
         for (int i = 0; i < nDocs; i++) {
             results[i] = readIntFromArr(output, &pos);
-        }*/
+        }
 
-        //printResults(results);
+        printResults(results);*/
         free(output);
         #endif
 

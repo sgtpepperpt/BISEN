@@ -113,8 +113,8 @@ SseServer::SseServer() {
                 #ifdef VERBOSE
                 printf("Started Search!\n");
                 #endif
-                printf("Size index %lu\n", (*I).size());
-                printf("Execution time: sv add = %6.3lf seconds!\n", total_time/1000000.0 );
+                printf("SERVER Size index %lu\n", (*I).size());
+                printf("SERVER Execution time: sv add = %6.3lf seconds!\n", total_time/1000000.0 );
 
                 struct timeval start2, end2;
                 gettimeofday(&start2, NULL);

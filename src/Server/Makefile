@@ -16,5 +16,5 @@ SseServer.o : SseServer.cpp
 
 clean :
 	rm -f Server main.o SseServer.o
-	
+
 .PHONY: run clean

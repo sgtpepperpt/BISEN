@@ -1,8 +1,9 @@
 #!/bin/bash
 
-#SIZES=(5000 10000 20000 50000 100000 200000)
+# makes server print index size
+export NUM_QUERIES=1
 
-SIZES=(50 75 100)
+SIZES=(5000 10000 20000 50000 100000 200000 517402)
 
 for DATASET_SIZE in "${SIZES[@]}"
 do
@@ -17,6 +18,8 @@ do
     done
 
     echo "############################################################"
+    echo "###################### DONE GEN TESTS ######################"
+    echo "############################################################"
 
     for i in {0..5}
     do
@@ -26,5 +29,5 @@ do
         echo ""
     done
 
-    echo ""
+    echo "############################ END DATASET SIZE $DATASET_SIZE ############################"
 done

@@ -21,7 +21,7 @@ extern "C" {
 }
 
 ///////////////////////////// TESTING PARAMETERS /////////////////////////////
-#define NUM_QUERIES 1
+//#define NUM_QUERIES 1
 
 // query size will be aprox. between
 // [QUERY_WORD_COUNT, QUERY_WORD_COUNT * 2]
@@ -101,7 +101,7 @@ int main(int argc, const char * argv[]) {
 
     // write number of adds / updates and searches to benchmark file
     size_t nr_updates = doc_paths.size();
-    size_t nr_searches = NUM_QUERIES;
+    size_t nr_searches = getenv("NUM_QUERIES")? atoi(getenv("NUM_QUERIES")) : 0;
     fwrite(&nr_updates, sizeof(size_t), 1, out_f);
     fwrite(&nr_searches, sizeof(size_t), 1, out_f);
 
@@ -117,7 +117,7 @@ int main(int argc, const char * argv[]) {
     fwrite(data, sizeof(unsigned char), data_size, out_f);
 
     #ifdef VERBOSE
-    printf("Starting IEE communication\n");
+    printf("GENCLI Starting IEE communication\n");
     #endif
 
     #ifdef LOCALTEST
@@ -138,7 +138,7 @@ int main(int argc, const char * argv[]) {
 
     long total_time = 0;
     long total_time_ltest = 0;
-    
+
     struct timeval start, end;
 
     // add documents from the directory
@@ -165,13 +165,13 @@ int main(int argc, const char * argv[]) {
 
         #ifdef LOCALTEST
         gettimeofday(&start, NULL);
-        
+
         //print_buffer("Data", data, data_size);
         output_size = 0;
         f(&output, &output_size, 0, (const bytes) data, data_size);
         //print_buffer("Output", output, output_size);
         free(output);
-        
+
         gettimeofday(&end, NULL);
         total_time_ltest += timeElapsed(start, end);
         //print_buffer("Output", output, output_size);
@@ -187,9 +187,12 @@ int main(int argc, const char * argv[]) {
         all_words_set.insert(text.begin(), text.end());
     }
 
-    printf("Add queries: %lu\n", nr_updates);
-    printf("Execution time: client add = %6.3lf seconds!\n", total_time/1000000.0 );
-    printf("LTEST Execution time: client add = %6.3lf seconds!\n", total_time_ltest/1000000.0 );
+    printf("GENCLI add queries: %lu\n", nr_updates);
+    //printf("GENCLI src queries: %lu\n", nr_searches);
+    printf("GENCLI Execution time: client add = %6.3lf s!\n", total_time/1000000.0 );
+    #ifdef LOCALTEST
+    printf("LTEST Execution time: client add = %6.3lf s!\n", total_time_ltest/1000000.0 );
+    #endif
     //client.list_words(); // used to get word frequencies in dataset
 
     ////////////////////////////////////////////////////////////////////////////
@@ -219,7 +222,7 @@ int main(int argc, const char * argv[]) {
         unsigned char* data;
         unsigned long long data_size = client.search(query, &data);
         gettimeofday(&end, NULL);
-        printf("Execution time: client search = %6.6lf s!\n", timeElapsed(start, end)/1000000.0 );
+        printf("GENCLI Execution time: client search = %6.6lf s!\n", timeElapsed(start, end)/1000000.0 );
 
         #ifdef VERBOSE
         /*for(int i = 0; i < data_size; i++){
@@ -243,13 +246,13 @@ int main(int argc, const char * argv[]) {
         gettimeofday(&end, NULL);
         //print_buffer("Output", output, output_size);
         printf("LTEST Execution time: search = %6.6lf s!\n", timeElapsed(start, end)/1000000.0 );
-        
+
 
         //process results
         const int nDocs = output_size / sizeof(int);
 
         #ifdef VERBOSE
-        printf("Number of docs: %d\n", nDocs);
+        printf("GENCLI Number of docs: %d\n", nDocs);
         #endif
 
         /*vector<int> results(nDocs);

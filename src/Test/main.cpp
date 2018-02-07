@@ -266,7 +266,7 @@ int main(int argc, const char * argv[]) {
     printf("GENCLI nr search queries: %lu\n", nr_searches);
 
     printf("GENCLI time: total client add = %6.3lf s!\n", total_add_time/1000000.0);
-    printf("GENCLI time: total client search = %6.6lf s!\n", (total_search_time / 1000000.0);
+    printf("GENCLI time: total client search = %6.6lf s!\n", total_search_time / 1000000.0);
 
     #ifdef LOCALTEST
     printf("LTEST GENCLI time: client add = %6.3lf s!\n", total_sim_add_time/1000000.0);

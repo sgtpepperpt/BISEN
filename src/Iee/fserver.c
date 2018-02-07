@@ -34,6 +34,8 @@ static void fs_open(bytes* out, size* outlen, const bytes in, const size inlen)
     int res = open(path, oflags);
     //printf("ret open: %d\n", res);
 
+    free(path);
+
     // prepare response
     pos = 0;
     *outlen = sizeof(int);
@@ -100,7 +102,7 @@ static void fs_write(bytes* out, size* outlen, const bytes in, const size inlen)
 
     void *buf = (void *)malloc(sizeof(unsigned char) * nbytes);
     iee_readFromArr(buf, nbytes, in, &pos);
- 
+
     // execute write syscall
     ssize_t res = write(fildes, buf, nbytes);
     //printf("ret: %lu\n", res);

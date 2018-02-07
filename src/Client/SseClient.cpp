@@ -23,7 +23,7 @@ SseClient::~SseClient() {
     client_destroy_crypt();
     delete analyzer;
     delete W;
-    close(querySocket);
+    // close(querySocket); TODO : CHECKME : not used anymore?
 }
 
 unsigned long long SseClient::setup(unsigned char** data) {
@@ -37,7 +37,8 @@ unsigned long long SseClient::setup(unsigned char** data) {
                                    + 2 * sizeof(int)
                                    + client_symBlocksize * sizeof(unsigned char)
                                    + client_fBlocksize * sizeof(unsigned char);
-    *data = new unsigned char[data_size];
+    //*data = new unsigned char[data_size];
+    *data = (unsigned char*) malloc(sizeof(unsigned char) * data_size); /* fix mismatched free @ valgrind */
 
     unsigned char op = 'i';
     int pos = 0;
@@ -91,7 +92,8 @@ unsigned long long SseClient::add_words(int doc_id, set<string> words, unsigned 
 
     // allocate data buffer
     // must be freed in calling function
-    *data = new unsigned char[data_size];
+    //*data = new unsigned char[data_size];
+    *data = (unsigned char*) malloc(sizeof(unsigned char) * data_size); /* fix mismatched free @ valgrind */
 
     unsigned char op = 'a';
     int pos = 0;
@@ -318,5 +320,5 @@ void SseClient::list_words() {
     map<string,int>::iterator it;
     for (pair<string, int> el : word_set)
         printf("%s %d\n", el.first.c_str(), el.second);
-    
+
 }

@@ -23,6 +23,8 @@ void f(bytes* out, size* out_len, const unsigned long long pid, const bytes in, 
     //ocall_strprint("\n***** Entering IEE *****\n");
     #endif
 
+    ocall_strprint("\n***** Entering IEE *****\n");
+
     // set out variables
     *out = NULL;
     *out_len = 0;
@@ -46,7 +48,7 @@ static void init_pipes() {
     char pipeName[256];
 
     //start server-iee pipe
-    strncpy(pipeName, pipeDir, strlen(pipeDir));
+    strncpy(pipeName, pipeDir, strlen(pipeDir)+1 /*copy \0*/);
     strncpy(pipeName + strlen(pipeName), "server_to_iee", strlen("server_to_iee"));
 
     ocall_strprint("Opening read pipe!\n");

@@ -8,7 +8,7 @@ DATASET_SIZE ?= 517402
 CONFIG_FLAGS=-DDATASET_DIR=\"../Data/parsed/$(DATASET_SIZE)/\"
 CONFIG_FLAGS+=
 
-C_FLAGS= -Wall -Ofast -Wno-unused-function -Wno-unused-variable -fPIC $(CONFIG_FLAGS)
+C_FLAGS= -Wall -g -Wno-unused-function -Wno-unused-variable -fPIC $(CONFIG_FLAGS)
 CPP_FLAGS= $(C_FLAGS) -std=c++11
 
 LIBS= -lsodium

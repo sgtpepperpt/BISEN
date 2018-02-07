@@ -151,6 +151,7 @@ static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
 
         const size_t enc_size = unenc_size + C_EXPBYTES;
         unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * enc_size);
+        memset(enc_data, 0, sizeof(unsigned char) * enc_size); // fix syscall param write(buf) points to uninitialised byte(s)
         c_encrypt(enc_data, unenc_data, unenc_size, nonce, get_kEnc());
         free(nonce);
         free(unenc_data);
@@ -300,6 +301,7 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         // holds doc ids as ints
         size_t doc_buff_len = tkn->counter * sizeof(int);
         unsigned char* doc_buff = (unsigned char*)malloc(sizeof(unsigned char) * doc_buff_len);
+        memset(doc_buff, 0, sizeof(unsigned char) * doc_buff_len); // fix valgrind warning about vi_contains
         pos = 0;
 
         for (int j = 0; j < tkn->counter; j++) {

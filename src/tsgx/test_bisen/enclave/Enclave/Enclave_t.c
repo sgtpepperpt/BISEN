@@ -318,7 +318,7 @@ sgx_status_t SGX_CDECL untrusted_malloc_bytes(bytes* pointer, size length)
 	if (pointer != NULL && sgx_is_within_enclave(pointer, _len_pointer)) {
 		ms->ms_pointer = (bytes*)__tmp;
 		__tmp = (void *)((size_t)__tmp + _len_pointer);
-		memset(ms->ms_pointer, 0, _len_pointer);
+		memcpy(ms->ms_pointer, pointer, _len_pointer);
 	} else if (pointer == NULL) {
 		ms->ms_pointer = NULL;
 	} else {
@@ -357,7 +357,7 @@ sgx_status_t SGX_CDECL untrusted_free_bytes(bytes* pointer)
 	if (pointer != NULL && sgx_is_within_enclave(pointer, _len_pointer)) {
 		ms->ms_pointer = (bytes*)__tmp;
 		__tmp = (void *)((size_t)__tmp + _len_pointer);
-		memset(ms->ms_pointer, 0, _len_pointer);
+		memcpy(ms->ms_pointer, pointer, _len_pointer);
 	} else if (pointer == NULL) {
 		ms->ms_pointer = NULL;
 	} else {

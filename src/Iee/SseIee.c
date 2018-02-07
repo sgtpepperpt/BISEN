@@ -38,10 +38,21 @@ void f(bytes* out, size* out_len, const unsigned long long pid, const bytes in, 
     //search operation
     else if (in[0] == OP_SRC)
         search(out, out_len, in, in_len);
+    else if (in[0] == OP_BENCH)
+        benchmarking_print();
 
     #ifdef VERBOSE
     //ocall_strprint("\n***** Leaving IEE *****\n\n");
     #endif
+}
+
+static void benchmarking_print() {
+    // BENCHMARK : tell server to print statistics
+    // this instruction can be safely removed if wanted
+    int tmp_buff_len = sizeof(char);
+    unsigned char* tmp_buff = (unsigned char*)malloc(sizeof(unsigned char));
+    tmp_buff[0] = '4';
+    iee_socketSend(writeServerPipe, tmp_buff, sizeof(unsigned char));
 }
 
 static void init_pipes() {
@@ -474,10 +485,4 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
     #endif
 
     *out_len = sizeof(unsigned char) * output_size;
-
-    // BENCHMARK : tell server to print statistics
-    int tmp_buff_len = sizeof(char);
-    unsigned char* tmp_buff = (unsigned char*)malloc(sizeof(unsigned char));
-    tmp_buff[0] = '4';
-    iee_socketSend(writeServerPipe, tmp_buff, sizeof(unsigned char));
 }

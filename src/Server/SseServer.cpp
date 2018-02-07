@@ -159,6 +159,8 @@ SseServer::SseServer() {
                 break;
             }
             case '4': {
+                // this instruction is for benchmarking only and can be safely
+                // removed if wanted
                 printf("## STATS ##\n");
                 printf("SERVER Size index: %lu\n", (*I).size());
                 printf("SERVER time: total sv add = %6.3lf sec\n", total_add_time/1000000.0);

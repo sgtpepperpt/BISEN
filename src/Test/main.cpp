@@ -89,15 +89,17 @@ int main(int argc, const char * argv[]) {
     unsigned long long data_size;
 
     // init output file
-    FILE *out_f = fopen("bisen_benchmark","wb");
+    FILE *out_f = fopen("bisen_benchmark", "wb");
     if (!out_f) {
 		printf("Error opening output file!\n");
 		exit(-1);
 	}
 
+    const char* dataset_dir = getenv("DATASET_DIR");
+
     // get list of docs for test
     vector<string> doc_paths;
-    client.listTxtFiles(DATASET_DIR, doc_paths);
+    client.listTxtFiles(dataset_dir, doc_paths);
 
     // write number of adds / updates and searches to benchmark file
     size_t nr_updates = doc_paths.size();
@@ -149,7 +151,7 @@ int main(int argc, const char * argv[]) {
 
         string doc = doc_paths[i];
         gettimeofday(&start, NULL);
-        set<string> text = client.extractUniqueKeywords(DATASET_DIR + doc);
+        set<string> text = client.extractUniqueKeywords(dataset_dir + doc);
 
 
         /*set<string>::iterator iter;

@@ -177,20 +177,20 @@ int main(int argc,char **argv)
 
         // tests are composed of 1 setup, nr_docs adds, and then searches
         if(cmd_index == 0 ) {
-            printf("Did setup\n");
+            printf("MPC Did setup\n");
             elapsed = 0;
         } else if(update_counter < nr_updates) {
             //printf("Update %lu/%lu\n", update_counter, nr_updates);
             update_counter++;
 
             if(update_counter == nr_updates) {
-                printf("Execution time: iee add = %6.3lf seconds!\n", elapsed/1000000.0 );
+                printf("MPC time: total iee add = %6.3lf seconds!\n", elapsed/1000000.0 );
                 elapsed = 0;
             }
 
         } else if(search_counter < nr_searches) {
             const int n_docs = msg_lr_len / sizeof(int);
-            printf("Search(%06lu) result: %d docs\n", search_counter, n_docs);
+            printf("MPC Search(%06lu) result: %d docs\n", search_counter, n_docs);
 
             /*int pos = 0;
             for (int i = 0; i < n_docs; i++) {
@@ -201,12 +201,12 @@ int main(int argc,char **argv)
             search_counter++;
 
             if(search_counter == nr_searches) {
-                printf("Execution time: iee search = %6.3lf seconds!\n", elapsed/1000000.0 );
+                printf("MPC time: iee total search = %6.3lf seconds!\n", elapsed/1000000.0 );
                 elapsed = 0;
             }
 
         } else {
-            printf("There shouldn't be more operations here\n");
+            printf("MPC There shouldn't be more operations here\n");
             exit(-1);
         }
 
@@ -214,7 +214,24 @@ int main(int argc,char **argv)
         free(msg_rl);
     }
 
-  mach_finalize(handle);
+    // BENCHMARK ONLY - Make server print stats //
+    unsigned char benchmark_op = 0x5;
+    res |= mpc_process(&msg_lr,&msg_lr_len,0x82,&benchmark_op,1,1); /* encode first input */
+    msg_rl_len = 0;
+    res |= lac_attest(&msg_rl,&msg_rl_len,handle,0x82,msg_lr,msg_lr_len); /* deliver first input get first output */
+    free(msg_lr);
+    res |= mpc_process(&msg_lr,&msg_lr_len,0x82, msg_rl,msg_rl_len,0); /* decrypt first output */
 
-  return SGX_MPC_OK;
+    if (!((res == SGX_MPC_OK))) {
+        printf("Error detected: %d, length %llu : \n", res, msg_lr_len);
+        return -1;
+    }
+
+    free(msg_lr);
+    free(msg_rl);
+    // END BENCHMARK ONLY //
+
+    mach_finalize(handle);
+
+    return SGX_MPC_OK;
 }

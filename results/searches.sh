@@ -1,7 +1,7 @@
 #!/bin/bash
 
-NUM_TESTS=2
-SIZES=(5000 10000 20000 50000 100000 200000 517402)
+NUM_TESTS=1
+SIZES=(50000 100000 200000 517402)
 export NUM_QUERIES=4
 
 #declare -a QUERIES=("enron && time" "enron && time && inform && work && call" "enron && time && inform && work && call && discuss && meet && week && receiv && dai"
@@ -11,7 +11,8 @@ export NUM_QUERIES=4
 #                    "!enron && !time" "!(enron && time)" "!enron || !time" "!(enron || time)"
 #                    )
 
-declare -a QUERIES=("enron && time"
+declare -a QUERIES=("enron && time && inform && work && call && discuss && meet && week && receiv && dai"
+                    "!(enron && time)" "!enron || !time" "!(enron || time)"
                     )
 
 # initial compile

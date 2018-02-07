@@ -146,8 +146,9 @@ int main(int argc, const char * argv[]) {
     // add documents from the directory
     set<string> all_words_set; // for client-side random query generation only
     for(unsigned i = 0; i < nr_updates; i++) {
-
+        #ifdef VERBOSE
         printf("update: (%d/%d)\n",i,nr_updates);
+        #endif
 
         string doc = doc_paths[i];
         gettimeofday(&start, NULL);

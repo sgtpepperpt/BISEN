@@ -56,6 +56,7 @@ SseServer::SseServer() {
     printf("Finished Server init! Gonna start listening for IEE requests!\n");
     long total_add_time = 0;
     long total_search_time = 0;
+    size_t nr_search_batches = 0;
 
     while (true) {
         unsigned char cmd;
@@ -153,6 +154,8 @@ SseServer::SseServer() {
                 gettimeofday(&end2, NULL);
                 total_search_time += timeElapsed(start2, end2);
 
+                nr_search_batches++;
+
                 #ifdef VERBOSE
                 printf("Finished Search!\n");
                 #endif
@@ -162,6 +165,7 @@ SseServer::SseServer() {
                 // this instruction is for benchmarking only and can be safely
                 // removed if wanted
                 printf("## STATS ##\n");
+                printf("SERVER Seen search batches: %lu\n", nr_search_batches);
                 printf("SERVER Size index: %lu\n", (*I).size());
                 printf("SERVER time: total sv add = %6.3lf sec\n", total_add_time/1000000.0);
                 printf("SERVER time: total sv search = %6.3lf sec\n", total_search_time/1000000.0);

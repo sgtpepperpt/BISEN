@@ -254,7 +254,7 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         for(unsigned j = 0; j < C_NONCESIZE; j++)
             nonce[j] = 0x00;
 
-        int max_batch_size = 10000;
+        int max_batch_size = 2000;
 
         ocall_strprint("requesting to server!\n");
         //request index positions from server

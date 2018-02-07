@@ -54,8 +54,8 @@ SseServer::SseServer() {
  */
     //start listening for iee calls
     printf("Finished Server init! Gonna start listening for IEE requests!\n");
-    long total_time = 0;
-    long total_time2 = 0;
+    long total_add_time = 0;
+    long total_search_time = 0;
 
     while (true) {
         unsigned char cmd;
@@ -101,7 +101,7 @@ SseServer::SseServer() {
                 socketReceive(readIeePipe, d, d_size);
                 (*I)[l_vector] = d;
                 gettimeofday(&end, NULL);
-                total_time += timeElapsed(start, end);
+                total_add_time += timeElapsed(start, end);
 
                 #ifdef VERBOSE
                 printf("Finished Add!\n");
@@ -113,8 +113,6 @@ SseServer::SseServer() {
                 #ifdef VERBOSE
                 printf("Started Search!\n");
                 #endif
-                printf("SERVER Size index %lu\n", (*I).size());
-                printf("SERVER Execution time: sv add = %6.3lf seconds!\n", total_time/1000000.0 );
 
                 struct timeval start2, end2;
                 gettimeofday(&start2, NULL);
@@ -127,20 +125,44 @@ SseServer::SseServer() {
                 unsigned char* label = new unsigned char[l_size * counter];
                 socketReceive(readIeePipe, label, l_size * counter * sizeof(unsigned char));
 
+                const size_t len = d_size * counter;
+                unsigned char* buffer = (unsigned char*)malloc(sizeof(unsigned char) * len);
+                pos = 0;
+
+                /*for(int x = 0; x < counter; x++){
+                    for(int y = 0; y < l_size; y++)
+                        printf("%02x", label[x*l_size+y]);
+                    printf("\n");
+                }*/
+
                 // send the labels for each word occurence
                 for (int i = 0; i < counter; i++) {
                     vector<unsigned char> l = fillVector(label + i * l_size, l_size);
-                    socketSend(writeIeePipe, (*I)[l], sizeof(unsigned char) * d_size);
+
+                    /*for(unsigned k = 0; k < d_size; k++)
+                        printf("%02x", (*I)[l][k]);
+                    printf(" \n");*/
+
+                    //socketSend(writeIeePipe, (*I)[l], sizeof(unsigned char) * d_size);
+                    memcpy(buffer + i * d_size, (*I)[l], sizeof(unsigned char) * d_size);
                 }
-                free(label);
+
+                socketSend(writeIeePipe, buffer, len);
+                free(buffer);
 
                 gettimeofday(&end2, NULL);
-                total_time2 += timeElapsed(start2, end2);
-                printf("Execution time: sv search = %6.3lf seconds!\n", total_time2/1000000.0 );
+                total_search_time += timeElapsed(start2, end2);
 
                 #ifdef VERBOSE
                 printf("Finished Search!\n");
                 #endif
+                break;
+            }
+            case '4': {
+                printf("## STATS ##\n");
+                printf("SERVER Size index: %lu\n", (*I).size());
+                printf("SERVER time: total sv add = %6.3lf sec\n", total_add_time/1000000.0);
+                printf("SERVER time: total sv search = %6.3lf sec\n", total_search_time/1000000.0);
                 break;
             }
             default:

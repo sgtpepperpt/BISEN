@@ -65,7 +65,7 @@ int main(int argc,char **argv)
   }
 
   //////////////////////////////////////////////////////////////////////////////
-  //////////////////////////////////////////////////////////////////////////////  
+  //////////////////////////////////////////////////////////////////////////////
 
   //printf("############### PARTY 1 ATTKE ###############\n");
 
@@ -137,7 +137,7 @@ int main(int argc,char **argv)
         res |= mpc_process(&msg_lr,&msg_lr_len,0x82,commands[cmd_index],commands_sizes[cmd_index],1); /* encode first input */
         gettimeofday(&end, NULL);
         elapsed += timeElapsed(start, end);
-        
+
         //printf("Send Key:Local -> Remote: %llu bytes\n",msg_lr_len);
         //printf("Status: %d\n",res);
 
@@ -147,7 +147,7 @@ int main(int argc,char **argv)
         res |= lac_attest(&msg_rl,&msg_rl_len,handle,0x82,msg_lr,msg_lr_len); /* deliver first input get first output */
         gettimeofday(&end, NULL);
         elapsed += timeElapsed(start, end);
-        
+
         //printf("Answer Output: Remote -> Local: %llu bytes\n",msg_rl_len);
         //printf("Status: %d\n",res);
 

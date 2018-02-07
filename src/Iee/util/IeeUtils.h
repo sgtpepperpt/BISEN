@@ -26,6 +26,8 @@ typedef struct iee_token {
 } iee_token;
 // END IEE TOKEN DEFINITIONS
 
+#define min(a,b) ({ __typeof__ (a) _a = (a); __typeof__ (b) _b = (b); _a < _b ? _a : _b; })
+
 void iee_pee(const char *msg);
 
 void iee_socketSend(int sockfd, unsigned char* buff, unsigned long size);

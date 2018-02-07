@@ -136,8 +136,8 @@ int main(int argc, const char * argv[]) {
 
     int count = 0;
 
-    long total_time = 0;
-    long total_time_ltest = 0;
+    long total_add_time = 0;
+    long total_sim_add_time = 0;
 
     struct timeval start, end;
 
@@ -161,7 +161,7 @@ int main(int argc, const char * argv[]) {
         unsigned char* data;
         unsigned long long data_size = client.add_new_document(text, &data);
         gettimeofday(&end, NULL);
-        total_time += timeElapsed(start, end);
+        total_add_time += timeElapsed(start, end);
 
         #ifdef LOCALTEST
         gettimeofday(&start, NULL);
@@ -173,7 +173,7 @@ int main(int argc, const char * argv[]) {
         free(output);
 
         gettimeofday(&end, NULL);
-        total_time_ltest += timeElapsed(start, end);
+        total_sim_add_time += timeElapsed(start, end);
         //print_buffer("Output", output, output_size);
         #endif
 
@@ -187,12 +187,6 @@ int main(int argc, const char * argv[]) {
         all_words_set.insert(text.begin(), text.end());
     }
 
-    printf("GENCLI add queries: %lu\n", nr_updates);
-    //printf("GENCLI src queries: %lu\n", nr_searches);
-    printf("GENCLI Execution time: client add = %6.3lf s!\n", total_time/1000000.0 );
-    #ifdef LOCALTEST
-    printf("LTEST Execution time: client add = %6.3lf s!\n", total_time_ltest/1000000.0 );
-    #endif
     //client.list_words(); // used to get word frequencies in dataset
 
     ////////////////////////////////////////////////////////////////////////////
@@ -203,7 +197,8 @@ int main(int argc, const char * argv[]) {
     vector<string> all_words(all_words_set.size());
     copy(all_words_set.begin(), all_words_set.end(), all_words.begin());
 
-    total_time = 0;
+    int total_search_time = 0;
+    int total_sim_search_time = 0;
 
     for(unsigned i = 0; i < nr_searches; i++) {
         string query;
@@ -222,7 +217,7 @@ int main(int argc, const char * argv[]) {
         unsigned char* data;
         unsigned long long data_size = client.search(query, &data);
         gettimeofday(&end, NULL);
-        printf("GENCLI Execution time: client search = %6.6lf s!\n", timeElapsed(start, end)/1000000.0 );
+        total_search_time += timeElapsed(start, end);
 
         #ifdef VERBOSE
         /*for(int i = 0; i < data_size; i++){
@@ -245,8 +240,7 @@ int main(int argc, const char * argv[]) {
         f(&output, &output_size, 0, (const bytes) data, data_size);
         gettimeofday(&end, NULL);
         //print_buffer("Output", output, output_size);
-        printf("LTEST Execution time: search = %6.6lf s!\n", timeElapsed(start, end)/1000000.0 );
-
+        total_sim_search_time += timeElapsed(start, end);
 
         //process results
         const int nDocs = output_size / sizeof(int);
@@ -268,8 +262,16 @@ int main(int argc, const char * argv[]) {
         free(data);
     }
 
-    printf("Search queries: %lu\n", nr_searches);
+    printf("GENCLI add queries: %lu\n", nr_updates);
+    printf("GENCLI nr search queries: %lu\n", nr_searches);
 
+    printf("GENCLI time: total client add = %6.3lf s!\n", total_add_time/1000000.0);
+    printf("GENCLI time: total client search = %6.6lf s!\n", (total_search_time / 1000000.0);
+
+    #ifdef LOCALTEST
+    printf("LTEST GENCLI time: client add = %6.3lf s!\n", total_sim_add_time/1000000.0);
+    printf("LTEST GENCLI time: total search = %6.6lf s!\n", total_sim_search_time/1000000.0);
+    #endif
 
     //TODO hack just to compile, no idea why needed, doesn't affect sgx
     unsigned char x[1];

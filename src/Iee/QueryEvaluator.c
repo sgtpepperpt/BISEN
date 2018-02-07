@@ -112,7 +112,7 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             // printf("negation");
             vi_print(negate);
             vt_pop_back(&eval_stack);
-            
+
             // difference between all docs and the docs we don't want
             vec_int set_diff = get_not_docs(nDocs, negate);
 
@@ -124,7 +124,7 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             iee_token res;
             res.type = 'r';
             res.docs = set_diff;
-            
+
             vt_push_back(&eval_stack, res);
 
             // free memory
@@ -146,5 +146,3 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
     vt_destroy(&eval_stack);
     return ret;
 }
-
-

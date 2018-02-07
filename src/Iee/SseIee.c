@@ -20,7 +20,7 @@ void print_buffer(const char* name, const unsigned char * buf, const unsigned lo
 // IEE entry point
 void f(bytes* out, size* out_len, const unsigned long long pid, const bytes in, const size in_len) {
     #ifdef VERBOSE
-    ocall_strprint("\n***** Entering IEE *****\n");
+    //ocall_strprint("\n***** Entering IEE *****\n");
     #endif
 
     // set out variables
@@ -38,7 +38,7 @@ void f(bytes* out, size* out_len, const unsigned long long pid, const bytes in, 
         search(out, out_len, in, in_len);
 
     #ifdef VERBOSE
-    ocall_strprint("\n***** Leaving IEE *****\n\n");
+    //ocall_strprint("\n***** Leaving IEE *****\n\n");
     #endif
 }
 
@@ -113,14 +113,14 @@ static void setup(bytes* out, size* out_len, const bytes in, const size in_len) 
 
 static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
     #ifdef VERBOSE
-    ocall_strprint("IEE: Started add!\n");
+    //ocall_strprint("IEE: Started add!\n");
     #endif
 
     // read buffer
     int pos = 1;
     while(pos < in_len) {
         //get d,c,w from array
-        const int d = iee_readIntFromArr(in, &pos);
+        const int doc_id = iee_readIntFromArr(in, &pos);
         const int c = iee_readIntFromArr(in, &pos);
 
         // read kW
@@ -145,7 +145,7 @@ static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
         const size_t unenc_size = H_BYTES + sizeof(int);
         unsigned char* unenc_data = (unsigned char*)malloc(sizeof(unsigned char) * unenc_size);
         iee_memcpy(unenc_data, label, H_BYTES);
-        iee_memcpy(unenc_data + H_BYTES, &d, sizeof(int));
+        iee_memcpy(unenc_data + H_BYTES, &doc_id, sizeof(int));
 
         const size_t enc_size = unenc_size + C_EXPBYTES;
         unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * enc_size);
@@ -168,7 +168,7 @@ static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
     }
 
     #ifdef VERBOSE
-    ocall_strprint("Finished add in IEE!\n");
+    //ocall_strprint("Finished add in IEE!\n");
     #endif
 
     // output message
@@ -211,7 +211,7 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
     printf("\n");*/
 
     #ifdef VERBOSE
-    ocall_strprint("Randomized positions!\n");
+    ocall_strprint("Randomised positions!\n");
     #endif
 
     // request the documents from the server
@@ -230,44 +230,82 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         for (int c = 0; c < tkn->counter; c++) {
             labels[c] = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
             c_hmac(labels[c], (unsigned char*)&c, sizeof(int), tkn->kW);
-            print_buffer("label", labels[c], H_BYTES);
+            //print_buffer("label", labels[c], H_BYTES);
         }
 
         //free(kW);
 
-        //request index positions from server
-        int len = sizeof(char) + sizeof(int) + tkn->counter * H_BYTES;
-        unsigned char* buff = (unsigned char*)malloc(sizeof(unsigned char)* len);
-        char op = '3';
-        int pos = 0;
-        iee_addToArr(&op, sizeof(unsigned char), buff, &pos);
-        iee_addIntToArr(tkn->counter, buff, &pos);
-        for (int i = 0; i < tkn->counter; i++)
-            for (int j = 0; j < H_BYTES; j++)
-                iee_addToArr(&(labels[i][j]), sizeof(unsigned char), buff, &pos);
-
-        iee_socketSend(writeServerPipe, buff, len);
-        free(buff);
-
         // generate 0-filled nonce
         unsigned char* nonce = (unsigned char*)malloc(sizeof(unsigned char) * C_NONCESIZE);
-        for(unsigned i = 0; i < C_NONCESIZE; i++)
-            nonce[i] = 0x00;
+        for(unsigned j = 0; j < C_NONCESIZE; j++)
+            nonce[j] = 0x00;
 
+        int max_batch_size = 10000;
+
+        ocall_strprint("requesting to server!\n");
+        //request index positions from server
+        int len = sizeof(char) + sizeof(int) + H_BYTES * max_batch_size;
+        unsigned char* buff = (unsigned char*)malloc(sizeof(unsigned char) * len);
+
+
+        char op = '3';
+        int pos = 0;
+        //iee_memcpy(buff, &op, sizeof(unsigned char));
+        iee_addToArr(&op, sizeof(unsigned char), buff, &pos);
+
+        // contains the hmac for verif, the doc id, and the enc's exp
         const size_t enc_len = H_BYTES + sizeof(int) + C_EXPBYTES; // 44 + H_BYTES (32)
         unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * (enc_len * tkn->counter));
-        iee_socketReceive(readServerPipe, enc_data, enc_len * tkn->counter);
+        //printf("will have %d\n", tkn->counter);
+
+
+        for(int j = 0; j < tkn->counter; j+=min(tkn->counter, max_batch_size)) {
+            int will_get = min(tkn->counter - j, max_batch_size);
+            //printf("will get %d\n", will_get);
+            iee_addToArr(&will_get, sizeof(int), buff, &pos);
+            //iee_memcpy(buff + 1, &will_get, sizeof(int));
+
+            // add the labels
+            for(int k = 0; k < will_get; k++) {
+                iee_addToArr(labels[j+k], H_BYTES, buff, &pos);
+                //iee_memcpy(buff + 1 + sizeof(int) + j * H_BYTES, labels[j+k], sizeof(unsigned char) * H_BYTES);
+            }
+
+            /*for(unsigned x = 0; x < will_get; x++){
+                for(unsigned y = 0; y < H_BYTES; y++)
+                    printf("%02x", labels[j+x][y]);
+                printf("\n");
+            }*/
+
+            iee_socketSend(writeServerPipe, buff, sizeof(char) + sizeof(int) + H_BYTES * will_get);
+/*
+            for(int x = 0; x < sizeof(char) + sizeof(int) + H_BYTES * will_get; x++){
+                printf("%02x", buff[x]);
+            }*/
+
+            // receive response
+            iee_socketReceive(readServerPipe, enc_data + j * enc_len, enc_len * will_get);
+            pos = 1; // reset pos to "beginning" of buff
+        }
+
+        free(buff);
+
+        ocall_strprint("got from sv!\n");
 
         const size_t unenc_len = H_BYTES + sizeof(int);
         unsigned char* unenc_data = (unsigned char*)malloc(sizeof(unsigned char) * unenc_len);
 
         // holds doc ids as ints
-        size_t doc_buff_len = tkn->counter * (H_BYTES + sizeof(int));
+        size_t doc_buff_len = tkn->counter * sizeof(int);
         unsigned char* doc_buff = (unsigned char*)malloc(sizeof(unsigned char) * doc_buff_len);
         pos = 0;
 
-        for (int i = 0; i < tkn->counter; i++) {
-            c_decrypt(unenc_data, enc_data + (enc_len * i), enc_len, nonce, get_kEnc());
+        for (int j = 0; j < tkn->counter; j++) {
+            c_decrypt(unenc_data, enc_data + (enc_len * j), enc_len, nonce, get_kEnc());
+
+            /*for(unsigned x = 0; x < enc_len; x++)
+                printf("%02x", enc_data[x]);
+            printf("\n");*/
 
             unsigned char* label_verif = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
             iee_memcpy(label_verif, unenc_data, H_BYTES);
@@ -275,21 +313,21 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
             pos += sizeof(int);
 
             /*for(unsigned x = 0; x < H_BYTES; x++)
-                printf("%02x ", label_verif[x]);
-            printf(" : %d\n", doc);
+                printf("%02x", label_verif[x]);
+            printf(" : \n");
 
             for(unsigned y = 0; y < H_BYTES; y++)
-                printf("%02x ", labels[i][y]);
-            printf(" : %d\n", doc);*/
+                printf("%02x", labels[j][y]);
+            printf(" : \n");*/
 
             for(unsigned x = 0; x < H_BYTES; x++) {
-                if(label_verif[x] != labels[i][x]) {
-                    //printf("Label verification doesn't match! Exit\n");
+                if(label_verif[x] != labels[j][x]) {
+                    ocall_strprint("Label verification doesn't match! Exit\n");
                     ocall_exit(-1);
                 }
             }
 
-            ocall_strprint("Verification made, ok\n");
+            //ocall_strprint("Verification made, ok\n");
 
             // delete keys from memory
             iee_bzero(enc_data, C_KEYSIZE);
@@ -299,8 +337,8 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         }
 
         free(nonce);
-        for (int i = 0; i < tkn->counter; i++)
-            free(labels[i]);
+        for (int j = 0; j < tkn->counter; j++)
+            free(labels[j]);
         free(labels);
 
         // generate int vector
@@ -310,7 +348,7 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
                       // else has to be sorted in evaluator; may not be needed for vec_int (as of October may not really be needed)
         vi_init(&docs, nr_docs);
         pos = 0;
-        for (int i = 0; i < nr_docs; i++) {
+        for (int j = 0; j < nr_docs; j++) {
             int tmp = -1;
             iee_memcpy(&tmp, doc_buff + pos, sizeof(int));
             pos += sizeof(int);
@@ -432,4 +470,10 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
     #endif
 
     *out_len = sizeof(unsigned char) * output_size;
+
+    // BENCHMARK : tell server to print statistics
+    int tmp_buff_len = sizeof(char);
+    unsigned char* tmp_buff = (unsigned char*)malloc(sizeof(unsigned char));
+    tmp_buff[0] = '4';
+    iee_socketSend(writeServerPipe, tmp_buff, sizeof(unsigned char));
 }

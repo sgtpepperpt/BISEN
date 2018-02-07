@@ -22,6 +22,7 @@ extern "C" {
 
 ///////////////////////////// TESTING PARAMETERS /////////////////////////////
 #define NUM_QUERIES 100000
+//#define NUM_QUERIES 100
 
 // query size will be aprox. between
 // [QUERY_WORD_COUNT, QUERY_WORD_COUNT * 2]

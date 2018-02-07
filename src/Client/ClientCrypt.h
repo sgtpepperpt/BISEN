@@ -23,7 +23,7 @@ extern "C" {
 #error
 #endif
 
-const int client_symBlocksize = 16; /* changed to fix valgrind warning : needs 32 bytes key CHECKME */
+const int client_symBlocksize = crypto_secretbox_KEYBYTES; /* changed to fix valgrind warning : needs 32 bytes key CHECKME */
 const int client_fBlocksize = crypto_auth_hmacsha256_KEYBYTES;
 
 // keys sent by the client

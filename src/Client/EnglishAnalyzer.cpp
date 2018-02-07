@@ -74,6 +74,8 @@ bool EnglishAnalyzer::isStopWord(string word) {
 EnglishAnalyzer::EnglishAnalyzer() {
     i_max = INC;
     s = (char*) malloc(i_max+1);
+    memset(s, 0, i_max+1);
+
     stopWords.insert("a");
        stopWords.insert("able");
        stopWords.insert("about");

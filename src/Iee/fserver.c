@@ -34,6 +34,8 @@ static void fs_open(bytes* out, size* outlen, const bytes in, const size inlen)
     int res = open(path, oflags);
     //printf("ret open: %d\n", res);
 
+    free(path);
+
     // prepare response
     pos = 0;
     *outlen = sizeof(int);

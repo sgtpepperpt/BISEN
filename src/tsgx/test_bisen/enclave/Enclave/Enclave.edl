@@ -32,8 +32,8 @@ enclave {
       size inlen
     );
 
-    void untrusted_malloc_bytes([out] bytes *pointer, size length);
-    void untrusted_free_bytes([out] bytes *pointer);
+    void untrusted_malloc_bytes([in,out] bytes *pointer, size length);
+    void untrusted_free_bytes([in,out] bytes *pointer);
     int get_qe_tInfo([out] sgx_target_info_t *tInfo);
     void print_msg([in,string] const char * msg);
     void print_int(int val);    

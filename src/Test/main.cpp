@@ -21,7 +21,7 @@ extern "C" {
 }
 
 ///////////////////////////// TESTING PARAMETERS /////////////////////////////
-#define NUM_QUERIES 1
+#define NUM_QUERIES 100000
 
 // query size will be aprox. between
 // [QUERY_WORD_COUNT, QUERY_WORD_COUNT * 2]
@@ -144,10 +144,10 @@ int main(int argc, const char * argv[]) {
     // add documents from the directory
     set<string> all_words_set; // for client-side random query generation only
     for(unsigned i = 0; i < nr_updates; i++) {
-        //cout << "doc " << count++ << endl;
+
+        printf("update: (%d/%d)\n",i,nr_updates);
 
         string doc = doc_paths[i];
-
         gettimeofday(&start, NULL);
         set<string> text = client.extractUniqueKeywords(DATASET_DIR + doc);
 
@@ -187,6 +187,7 @@ int main(int argc, const char * argv[]) {
         all_words_set.insert(text.begin(), text.end());
     }
 
+
     printf("Add queries: %lu\n", nr_updates);
     printf("Execution time: client add = %6.3lf seconds!\n", total_time/1000000.0 );
     printf("LTEST Execution time: client add = %6.3lf seconds!\n", total_time_ltest/1000000.0 );
@@ -219,7 +220,9 @@ int main(int argc, const char * argv[]) {
         unsigned char* data;
         unsigned long long data_size = client.search(query, &data);
         gettimeofday(&end, NULL);
-        printf("Execution time: client search = %6.6lf s!\n", timeElapsed(start, end)/1000000.0 );
+
+        //printf("Execution time: client search = %6.6lf s!\n", timeElapsed(start, end)/1000000.0 );
+        printf("query: (%d/%d)\n", i, nr_searches);
 
         #ifdef VERBOSE
         /*for(int i = 0; i < data_size; i++){
@@ -242,7 +245,7 @@ int main(int argc, const char * argv[]) {
         f(&output, &output_size, 0, (const bytes) data, data_size);
         gettimeofday(&end, NULL);
         //print_buffer("Output", output, output_size);
-        printf("LTEST Execution time: search = %6.6lf s!\n", timeElapsed(start, end)/1000000.0 );
+        //printf("LTEST Execution time: search = %6.6lf s!\n", timeElapsed(start, end)/1000000.0 );
         
 
         //process results

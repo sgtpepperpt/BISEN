@@ -45,10 +45,10 @@ int ocall_open(const char *path, int oflags)
 {
     size_t path_len = strlen(path)+1;
 
-    size_t inlen = sizeof(int) + sizeof(size_t) + (path_len * sizeof(char));
+    size_t inlen = 1/*OPCODE*/ + sizeof(int) + sizeof(size_t) + (path_len * sizeof(char));
+
     unsigned char* in = (unsigned char*)malloc(inlen);
     in[0] = OCALL_OPEN;
-
     int pos = 1;
     iee_addIntToArr(oflags, in, &pos);
     iee_add_size_t(path_len, in, &pos);
@@ -73,7 +73,7 @@ int ocall_open(const char *path, int oflags)
 int ocall_close(int fildes)
 {
     size_t inlen = sizeof(int);
-    unsigned char* in = (unsigned char*)malloc(inlen);
+    unsigned char* in = (unsigned char*)malloc(1/*OPCODE*/ + inlen);
     in[0] = OCALL_CLOSE;
 
     int pos = 1;

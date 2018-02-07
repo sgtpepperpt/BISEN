@@ -39,7 +39,9 @@ void generate_commands()
 
     // prepare buffers to hold queries
     commands = (unsigned char**)malloc(test_len * sizeof(unsigned char*));
+    //memset(commands, 0, test_len * sizeof(unsigned char*));
     commands_sizes = (unsigned long long*)malloc(test_len * sizeof(unsigned long long));
+    memset(commands, 0, test_len * sizeof(unsigned long long));
 
     // traverse the file to read the commands into the buffers
     unsigned current_query = 0;
@@ -54,7 +56,7 @@ void generate_commands()
 
         // allocate the query buffer
         commands[current_query] = (unsigned char*)malloc(commands_sizes[current_query] * sizeof(unsigned char*));
-
+        //memset(commands[current_query], commands_sizes[current_query] * sizeof(unsigned char*));
         if(fread(commands[current_query], commands_sizes[current_query], 1, in_f) != 1) {
             printf("Error reading file!\n");
             exit(-1);

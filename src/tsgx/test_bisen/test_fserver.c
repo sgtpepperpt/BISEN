@@ -190,7 +190,7 @@ int main(int argc,char **argv)
 
         } else if(search_counter < nr_searches) {
             const int n_docs = msg_lr_len / sizeof(int);
-            printf("Search result: %d docs\n", n_docs);
+            printf("Search(%06lu) result: %d docs\n", search_counter, n_docs);
 
             /*int pos = 0;
             for (int i = 0; i < n_docs; i++) {

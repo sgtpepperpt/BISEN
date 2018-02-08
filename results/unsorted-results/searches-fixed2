@@ -1,0 +1,717 @@
+cd ../Common && g++ -Wall -g -Wno-unused-function -Wno-unused-variable -fPIC   -std=c++11 -c *.cpp
+ar rcs common.a ../Common/*.o
+cd ../Iee && gcc -Wall -g -Wno-unused-function -Wno-unused-variable -fPIC   -c *.c
+QueryEvaluator.c: In function ‘get_not_docs’:
+QueryEvaluator.c:12:9: warning: implicit declaration of function ‘vi_print’ [-Wimplicit-function-declaration]
+         vi_print(negate);
+         ^
+ocall.c: In function ‘ocall_open’:
+ocall.c:66:5: warning: implicit declaration of function ‘untrusted_free_bytes’ [-Wimplicit-function-declaration]
+     untrusted_free_bytes(&out);
+     ^
+ocall.c: In function ‘ocall_read’:
+ocall.c:123:18: warning: cast to pointer from integer of different size [-Wint-to-pointer-cast]
+         buf[i] = (void*)out[i+8];
+                  ^
+ocall.c:123:16: warning: assignment makes integer from pointer without a cast [-Wint-conversion]
+         buf[i] = (void*)out[i+8];
+                ^
+cd ../Iee/util && gcc -Wall -g -Wno-unused-function -Wno-unused-variable -fPIC   -c *.c
+gcc -Wall -g -Wno-unused-function -Wno-unused-variable -fPIC   -c commands.c
+ar rcs iee.a ../Iee/*.o ../Iee/util/*.o commands.o
+cd ../Client && gcc -Wall -g -Wno-unused-function -Wno-unused-variable -fPIC   -c *.c
+cd ../Client && g++ -Wall -g -Wno-unused-function -Wno-unused-variable -fPIC   -std=c++11 -c *.cpp
+ar rcs client.a ../Client/*.o
+gcc -Wall -g -Wno-unused-function -Wno-unused-variable -fPIC   -I../tsgx/include/ -c ../tsgx/src/untrusted/untrusted_free_bytes.c
+ar rcs unstrusted.a untrusted_free_bytes.o
+g++ -Wall -g -Wno-unused-function -Wno-unused-variable -fPIC   -std=c++11 -o main main.cpp common.a iee.a client.a unstrusted.a -lsodium
+cp iee.a ../tsgx/test_bisen/f/
+rm -f Server main.o SseServer.o
+g++ -std=c++11 -pthread -g -O0 -c main.cpp -o main.o 
+g++ -std=c++11 -pthread -g -O0 -c SseServer.cpp -o SseServer.o 
+g++ ../Common/Utils.cpp -pthread -g -O0 -o Server main.o SseServer.o -lcrypto -ldl -pthread 
+############################## DATASET SIZE 50000 ##############################
+###################### QUERY enron && time ######################
+## Gen test 0 ##
+GENCLI add queries: 47566
+GENCLI nr search queries: 4
+GENCLI time: total client add = 38.121 s!
+GENCLI time: total client search = 0.000068 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+kill: usage: kill [-s sigspec | -n signum | -sigspec] pid | jobspec ... or kill -l [sigspec]
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 52
+SERVER Size index: 3140794
+SERVER time: total sv add = 80.203 sec
+SERVER time: total sv search =  0.554 sec
+File size: 126060291
+Number of queries to execute: 47571
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 4, test len: 47571
+MPC Did setup
+MPC time: total iee add = 103.975 seconds!
+MPC Search(000000) result: 4065 docs
+MPC Search(000001) result: 4065 docs
+MPC Search(000002) result: 4065 docs
+MPC Search(000003) result: 4065 docs
+MPC time: iee total search =  2.012 seconds!
+enclave destroyed
+
+
+###################### QUERY enron && time && inform && work && call ######################
+## Gen test 0 ##
+GENCLI add queries: 47566
+GENCLI nr search queries: 4
+GENCLI time: total client add = 30.584 s!
+GENCLI time: total client search = 0.000133 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 116
+SERVER Size index: 3140794
+SERVER time: total sv add = 80.631 sec
+SERVER time: total sv search =  1.208 sec
+File size: 126060747
+Number of queries to execute: 47571
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 4, test len: 47571
+MPC Did setup
+MPC time: total iee add = 104.323 seconds!
+MPC Search(000000) result: 508 docs
+MPC Search(000001) result: 508 docs
+MPC Search(000002) result: 508 docs
+MPC Search(000003) result: 508 docs
+MPC time: iee total search =  3.628 seconds!
+enclave destroyed
+./searches.sh: line 22:  1251 Killed                  ../src/Server/Server
+
+
+###################### QUERY enron && time && inform && work && call && discuss && meet && week && receiv && dai ######################
+## Gen test 0 ##
+GENCLI add queries: 47566
+GENCLI nr search queries: 4
+GENCLI time: total client add = 30.602 s!
+GENCLI time: total client search = 0.000231 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 196
+SERVER Size index: 3140794
+SERVER time: total sv add = 81.733 sec
+SERVER time: total sv search =  1.999 sec
+File size: 126061507
+Number of queries to execute: 47571
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 4, test len: 47571
+MPC Did setup
+MPC time: total iee add = 106.143 seconds!
+MPC Search(000000) result: 93 docs
+MPC Search(000001) result: 93 docs
+MPC Search(000002) result: 93 docs
+MPC Search(000003) result: 93 docs
+MPC time: iee total search =  5.048 seconds!
+enclave destroyed
+./searches.sh: line 22:  1352 Killed                  ../src/Server/Server
+
+
+###################### QUERY enron || time ######################
+## Gen test 0 ##
+GENCLI add queries: 47566
+GENCLI nr search queries: 4
+GENCLI time: total client add = 30.572 s!
+GENCLI time: total client search = 0.000066 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 52
+SERVER Size index: 3140794
+SERVER time: total sv add = 80.969 sec
+SERVER time: total sv search =  0.543 sec
+File size: 126060291
+Number of queries to execute: 47571
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 4, test len: 47571
+MPC Did setup
+MPC time: total iee add = 104.908 seconds!
+MPC Search(000000) result: 19026 docs
+MPC Search(000001) result: 19026 docs
+MPC Search(000002) result: 19026 docs
+MPC Search(000003) result: 19026 docs
+MPC time: iee total search =  2.316 seconds!
+enclave destroyed
+./searches.sh: line 22:  1460 Killed                  ../src/Server/Server
+
+
+###################### QUERY enron || time || call || work || inform ######################
+## Gen test 0 ##
+GENCLI add queries: 47566
+GENCLI nr search queries: 4
+GENCLI time: total client add = 30.534 s!
+GENCLI time: total client search = 0.000134 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 116
+SERVER Size index: 3140794
+SERVER time: total sv add = 80.578 sec
+SERVER time: total sv search =  1.209 sec
+File size: 126060747
+Number of queries to execute: 47571
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 4, test len: 47571
+MPC Did setup
+MPC time: total iee add = 104.674 seconds!
+MPC Search(000000) result: 27603 docs
+MPC Search(000001) result: 27603 docs
+MPC Search(000002) result: 27603 docs
+MPC Search(000003) result: 27603 docs
+MPC time: iee total search = 12.450 seconds!
+enclave destroyed
+./searches.sh: line 22:  1577 Killed                  ../src/Server/Server
+
+
+###################### QUERY enron || time || inform || work || call || discuss || meet || week || receiv || dai ######################
+## Gen test 0 ##
+GENCLI add queries: 47566
+GENCLI nr search queries: 4
+GENCLI time: total client add = 30.528 s!
+GENCLI time: total client search = 0.000227 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 196
+SERVER Size index: 3140794
+SERVER time: total sv add = 81.699 sec
+SERVER time: total sv search =  1.978 sec
+File size: 126061507
+Number of queries to execute: 47571
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 4, test len: 47571
+MPC Did setup
+MPC time: total iee add = 106.065 seconds!
+MPC Search(000000) result: 32629 docs
+MPC Search(000001) result: 32629 docs
+MPC Search(000002) result: 32629 docs
+MPC Search(000003) result: 32629 docs
+MPC time: iee total search = 36.011 seconds!
+enclave destroyed
+./searches.sh: line 22:  1690 Killed                  ../src/Server/Server
+
+
+###################### QUERY (call || enron) && (time || attach) ######################
+## Gen test 0 ##
+GENCLI add queries: 47566
+GENCLI nr search queries: 4
+GENCLI time: total client add = 30.488 s!
+GENCLI time: total client search = 0.000114 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 96
+SERVER Size index: 3140794
+SERVER time: total sv add = 81.042 sec
+SERVER time: total sv search =  1.024 sec
+File size: 126060595
+Number of queries to execute: 47571
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 4, test len: 47571
+MPC Did setup
+MPC time: total iee add = 105.133 seconds!
+MPC Search(000000) result: 9387 docs
+MPC Search(000001) result: 9387 docs
+MPC Search(000002) result: 9387 docs
+MPC Search(000003) result: 9387 docs
+MPC time: iee total search =  6.721 seconds!
+enclave destroyed
+./searches.sh: line 22:  1808 Killed                  ../src/Server/Server
+
+
+###################### QUERY (call || enron) && (time || attach) && (inform || work) && (meet || week) ######################
+## Gen test 0 ##
+GENCLI add queries: 47566
+GENCLI nr search queries: 4
+GENCLI time: total client add = 30.533 s!
+GENCLI time: total client search = 0.000195 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 168
+SERVER Size index: 3140794
+SERVER time: total sv add = 80.920 sec
+SERVER time: total sv search =  1.756 sec
+File size: 126061203
+Number of queries to execute: 47571
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 4, test len: 47571
+MPC Did setup
+MPC time: total iee add = 105.069 seconds!
+MPC Search(000000) result: 2567 docs
+MPC Search(000001) result: 2567 docs
+MPC Search(000002) result: 2567 docs
+MPC Search(000003) result: 2567 docs
+MPC time: iee total search = 10.791 seconds!
+enclave destroyed
+./searches.sh: line 22:  1915 Killed                  ../src/Server/Server
+
+
+###################### QUERY (call && enron) || (time && attach) ######################
+## Gen test 0 ##
+GENCLI add queries: 47566
+GENCLI nr search queries: 4
+GENCLI time: total client add = 30.447 s!
+GENCLI time: total client search = 0.000114 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 96
+SERVER Size index: 3140794
+SERVER time: total sv add = 81.184 sec
+SERVER time: total sv search =  1.021 sec
+File size: 126060595
+Number of queries to execute: 47571
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 4, test len: 47571
+MPC Did setup
+MPC time: total iee add = 105.462 seconds!
+MPC Search(000000) result: 5086 docs
+MPC Search(000001) result: 5086 docs
+MPC Search(000002) result: 5086 docs
+MPC Search(000003) result: 5086 docs
+MPC time: iee total search =  3.753 seconds!
+enclave destroyed
+./searches.sh: line 22:  2052 Killed                  ../src/Server/Server
+
+
+###################### QUERY (call && enron) || (time && attach) || (inform && work) || (meet && week) ######################
+## Gen test 0 ##
+GENCLI add queries: 47566
+GENCLI nr search queries: 4
+GENCLI time: total client add = 30.491 s!
+GENCLI time: total client search = 0.000197 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 168
+SERVER Size index: 3140794
+SERVER time: total sv add = 81.138 sec
+SERVER time: total sv search =  1.758 sec
+File size: 126061203
+Number of queries to execute: 47571
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 4, test len: 47571
+MPC Did setup
+MPC time: total iee add = 105.233 seconds!
+MPC Search(000000) result: 7936 docs
+MPC Search(000001) result: 7936 docs
+MPC Search(000002) result: 7936 docs
+MPC Search(000003) result: 7936 docs
+MPC time: iee total search =  6.459 seconds!
+enclave destroyed
+./searches.sh: line 22:  2165 Killed                  ../src/Server/Server
+
+
+###################### QUERY !enron && !time ######################
+## Gen test 0 ##
+GENCLI add queries: 47566
+GENCLI nr search queries: 4
+GENCLI time: total client add = 30.533 s!
+GENCLI time: total client search = 0.000080 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 52
+SERVER Size index: 3140794
+SERVER time: total sv add = 80.591 sec
+SERVER time: total sv search =  0.555 sec
+File size: 126060299
+Number of queries to execute: 47571
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 4, test len: 47571
+MPC Did setup
+MPC time: total iee add = 104.717 seconds!
+MPC Search(000000) result: 28540 docs
+MPC Search(000001) result: 28540 docs
+MPC Search(000002) result: 28540 docs
+MPC Search(000003) result: 28540 docs
+MPC time: iee total search =  8.602 seconds!
+enclave destroyed
+./searches.sh: line 22:  2273 Killed                  ../src/Server/Server
+
+
+###################### QUERY !(enron && time) ######################
+## Gen test 0 ##
+GENCLI add queries: 47566
+GENCLI nr search queries: 4
+GENCLI time: total client add = 30.497 s!
+GENCLI time: total client search = 0.000083 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 52
+SERVER Size index: 3140794
+SERVER time: total sv add = 81.834 sec
+SERVER time: total sv search =  0.540 sec
+File size: 126060295
+Number of queries to execute: 47571
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 4, test len: 47571
+MPC Did setup
+MPC time: total iee add = 106.071 seconds!
+MPC Search(000000) result: 43501 docs
+MPC Search(000001) result: 43501 docs
+MPC Search(000002) result: 43501 docs
+MPC Search(000003) result: 43501 docs
+MPC time: iee total search =  1.999 seconds!
+enclave destroyed
+./searches.sh: line 22:  2382 Killed                  ../src/Server/Server
+
+
+###################### QUERY !enron || !time ######################
+## Gen test 0 ##
+GENCLI add queries: 47566
+GENCLI nr search queries: 4
+GENCLI time: total client add = 30.525 s!
+GENCLI time: total client search = 0.000076 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 52
+SERVER Size index: 3140794
+SERVER time: total sv add = 81.189 sec
+SERVER time: total sv search =  0.554 sec
+File size: 126060299
+Number of queries to execute: 47571
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 4, test len: 47571
+MPC Did setup
+MPC time: total iee add = 105.221 seconds!
+MPC Search(000000) result: 43501 docs
+MPC Search(000001) result: 43501 docs
+MPC Search(000002) result: 43501 docs
+MPC Search(000003) result: 43501 docs
+MPC time: iee total search =  8.653 seconds!
+enclave destroyed
+./searches.sh: line 22:  2489 Killed                  ../src/Server/Server
+
+
+###################### QUERY !(enron || time) ######################
+## Gen test 0 ##
+GENCLI add queries: 47566
+GENCLI nr search queries: 4
+GENCLI time: total client add = 30.584 s!
+GENCLI time: total client search = 0.000082 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 52
+SERVER Size index: 3140794
+SERVER time: total sv add = 81.394 sec
+SERVER time: total sv search =  0.541 sec
+File size: 126060295
+Number of queries to execute: 47571
+File totally read!
+############### CALLING F ###############
+nr updates: 47566, nr searches: 4, test len: 47571
+MPC Did setup
+MPC time: total iee add = 105.655 seconds!
+MPC Search(000000) result: 28540 docs
+MPC Search(000001) result: 28540 docs
+MPC Search(000002) result: 28540 docs
+MPC Search(000003) result: 28540 docs
+MPC time: iee total search =  2.314 seconds!
+enclave destroyed
+./searches.sh: line 22:  2607 Killed                  ../src/Server/Server
+
+
+
+############################## DATASET SIZE 100000 ##############################
+###################### QUERY enron && time ######################
+## Gen test 0 ##
+GENCLI add queries: 90838
+GENCLI nr search queries: 4
+GENCLI time: total client add = 78.136 s!
+GENCLI time: total client search = 0.000070 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 92
+SERVER Size index: 6058452
+SERVER time: total sv add = 158.180 sec
+SERVER time: total sv search =  1.124 sec
+File size: 243156059
+Number of queries to execute: 90843
+File totally read!
+############### CALLING F ###############
+nr updates: 90838, nr searches: 4, test len: 90843
+MPC Did setup
+MPC time: total iee add = 201.145 seconds!
+MPC Search(000000) result: 7747 docs
+MPC Search(000001) result: 7747 docs
+MPC Search(000002) result: 7747 docs
+MPC Search(000003) result: 7747 docs
+MPC time: iee total search =  5.727 seconds!
+enclave destroyed
+./searches.sh: line 22:  2714 Killed                  ../src/Server/Server
+
+
+###################### QUERY enron && time && inform && work && call ######################
+## Gen test 0 ##
+GENCLI add queries: 90838
+GENCLI nr search queries: 4
+GENCLI time: total client add = 61.547 s!
+GENCLI time: total client search = 0.000137 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 204
+SERVER Size index: 6058452
+SERVER time: total sv add = 156.089 sec
+SERVER time: total sv search =  2.459 sec
+File size: 243156515
+Number of queries to execute: 90843
+File totally read!
+############### CALLING F ###############
+nr updates: 90838, nr searches: 4, test len: 90843
+MPC Did setup
+MPC time: total iee add = 198.749 seconds!
+MPC Search(000000) result: 994 docs
+MPC Search(000001) result: 994 docs
+MPC Search(000002) result: 994 docs
+MPC Search(000003) result: 994 docs
+MPC time: iee total search =  9.801 seconds!
+enclave destroyed
+./searches.sh: line 22:  2825 Killed                  ../src/Server/Server
+
+
+###################### QUERY enron && time && inform && work && call && discuss && meet && week && receiv && dai ######################
+## Gen test 0 ##
+GENCLI add queries: 90838
+GENCLI nr search queries: 4
+GENCLI time: total client add = 61.349 s!
+GENCLI time: total client search = 0.000236 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 340
+SERVER Size index: 6058452
+SERVER time: total sv add = 155.679 sec
+SERVER time: total sv search =  4.105 sec
+File size: 243157275
+Number of queries to execute: 90843
+File totally read!
+############### CALLING F ###############
+nr updates: 90838, nr searches: 4, test len: 90843
+MPC Did setup
+MPC time: total iee add = 197.733 seconds!
+MPC Search(000000) result: 192 docs
+MPC Search(000001) result: 192 docs
+MPC Search(000002) result: 192 docs
+MPC Search(000003) result: 192 docs
+MPC time: iee total search = 12.779 seconds!
+enclave destroyed
+./searches.sh: line 22:  2935 Killed                  ../src/Server/Server
+
+
+###################### QUERY enron || time ######################
+## Gen test 0 ##
+GENCLI add queries: 90838
+GENCLI nr search queries: 4
+GENCLI time: total client add = 61.252 s!
+GENCLI time: total client search = 0.000079 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!
+## STATS ##
+SERVER Seen search batches: 92
+SERVER Size index: 6058452
+SERVER time: total sv add = 157.063 sec
+SERVER time: total sv search =  1.099 sec
+File size: 243156059
+Number of queries to execute: 90843
+File totally read!
+############### CALLING F ###############
+nr updates: 90838, nr searches: 4, test len: 90843
+MPC Did setup
+MPC time: total iee add = 200.062 seconds!
+MPC Search(000000) result: 36216 docs
+MPC Search(000001) result: 36216 docs
+MPC Search(000002) result: 36216 docs
+MPC Search(000003) result: 36216 docs
+MPC time: iee total search =  6.849 seconds!
+enclave destroyed
+./searches.sh: line 22:  3043 Killed                  ../src/Server/Server
+
+
+###################### QUERY enron || time || call || work || inform ######################
+## Gen test 0 ##
+GENCLI add queries: 90838
+GENCLI nr search queries: 4
+GENCLI time: total client add = 61.372 s!
+GENCLI time: total client search = 0.000136 s!
+
+############################################
+############## DONE GEN TESTS ##############
+############################################
+## SGX test 0 ##
+Opening write pipe!
+The required memory is 2282037248B.
+Succeed.
+Opening read pipe!
+Finished Server init! Gonna start listening for IEE requests!

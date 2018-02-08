@@ -3,22 +3,26 @@
 // receives a set of docs and returns its negation in the
 // full docs set; equivalent to the set differentiation:
 // {all-docs} \ {negate}
-vec_int get_not_docs(int nDocs, vec_int negate){
-    int *count = (int*) malloc(sizeof(int) * nDocs);
+vec_int get_not_docs(int nDocs, vec_int negate, unsigned char* count){
+    //unsigned char *count = (unsigned char*) malloc(sizeof(unsigned char) * nDocs);
 
-    for(int i = 0; i < nDocs; i++)
-        count[i] = 0;
+    unsigned int nops = 0;
+
+    memset(count, 0, sizeof(unsigned char) * nDocs);
+
+    //vi_print(negate);
 
     // increase the count for elems in the original vector
     for(unsigned i = 0; i < vi_size(negate); i++) {
         //printf("aa %p\n", negate.array);
-        count[negate.array[i]]++;
+        count[negate.array[i]] =1;
+        nops++;
     }
 
     // all elements that have count == 0 are the negation of the set
     //vector<int> result(nDocs - negate.size());
     vec_int result;
-    vi_init(&result, nDocs);
+    vi_init(&result, nDocs - nops);
 
     //int res_count = 0;
     for(int i = 0; i < nDocs; i++) {
@@ -27,13 +31,13 @@ vec_int get_not_docs(int nDocs, vec_int negate){
         }
     }
 
-    free(count);
+    //free(count);
     return result;
 }
 
 // evaluates a query in reverse polish notation, returning
 // the resulting set of docs
-vec_int evaluate(vec_token rpn_expr, int nDocs) {
+vec_int evaluate(vec_token rpn_expr, int nDocs, unsigned char* count) {
     vec_token eval_stack;
     vt_init(&eval_stack, MAX_QUERY_TOKENS);
 
@@ -55,7 +59,7 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             vt_pop_back(&eval_stack);
 
             // intersection of the two sets of documents
-            vec_int set_inter = vi_vec_intersection(and1, and2);
+            vec_int set_inter = vi_vec_intersection(and1, and2, count);
 
             /*ocall_strprint("intersection ");
             for(int i = 0; i < size(set_inter); i++)
@@ -85,7 +89,7 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             vt_pop_back(&eval_stack);
 
             // union of the two sets of documents
-            vec_int set_un = vi_vec_union(or1, or2);
+            vec_int set_un = vi_vec_union(or1, or2, count);
             //set_union(or1.begin(), or1.end(), or2.begin(), or2.end(), back_inserter(set_un));
 
             /*ocall_strprint("union ");
@@ -110,11 +114,11 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
 
             vec_int negate = vt_peek_back(eval_stack).docs;
             // printf("negation");
-            vi_print(negate);
+            //vi_print(negate);
             vt_pop_back(&eval_stack);
 
             // difference between all docs and the docs we don't want
-            vec_int set_diff = get_not_docs(nDocs, negate);
+            vec_int set_diff = get_not_docs(nDocs, negate, count);
 
             /*ocall_strprint("not ");
             for(int i = 0; i < size(set_diff); i++)
@@ -130,6 +134,7 @@ vec_int evaluate(vec_token rpn_expr, int nDocs) {
             // free memory
             vi_destroy(&negate);
         } else {
+            vi_print(tkn.docs);
             vt_push_back(&eval_stack, tkn);
         }
     }

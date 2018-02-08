@@ -55,7 +55,10 @@ static void benchmarking_print() {
     iee_socketSend(writeServerPipe, tmp_buff, sizeof(unsigned char));
 }
 
+unsigned char *count;
+
 static void init_pipes() {
+    count = (unsigned char*) malloc(550000);
     char pipeName[256];
 
     //start server-iee pipe
@@ -261,7 +264,6 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         int len = sizeof(char) + sizeof(int) + H_BYTES * max_batch_size;
         unsigned char* buff = (unsigned char*)malloc(sizeof(unsigned char) * len);
 
-
         char op = '3';
         int pos = 0;
         //iee_memcpy(buff, &op, sizeof(unsigned char));
@@ -271,7 +273,6 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         const size_t enc_len = H_BYTES + sizeof(int) + C_EXPBYTES; // 44 + H_BYTES (32)
         unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * (enc_len * tkn->counter));
         //printf("will have %d\n", tkn->counter);
-
 
         for(int j = 0; j < tkn->counter; j+=min(tkn->counter, max_batch_size)) {
             int will_get = min(tkn->counter - j, max_batch_size);
@@ -318,13 +319,17 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         for (int j = 0; j < tkn->counter; j++) {
             c_decrypt(unenc_data, enc_data + (enc_len * j), enc_len, nonce, get_kEnc());
 
+            /*for(unsigned x = 0; x < unenc_len; x++)
+                printf("%02x", unenc_data[x]);
+            printf("\n");*/
+
             /*for(unsigned x = 0; x < enc_len; x++)
                 printf("%02x", enc_data[x]);
             printf("\n");*/
 
             unsigned char* label_verif = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
             iee_memcpy(label_verif, unenc_data, H_BYTES);
-            iee_memcpy(doc_buff, unenc_data + H_BYTES, sizeof(int));
+            iee_memcpy(doc_buff + j * sizeof(int), unenc_data + H_BYTES, sizeof(int));
             pos += sizeof(int);
 
             /*for(unsigned x = 0; x < H_BYTES; x++)
@@ -454,7 +459,7 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
     #endif
 
     //calculate boolean formula
-    vec_int response_docs = evaluate(query, nDocs);
+    vec_int response_docs = evaluate(query, nDocs, count);
 
     #ifdef VERBOSE
     ocall_strprint("Query Evaluated in IEE!\n");
@@ -484,5 +489,5 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
     ocall_strprint("Finished Search!\n");
     #endif
 
-    *out_len = sizeof(unsigned char) * output_size;
+    *out_len = sizeof(unsigned char) * output_size;benchmarking_print();
 }

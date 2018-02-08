@@ -191,7 +191,8 @@ int main(int argc,char **argv)
         } else if(search_counter < nr_searches) {
             const int n_docs = msg_lr_len / sizeof(int);
             printf("MPC Search(%06lu) result: %d docs\n", search_counter, n_docs);
-
+            printf("MPC time: iee total search = %6.3lf seconds!\n", elapsed/1000000.0 );
+            elapsed = 0;
             /*int pos = 0;
             for (int i = 0; i < n_docs; i++) {
                 int d = read_int(msg_lr, &pos);
@@ -200,10 +201,10 @@ int main(int argc,char **argv)
             printf("\n");*/
             search_counter++;
 
-            if(search_counter == nr_searches) {
+            /*if(search_counter == nr_searches) {
                 printf("MPC time: iee total search = %6.3lf seconds!\n", elapsed/1000000.0 );
                 elapsed = 0;
-            }
+            }*/
 
         } else {
             printf("MPC There shouldn't be more operations here\n");
@@ -215,12 +216,12 @@ int main(int argc,char **argv)
     }
 
     // BENCHMARK ONLY - Make server print stats //
-    unsigned char benchmark_op = 0x5;
-    res |= mpc_process(&msg_lr,&msg_lr_len,0x82,&benchmark_op,1,1); /* encode first input */
+    /*unsigned char benchmark_op = 0x5;
+    res |= mpc_process(&msg_lr,&msg_lr_len,0x82,&benchmark_op,1,1);
     msg_rl_len = 0;
-    res |= lac_attest(&msg_rl,&msg_rl_len,handle,0x82,msg_lr,msg_lr_len); /* deliver first input get first output */
+    res |= lac_attest(&msg_rl,&msg_rl_len,handle,0x82,msg_lr,msg_lr_len);
     free(msg_lr);
-    res |= mpc_process(&msg_lr,&msg_lr_len,0x82, msg_rl,msg_rl_len,0); /* decrypt first output */
+    res |= mpc_process(&msg_lr,&msg_lr_len,0x82, msg_rl,msg_rl_len,0); 
 
     if (!((res == SGX_MPC_OK))) {
         printf("Error detected: %d, length %llu : \n", res, msg_lr_len);
@@ -228,7 +229,7 @@ int main(int argc,char **argv)
     }
 
     free(msg_lr);
-    free(msg_rl);
+    free(msg_rl);*/
     // END BENCHMARK ONLY //
 
     mach_finalize(handle);

@@ -23,8 +23,8 @@ unsigned vi_size(vec_int v);
 int vi_contains(vec_int v, int e);
 
 // set operations
-vec_int vi_vec_intersection(vec_int a, vec_int b);
-vec_int vi_vec_union(vec_int a, vec_int b);
+vec_int vi_vec_intersection(vec_int a, vec_int b, unsigned char* count);
+vec_int vi_vec_union(vec_int a, vec_int b, unsigned char* count);
 
 // util
 int max(int a, int b);

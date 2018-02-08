@@ -80,6 +80,27 @@ void print_buffer(const char* name, const unsigned char * buf, const unsigned lo
 int main(int argc, const char * argv[]) {
     setvbuf(stdout, NULL, _IONBF, 0);
 
+    vector <string> queries;
+    queries.push_back("!enron && time && inform && work && call && discuss && meet && week && receiv && dai");
+    queries.push_back("!enron && !time && !inform && !work && !call && !discuss && meet && week && receiv && dai");
+    queries.push_back("!enron && !time && !inform && !work && !call && !discuss && !meet && !week && !receiv && !dai");
+    queries.push_back("!(enron && time && inform && work && call && discuss && meet && week && receiv && dai)");
+    queries.push_back("!enron || time || inform || work || call || discuss || meet || week || receiv || dai");
+    queries.push_back("!enron || !time || !inform || !work || !call || discuss || meet || week || receiv || dai");
+    queries.push_back("!enron || !time || !inform || !work || !call || !discuss || !meet || !week || !receiv || !dai");
+    queries.push_back("!(enron || time || inform || work || call || discuss || meet || week || receiv || dai)");
+//    queries.push_back("enron || time");
+//    queries.push_back("enron || time || call || work || inform");
+//    queries.push_back("enron || time || inform || work || call || discuss || meet || week || receiv || dai");
+//    queries.push_back("(call || enron) && (time || attach)");
+//    queries.push_back("(call || enron) && (time || attach) && (inform || work) && (meet || week)");
+//    queries.push_back("(call && enron) || (time && attach)");
+//    queries.push_back("(call && enron) || (time && attach) || (inform && work) || (meet && week)");
+//    queries.push_back("!enron && !time");
+//    queries.push_back("!(enron && time)");
+//    queries.push_back("!enron || !time");
+//    queries.push_back("!(enron || time)");
+
     // init iee
     // init_pipes();
 
@@ -103,7 +124,7 @@ int main(int argc, const char * argv[]) {
 
     // write number of adds / updates and searches to benchmark file
     size_t nr_updates = doc_paths.size();
-    size_t nr_searches = getenv("NUM_QUERIES")? atoi(getenv("NUM_QUERIES")) : 0;
+    size_t nr_searches = queries.size();//getenv("NUM_QUERIES")? atoi(getenv("NUM_QUERIES")) : 0;
     fwrite(&nr_updates, sizeof(size_t), 1, out_f);
     fwrite(&nr_searches, sizeof(size_t), 1, out_f);
 
@@ -203,73 +224,80 @@ int main(int argc, const char * argv[]) {
     int total_search_time = 0;
     int total_sim_search_time = 0;
 
-    for(unsigned i = 0; i < nr_searches; i++) {
-        string query;
+    for(unsigned k = 0; k < queries.size(); k++) {
+        string query = queries[k];
+        //printf("query %s\n", query.c_str());
+        //for(unsigned i = 0; i < nr_searches; i++) {
+            //string query;
 
-        if(getenv("QUERY"))
-            query = getenv("QUERY");
-        else
-            query = client.generate_random_query(all_words, QUERY_WORD_COUNT, NOT_PROBABILITY, AND_PROBABILITY);
-
-        #ifdef VERBOSE
-        printf("\n----------------------------\n");
-        printf("Query %d: %s\n", i, query.c_str());
-        #endif
-
-        gettimeofday(&start, NULL);
-        unsigned char* data;
-        unsigned long long data_size = client.search(query, &data);
-        gettimeofday(&end, NULL);
-        total_search_time += timeElapsed(start, end);
-
-        #ifdef VERBOSE
-        /*for(int i = 0; i < data_size; i++){
-            if(data[i] >= 0x71 && data[i] <= 0x7A)
-                printf("%c ", data[i]);
+            /*if(getenv("QUERY"))
+                query = getenv("QUERY");
             else
-                printf("%02x", data[i]);
-        }
-        printf("\n");*/
-        #endif
+                query = client.generate_random_query(all_words, QUERY_WORD_COUNT, NOT_PROBABILITY, AND_PROBABILITY);*/
 
-        // write to benchmark file
-        fwrite(&data_size, sizeof(unsigned long long), 1, out_f);
-        fwrite(data, sizeof(unsigned char), data_size, out_f);
+            //#ifdef VERBOSE
+            printf("\n----------------------------\n");
+            printf("Query %d: %s\n", k, query.c_str());
+            //#endif
 
-        #ifdef LOCALTEST
-        //print_buffer("Data", data, data_size);
-        gettimeofday(&start, NULL);
-        output_size = 0;
-        f(&output, &output_size, 0, (const bytes) data, data_size);
-        gettimeofday(&end, NULL);
-        //print_buffer("Output", output, output_size);
-        total_sim_search_time += timeElapsed(start, end);
+            gettimeofday(&start, NULL);
+            unsigned char* data;
+            unsigned long long data_size = client.search(query, &data);
+            gettimeofday(&end, NULL);
+            total_search_time += timeElapsed(start, end);
 
-        //process results
-        const int nDocs = output_size / sizeof(int);
+            #ifdef VERBOSE
+            /*for(int i = 0; i < data_size; i++){
+                if(data[i] >= 0x71 && data[i] <= 0x7A)
+                    printf("%c ", data[i]);
+                else
+                    printf("%02x", data[i]);
+            }
+            printf("\n");*/
+            #endif
 
-        #ifdef VERBOSE
-        printf("GENCLI Number of docs: %d\n", nDocs);
-        #endif
+            // write to benchmark file
+            fwrite(&data_size, sizeof(unsigned long long), 1, out_f);
+            fwrite(data, sizeof(unsigned char), data_size, out_f);
 
-        /*vector<int> results(nDocs);
-        int pos = 0;
-        for (int i = 0; i < nDocs; i++) {
-            results[i] = readIntFromArr(output, &pos);
-        }
+            #ifdef LOCALTEST
+            //print_buffer("Data", data, data_size);
+            gettimeofday(&start, NULL);
+            output_size = 0;
+            f(&output, &output_size, 0, (const bytes) data, data_size);
+            gettimeofday(&end, NULL);
+            //print_buffer("Output", output, output_size);
+            total_sim_search_time += timeElapsed(start, end);
 
-        printResults(results);*/
-        free(output);
-        #endif
+            //process results
+            const int nDocs = output_size / sizeof(int);
 
-        free(data);
+            #ifdef VERBOSE
+            printf("GENCLI Number of docs: %d\n", nDocs);
+            #endif
+
+            /*vector<int> results(nDocs);
+            int pos = 0;
+            for (int i = 0; i < nDocs; i++) {
+                results[i] = readIntFromArr(output, &pos);
+            }
+
+            printResults(results);*/
+            free(output);
+            #endif
+
+            free(data);
+        //}
+
+        printf("GENCLI time: client search = %6.6lf s!\n", total_search_time / 1000000.0);
+        total_search_time = 0;
     }
 
     printf("GENCLI add queries: %lu\n", nr_updates);
     printf("GENCLI nr search queries: %lu\n", nr_searches);
 
     printf("GENCLI time: total client add = %6.3lf s!\n", total_add_time/1000000.0);
-    printf("GENCLI time: total client search = %6.6lf s!\n", total_search_time / 1000000.0);
+
 
     #ifdef LOCALTEST
     printf("LTEST GENCLI time: client add = %6.3lf s!\n", total_sim_add_time/1000000.0);

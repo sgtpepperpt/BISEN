@@ -164,11 +164,12 @@ SseServer::SseServer() {
             case '4': {
                 // this instruction is for benchmarking only and can be safely
                 // removed if wanted
-                printf("## STATS ##\n");
-                printf("SERVER Seen search batches: %lu\n", nr_search_batches);
-                printf("SERVER Size index: %lu\n", (*I).size());
-                printf("SERVER time: total sv add = %6.3lf sec\n", total_add_time/1000000.0);
+                //printf("## STATS ##\n");
+                //printf("SERVER Seen search batches: %lu\n", nr_search_batches);
+                //printf("SERVER Size index: %lu\n", (*I).size());
+                //printf("SERVER time: total sv add = %6.3lf sec\n", total_add_time/1000000.0);
                 printf("SERVER time: total sv search = %6.3lf sec\n", total_search_time/1000000.0);
+                total_search_time = 0;
                 break;
             }
             default:

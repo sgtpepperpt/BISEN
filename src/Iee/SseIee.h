@@ -39,5 +39,5 @@ static void setup(bytes* out, size* out_len, const bytes in, const size in_len);
 static void add(bytes* out, size* out_len, const bytes in, const size in_len);
 static void search(bytes* out, size* out_len, const bytes in, const size in_len);
 
-static void get_docs_from_server(vec_token *query, unsigned count_words);
+static void get_docs_from_server(vec_token *query, const unsigned count_words, const unsigned total_labels);
 #endif /* SSE_IEE_H */

@@ -194,13 +194,16 @@ static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
     (*out)[0] = RES_OK;
 }
 
-static void get_docs_from_server(vec_token *query, unsigned count_words) {
+static void get_docs_from_server(vec_token *query, const unsigned count_words, const unsigned total_labels) {
     #ifdef VERBOSE
     ocall_strprint("Requesting docs from server!\n");
     #endif
 
+    // size of batch requests to server
+    const unsigned max_batch_size = 2000;
+
     // initialise array to hold all tokens in random order
-    iee_token *rand[count_words];
+    /*iee_token *rand[count_words];
     for(unsigned i = 0; i < count_words; i++)
         rand[i] = NULL;
 
@@ -217,7 +220,143 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
         } while(rand[pos] != NULL);
 
         rand[pos] = &(*query).array[i];
+    }*/
+
+    typedef struct {
+        iee_token *tkn;
+        unsigned counter_val;
+    } label_request;
+
+    // generate 0-filled nonce
+    unsigned char* nonce = (unsigned char*)malloc(sizeof(unsigned char) * C_NONCESIZE);
+    for(unsigned j = 0; j < C_NONCESIZE; j++)
+        nonce[j] = 0x00;
+
+    // used to hold all labels in random order
+    label_request* labels = (label_request*)malloc(sizeof(label_request) * total_labels);
+    memset(labels, 0, sizeof(label_request) * total_labels);
+
+    // iterate over all the needed words, and then over all its occurences (given by the counter)
+    // and fill the requests array
+    int k = 0;
+    for(unsigned i = 0; i < vt_size(*query); i++) {
+        // ignore non-word tokens
+        if(query->array[i].type != WORD_TOKEN)
+            continue;
+
+        for(unsigned j = 0; j < query->array[i].counter; j++) {
+            labels[k].tkn = &(*query).array[i];
+            labels[k++].counter_val = j;
+
+            printf("apointer %p\n", labels[j]);
+            printf("%p\n", labels[j].tkn);
+            printf("%d\n", labels[j].counter_val);
+        }
+        printf("-----------------------\n");
     }
+
+    printf("############################\n");
+
+    // shuffle requests (fisher yates)
+    for(unsigned i = 0; i < total_labels - 1; i++) {
+        int r = c_random_uint_range(i, total_labels);
+
+        iee_token * tmp_tkn = labels[r].tkn;
+        unsigned tmp_ctr = labels[r].counter_val;
+
+        labels[r].tkn = labels[i].tkn;
+        labels[r].counter_val = labels[i].counter_val;
+
+        labels[i].tkn = tmp_tkn;
+        labels[i].counter_val = tmp_ctr;
+    }
+
+    #ifdef VERBOSE
+    ocall_strprint("Randomised positions!\n");
+    #endif
+
+    /************************ ALLOCATE DATA STRUCTURES ************************/
+    // buffer for server requests
+    // (always max_batch_size, may not be filled if not needed)
+    size_t req_len = sizeof(char) + sizeof(int) + H_BYTES;
+    unsigned char* req_buff = (unsigned char*)malloc(sizeof(unsigned char) * (req_len * max_batch_size));
+
+    // put the op code in the buffer
+    const char op = '3';
+    iee_memcpy(req_buff, &op, sizeof(unsigned char));
+
+    // buffer for encrypted server responses
+    // contains the hmac for verif, the doc id, and the encryption's exp
+    const size_t res_len = H_BYTES + sizeof(int) + C_EXPBYTES; // 44 + H_BYTES (32)
+    unsigned char* res_buff = (unsigned char*)malloc(sizeof(unsigned char) * (res_len * max_batch_size));
+
+    // buffer for decrypted server responses (holds one)
+    const size_t dec_len = H_BYTES + sizeof(int);
+    unsigned char* dec_buff = (unsigned char*)malloc(sizeof(unsigned char) * dec_len);
+    /********************** END ALLOCATE DATA STRUCTURES **********************/
+
+    unsigned label_pos = 0;
+    unsigned batch_size = min(total_labels - label_pos, max_batch_size);
+
+    // request labels to server
+    while (label_pos < total_labels) {
+        // put batch_size in buffer
+        iee_memcpy(req_buff + sizeof(char), &batch_size, sizeof(unsigned));
+
+        // aux pointer
+        unsigned char* tmp = req_buff + sizeof(char) + sizeof(unsigned);
+
+        // fill the buffer with labels
+        for(unsigned i = 0; i < batch_size; i++) {
+            label_request* req = &(labels[label_pos + i]);
+            printf("pointer %p\n", req);
+            printf("%p\n", req->tkn);
+            printf("%d\n", req->counter_val);
+            printf("-----------------------\n");
+            c_hmac(tmp + i * req_len, (unsigned char*)&(req->counter_val), sizeof(int), req->tkn->kW);
+        }
+
+        // send message to server and receive response
+        ocall_strprint("Requesting to server!\n");
+        iee_socketSend(writeServerPipe, req_buff, sizeof(char) + sizeof(unsigned) + req_len * batch_size);
+        ocall_strprint("Requesting to server!\n");
+        iee_socketReceive(readServerPipe, res_buff, res_len * batch_size);
+        ocall_strprint("Got from server!\n");
+
+        // decrypt and fill the destination data structs
+        for(unsigned i = 0; i < batch_size; i++) {
+            label_request* req = &labels[label_pos + i];
+            c_decrypt(dec_buff, res_buff + (res_len * i), res_len, nonce, get_kEnc());
+
+            // verify
+            for(unsigned j = 0; j < H_BYTES; j++) {
+                if(dec_buff[j] != (req_buff + (req_len * i))[j]) {
+                    ocall_strprint("Label verification doesn't match! Exit\n");
+                    ocall_exit(-1);
+                }
+            }
+
+            iee_memcpy(&req->tkn->docs.array[req->counter_val], dec_buff + H_BYTES, sizeof(int));
+
+            /*for(unsigned x = 0; x < H_BYTES; x++)
+                printf("%02x", label_verif[x]);
+            printf(" : \n");*/
+        }
+
+        label_pos += batch_size;
+        batch_size = min(total_labels - label_pos, max_batch_size);
+    }
+
+    free(labels);
+    free(nonce);
+
+    iee_bzero(req_buff, req_len * max_batch_size);
+    iee_bzero(res_buff, res_len * max_batch_size);
+    iee_bzero(dec_buff, dec_len);
+
+    free(req_buff);
+    free(res_buff);
+    free(dec_buff);
 
     /*for(unsigned ii = 0; ii < count_words; ii++) {
         if(rand[ii])
@@ -226,165 +365,6 @@ static void get_docs_from_server(vec_token *query, unsigned count_words) {
             printf("%d\n", rand[ii]);
     }
     printf("\n");*/
-
-    #ifdef VERBOSE
-    ocall_strprint("Randomised positions!\n");
-    #endif
-
-    // request the documents from the server
-    for(unsigned i = 0; i < count_words; i++) {
-        iee_token *tkn = rand[i];
-        //printf("word %d/%d\n", i, count_words);
-
-        //cout << "counter for " << tkn->word << " is " << tkn->counter << endl;
-        if(tkn->counter == 0) {
-            vec_int dummy;
-            tkn->docs = dummy;
-        }
-
-        //calculate relevant index positions
-        unsigned char** labels = (unsigned char**)malloc(sizeof(unsigned char*) * tkn->counter);
-        for (int c = 0; c < tkn->counter; c++) {
-            labels[c] = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
-            c_hmac(labels[c], (unsigned char*)&c, sizeof(int), tkn->kW);
-            //print_buffer("label", labels[c], H_BYTES);
-        }
-
-        //free(kW);
-
-        // generate 0-filled nonce
-        unsigned char* nonce = (unsigned char*)malloc(sizeof(unsigned char) * C_NONCESIZE);
-        for(unsigned j = 0; j < C_NONCESIZE; j++)
-            nonce[j] = 0x00;
-
-        int max_batch_size = 2000;
-
-        ocall_strprint("requesting to server!\n");
-        //request index positions from server
-        int len = sizeof(char) + sizeof(int) + H_BYTES * max_batch_size;
-        unsigned char* buff = (unsigned char*)malloc(sizeof(unsigned char) * len);
-
-        char op = '3';
-        int pos = 0;
-        //iee_memcpy(buff, &op, sizeof(unsigned char));
-        iee_addToArr(&op, sizeof(unsigned char), buff, &pos);
-
-        // contains the hmac for verif, the doc id, and the enc's exp
-        const size_t enc_len = H_BYTES + sizeof(int) + C_EXPBYTES; // 44 + H_BYTES (32)
-        unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * (enc_len * tkn->counter));
-        //printf("will have %d\n", tkn->counter);
-
-        for(int j = 0; j < tkn->counter; j+=min(tkn->counter, max_batch_size)) {
-            int will_get = min(tkn->counter - j, max_batch_size);
-            //printf("will get %d\n", will_get);
-            iee_addToArr(&will_get, sizeof(int), buff, &pos);
-            //iee_memcpy(buff + 1, &will_get, sizeof(int));
-
-            // add the labels
-            for(int k = 0; k < will_get; k++) {
-                iee_addToArr(labels[j+k], H_BYTES, buff, &pos);
-                //iee_memcpy(buff + 1 + sizeof(int) + j * H_BYTES, labels[j+k], sizeof(unsigned char) * H_BYTES);
-            }
-
-            /*for(unsigned x = 0; x < will_get; x++){
-                for(unsigned y = 0; y < H_BYTES; y++)
-                    printf("%02x", labels[j+x][y]);
-                printf("\n");
-            }*/
-
-            iee_socketSend(writeServerPipe, buff, sizeof(char) + sizeof(int) + H_BYTES * will_get);
-/*
-            for(int x = 0; x < sizeof(char) + sizeof(int) + H_BYTES * will_get; x++){
-                printf("%02x", buff[x]);
-            }*/
-
-            // receive response
-            iee_socketReceive(readServerPipe, enc_data + j * enc_len, enc_len * will_get);
-            pos = 1; // reset pos to "beginning" of buff
-        }
-
-        free(buff);
-
-        ocall_strprint("got from sv!\n");
-
-        const size_t unenc_len = H_BYTES + sizeof(int);
-        unsigned char* unenc_data = (unsigned char*)malloc(sizeof(unsigned char) * unenc_len);
-
-        // holds doc ids as ints
-        size_t doc_buff_len = tkn->counter * sizeof(int);
-        unsigned char* doc_buff = (unsigned char*)malloc(sizeof(unsigned char) * doc_buff_len);
-        memset(doc_buff, 0, sizeof(unsigned char) * doc_buff_len); // fix valgrind warning about vi_contains
-        pos = 0;
-
-        for (int j = 0; j < tkn->counter; j++) {
-            c_decrypt(unenc_data, enc_data + (enc_len * j), enc_len, nonce, get_kEnc());
-
-            /*for(unsigned x = 0; x < unenc_len; x++)
-                printf("%02x", unenc_data[x]);
-            printf("\n");*/
-
-            /*for(unsigned x = 0; x < enc_len; x++)
-                printf("%02x", enc_data[x]);
-            printf("\n");*/
-
-            unsigned char* label_verif = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
-            iee_memcpy(label_verif, unenc_data, H_BYTES);
-            iee_memcpy(doc_buff + j * sizeof(int), unenc_data + H_BYTES, sizeof(int));
-            pos += sizeof(int);
-
-            /*for(unsigned x = 0; x < H_BYTES; x++)
-                printf("%02x", label_verif[x]);
-            printf(" : \n");
-
-            for(unsigned y = 0; y < H_BYTES; y++)
-                printf("%02x", labels[j][y]);
-            printf(" : \n");*/
-
-            for(unsigned x = 0; x < H_BYTES; x++) {
-                if(label_verif[x] != labels[j][x]) {
-                    ocall_strprint("Label verification doesn't match! Exit\n");
-                    ocall_exit(-1);
-                }
-            }
-
-            //ocall_strprint("Verification made, ok\n");
-
-            // delete keys from memory
-            iee_bzero(enc_data, C_KEYSIZE);
-            iee_bzero(unenc_data, C_KEYSIZE);
-
-            free(label_verif);
-        }
-
-        free(nonce);
-        for (int j = 0; j < tkn->counter; j++)
-            free(labels[j]);
-        free(labels);
-
-        // generate int vector
-        const int nr_docs = doc_buff_len / sizeof(int);
-        //printf("nr docs %d\n", nr_docs);
-        vec_int docs; // TODO check if this is always sorted
-                      // else has to be sorted in evaluator; may not be needed for vec_int (as of October may not really be needed)
-        vi_init(&docs, nr_docs);
-        pos = 0;
-        for (int j = 0; j < nr_docs; j++) {
-            int tmp = -1;
-            iee_memcpy(&tmp, doc_buff + pos, sizeof(int));
-            pos += sizeof(int);
-            //printf("doc %d\n", tmp);
-            vi_push_back(&docs, tmp);
-        }
-
-        // insert result into token's struct
-        tkn->docs = docs;
-        //printf("docs retrieved %s\n", tkn->word);
-
-        free(doc_buff);
-        free(enc_data);
-        free(unenc_data);
-        //printf("done\n");
-    }
 
     #ifdef VERBOSE
     ocall_strprint("Got all docs from server!\n\n");
@@ -404,11 +384,11 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
 
     int nDocs = -1;
     int count_words = 0; // useful for get_docs_from_server
+    int count_labels = 0; // useful for get_docs_from_server
 
     //read in
     int pos = 1;
     while(pos < in_len) {
-
         iee_token tkn;
         tkn.kW = NULL;
 
@@ -423,11 +403,15 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
 
             // read counter
             tkn.counter = iee_readIntFromArr(in, &pos);
+            count_labels += tkn.counter;
 
             // read kW
             tkn.kW = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
             iee_readFromArr(tkn.kW, H_BYTES, in, &pos);
 
+            // create the vector that will hold the docs
+            vi_init(&tkn.docs, tkn.counter);
+            tkn.docs.counter = tkn.counter;
         } else if(tkn.type == META_TOKEN) {
             nDocs = iee_readIntFromArr(in, &pos);
             continue;
@@ -437,7 +421,7 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
     }
 
     // get documents from uee
-    get_docs_from_server(&query, count_words);
+    get_docs_from_server(&query, count_words, count_labels);
 
     #ifdef VERBOSE
     /*ocall_strprint("parsed: ");

@@ -81,14 +81,14 @@ int main(int argc, const char * argv[]) {
     setvbuf(stdout, NULL, _IONBF, 0);
 
     vector <string> queries;
-    queries.push_back("!enron && time && inform && work && call && discuss && meet && week && receiv && dai");
-    queries.push_back("!enron && !time && !inform && !work && !call && !discuss && meet && week && receiv && dai");
-    queries.push_back("!enron && !time && !inform && !work && !call && !discuss && !meet && !week && !receiv && !dai");
-    queries.push_back("!(enron && time && inform && work && call && discuss && meet && week && receiv && dai)");
-    queries.push_back("!enron || time || inform || work || call || discuss || meet || week || receiv || dai");
-    queries.push_back("!enron || !time || !inform || !work || !call || discuss || meet || week || receiv || dai");
-    queries.push_back("!enron || !time || !inform || !work || !call || !discuss || !meet || !week || !receiv || !dai");
-    queries.push_back("!(enron || time || inform || work || call || discuss || meet || week || receiv || dai)");
+    queries.push_back("enron && time");
+//    queries.push_back("!enron && !time && !inform && !work && !call && !discuss && meet && week && receiv && dai");
+//    queries.push_back("!enron && !time && !inform && !work && !call && !discuss && !meet && !week && !receiv && !dai");
+//    queries.push_back("!(enron && time && inform && work && call && discuss && meet && week && receiv && dai)");
+//    queries.push_back("!enron || time || inform || work || call || discuss || meet || week || receiv || dai");
+//    queries.push_back("!enron || !time || !inform || !work || !call || discuss || meet || week || receiv || dai");
+//    queries.push_back("!enron || !time || !inform || !work || !call || !discuss || !meet || !week || !receiv || !dai");
+//    queries.push_back("!(enron || time || inform || work || call || discuss || meet || week || receiv || dai)");
 //    queries.push_back("enron || time");
 //    queries.push_back("enron || time || call || work || inform");
 //    queries.push_back("enron || time || inform || work || call || discuss || meet || week || receiv || dai");

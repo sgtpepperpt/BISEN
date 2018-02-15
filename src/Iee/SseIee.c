@@ -23,8 +23,6 @@ void f(bytes* out, size* out_len, const unsigned long long pid, const bytes in, 
     //ocall_strprint("\n***** Entering IEE *****\n");
     #endif
 
-    ocall_strprint("\n***** Entering IEE *****\n");
-
     // set out variables
     *out = NULL;
     *out_len = 0;
@@ -255,14 +253,14 @@ static void get_docs_from_server(vec_token *query, const unsigned count_words, c
             labels[r].counter_val = j;
 
             k++;
-            printf("apointer %p\n", labels[j]);
+            /*printf("apointer %p\n", labels[j]);
             printf("%p\n", labels[j].tkn);
-            printf("%d\n", labels[j].counter_val);
+            printf("%d\n", labels[j].counter_val);*/
         }
-        printf("-----------------------\n");
+        //printf("-----------------------\n");
     }
 
-    printf("############################\n");
+    //printf("############################\n");
 /*
     // shuffle requests (fisher yates)
     for(unsigned i = 0; i < total_labels - 1; i++) {
@@ -285,8 +283,9 @@ static void get_docs_from_server(vec_token *query, const unsigned count_words, c
     /************************ ALLOCATE DATA STRUCTURES ************************/
     // buffer for server requests
     // (always max_batch_size, may not be filled if not needed)
-    size_t req_len = sizeof(char) + sizeof(int) + H_BYTES;
-    unsigned char* req_buff = (unsigned char*)malloc(sizeof(unsigned char) * (req_len * max_batch_size));
+    // op + batch_size + labels of H_BYTES len
+    size_t req_len = H_BYTES;
+    unsigned char* req_buff = (unsigned char*)malloc(sizeof(unsigned char) * (sizeof(char) + sizeof(unsigned) + req_len * max_batch_size));
 
     // put the op code in the buffer
     const char op = '3';
@@ -316,28 +315,35 @@ static void get_docs_from_server(vec_token *query, const unsigned count_words, c
         // fill the buffer with labels
         for(unsigned i = 0; i < batch_size; i++) {
             label_request* req = &(labels[label_pos + i]);
-            printf("pointer %p\n", req);
+            /*printf("pointer %p\n", req);
             printf("%p\n", req->tkn);
             printf("%d\n", req->counter_val);
-            printf("-----------------------\n");
+            printf("-----------------------\n");*/
             c_hmac(tmp + i * req_len, (unsigned char*)&(req->counter_val), sizeof(int), req->tkn->kW);
         }
 
+        /*printf("%d batch\n", batch_size);
+        for(unsigned x = 0; x < batch_size*req_len; x++)
+            printf("%02x", tmp[x]);
+        printf(" : \n");*/
+
         // send message to server and receive response
-        ocall_strprint("Requesting to server!\n");
+        //ocall_strprint("aRequesting to server!\n");
         iee_socketSend(writeServerPipe, req_buff, sizeof(char) + sizeof(unsigned) + req_len * batch_size);
-        ocall_strprint("Requesting to server!\n");
         iee_socketReceive(readServerPipe, res_buff, res_len * batch_size);
-        ocall_strprint("Got from server!\n");
+        //ocall_strprint("Got from server!\n");
 
         // decrypt and fill the destination data structs
         for(unsigned i = 0; i < batch_size; i++) {
             label_request* req = &labels[label_pos + i];
             c_decrypt(dec_buff, res_buff + (res_len * i), res_len, nonce, get_kEnc());
 
+            // aux pointer for req
+            unsigned char* tmp = req_buff + sizeof(char) + sizeof(unsigned);
+
             // verify
             for(unsigned j = 0; j < H_BYTES; j++) {
-                if(dec_buff[j] != (req_buff + (req_len * i))[j]) {
+                if(dec_buff[j] != (tmp + i * req_len)[j]) {
                     ocall_strprint("Label verification doesn't match! Exit\n");
                     ocall_exit(-1);
                 }

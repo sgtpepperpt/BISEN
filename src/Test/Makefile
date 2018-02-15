@@ -6,7 +6,7 @@ COMMON_DIR=../Common
 
 # -DLOCALTEST -DVERBOSE
 CONFIG_FLAGS= #-DDATASET_DIR=\"../Data/parsed/$(DATASET_SIZE)/\" # should now come from env
-CONFIG_FLAGS+=-DLOCALTEST -DVERBOSE
+CONFIG_FLAGS+= -DVERBOSE
 
 C_FLAGS= -Wall -g -Wno-unused-function -Wno-unused-variable -fPIC $(CONFIG_FLAGS)
 CPP_FLAGS= $(C_FLAGS) -std=c++11

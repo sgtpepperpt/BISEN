@@ -81,7 +81,7 @@ int main(int argc, const char * argv[]) {
     setvbuf(stdout, NULL, _IONBF, 0);
 
     vector <string> queries;
-    queries.push_back("enron && time");
+//    queries.push_back("enron && time");
 //    queries.push_back("!enron && !time && !inform && !work && !call && !discuss && meet && week && receiv && dai");
 //    queries.push_back("!enron && !time && !inform && !work && !call && !discuss && !meet && !week && !receiv && !dai");
 //    queries.push_back("!(enron && time && inform && work && call && discuss && meet && week && receiv && dai)");
@@ -89,17 +89,21 @@ int main(int argc, const char * argv[]) {
 //    queries.push_back("!enron || !time || !inform || !work || !call || discuss || meet || week || receiv || dai");
 //    queries.push_back("!enron || !time || !inform || !work || !call || !discuss || !meet || !week || !receiv || !dai");
 //    queries.push_back("!(enron || time || inform || work || call || discuss || meet || week || receiv || dai)");
-//    queries.push_back("enron || time");
-//    queries.push_back("enron || time || call || work || inform");
-//    queries.push_back("enron || time || inform || work || call || discuss || meet || week || receiv || dai");
-//    queries.push_back("(call || enron) && (time || attach)");
-//    queries.push_back("(call || enron) && (time || attach) && (inform || work) && (meet || week)");
-//    queries.push_back("(call && enron) || (time && attach)");
-//    queries.push_back("(call && enron) || (time && attach) || (inform && work) || (meet && week)");
-//    queries.push_back("!enron && !time");
-//    queries.push_back("!(enron && time)");
-//    queries.push_back("!enron || !time");
-//    queries.push_back("!(enron || time)");
+
+    queries.push_back("enron && time");
+    queries.push_back("enron && time && call && work && inform");
+    queries.push_back("enron && time && inform && work && call && discuss && meet && week && receiv && dai");
+    queries.push_back("enron || time");
+    queries.push_back("enron || time || call || work || inform");
+    queries.push_back("enron || time || inform || work || call || discuss || meet || week || receiv || dai");
+    queries.push_back("(call || enron) && (time || attach)");
+    queries.push_back("(call || enron) && (time || attach) && (inform || work) && (meet || week)");
+    queries.push_back("(call && enron) || (time && attach)");
+    queries.push_back("(call && enron) || (time && attach) || (inform && work) || (meet && week)");
+    queries.push_back("!enron && !time");
+    queries.push_back("!(enron && time)");
+    queries.push_back("!enron || !time");
+    queries.push_back("!(enron || time)");
 
     // init iee
     // init_pipes();
@@ -168,7 +172,8 @@ int main(int argc, const char * argv[]) {
     set<string> all_words_set; // for client-side random query generation only
     for(unsigned i = 0; i < nr_updates; i++) {
         #ifdef VERBOSE
-        printf("update: (%d/%d)\n",i,nr_updates);
+        if(!(i % 1000))
+            printf("GENCLI update: (%d/%d)\n",i,nr_updates);
         #endif
 
         string doc = doc_paths[i];

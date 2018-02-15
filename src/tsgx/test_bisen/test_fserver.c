@@ -183,6 +183,9 @@ int main(int argc,char **argv)
             //printf("Update %lu/%lu\n", update_counter, nr_updates);
             update_counter++;
 
+            if(!(update_counter % 1000))
+                printf("MPC update: (%lu/%lu)\n", update_counter, nr_updates);
+
             if(update_counter == nr_updates) {
                 printf("MPC time: total iee add = %6.3lf seconds!\n", elapsed/1000000.0 );
                 elapsed = 0;
@@ -221,7 +224,7 @@ int main(int argc,char **argv)
     msg_rl_len = 0;
     res |= lac_attest(&msg_rl,&msg_rl_len,handle,0x82,msg_lr,msg_lr_len);
     free(msg_lr);
-    res |= mpc_process(&msg_lr,&msg_lr_len,0x82, msg_rl,msg_rl_len,0); 
+    res |= mpc_process(&msg_lr,&msg_lr_len,0x82, msg_rl,msg_rl_len,0);
 
     if (!((res == SGX_MPC_OK))) {
         printf("Error detected: %d, length %llu : \n", res, msg_lr_len);

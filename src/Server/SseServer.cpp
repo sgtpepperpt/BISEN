@@ -118,17 +118,15 @@ SseServer::SseServer() {
                 struct timeval start2, end2;
                 gettimeofday(&start2, NULL);
 
-                unsigned char buff[sizeof(int)];
-                socketReceive(readIeePipe, buff, sizeof(int));
-                int pos = 0;
-                const int counter = readIntFromArr(buff, &pos);
+                unsigned counter;
+                socketReceive(readIeePipe, (unsigned char*)&counter, sizeof(unsigned));
+
                 //cout << "counter size " << counter << endl;
+
                 unsigned char* label = new unsigned char[l_size * counter];
                 socketReceive(readIeePipe, label, l_size * counter * sizeof(unsigned char));
 
-                const size_t len = d_size * counter;
-                unsigned char* buffer = (unsigned char*)malloc(sizeof(unsigned char) * len);
-                pos = 0;
+                unsigned char* buffer = (unsigned char*)malloc(sizeof(unsigned char) * d_size * counter);
 
                 /*for(int x = 0; x < counter; x++){
                     for(int y = 0; y < l_size; y++)
@@ -138,17 +136,23 @@ SseServer::SseServer() {
 
                 // send the labels for each word occurence
                 for (int i = 0; i < counter; i++) {
+                    //cout << "xx" << endl;
                     vector<unsigned char> l = fillVector(label + i * l_size, l_size);
 
+                    if(!(*I)[l]) {
+                        printf("Label not found! Exit\n");
+                        exit(1);
+                    }
+
+                    //printf("%d %p\n", i, (*I)[l]);
                     /*for(unsigned k = 0; k < d_size; k++)
                         printf("%02x", (*I)[l][k]);
                     printf(" \n");*/
 
-                    //socketSend(writeIeePipe, (*I)[l], sizeof(unsigned char) * d_size);
-                    memcpy(buffer + i * d_size, (*I)[l], sizeof(unsigned char) * d_size);
+                    memcpy(buffer + i * d_size, (*I)[l], d_size);
                 }
 
-                socketSend(writeIeePipe, buffer, len);
+                socketSend(writeIeePipe, buffer, d_size * counter);
                 free(buffer);
 
                 gettimeofday(&end2, NULL);

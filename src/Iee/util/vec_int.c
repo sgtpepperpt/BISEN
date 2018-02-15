@@ -51,8 +51,6 @@ vec_int vi_vec_union(vec_int a, vec_int b, unsigned char* count) {
         count[a.array[i]] = 1;
     }
 
-
-
     int nops = 0;
     // add all elements from b, if they're not in the union yet
     for(int i = 0; i < b.counter; i++) {

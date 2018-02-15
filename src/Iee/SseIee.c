@@ -245,9 +245,16 @@ static void get_docs_from_server(vec_token *query, const unsigned count_words, c
             continue;
 
         for(unsigned j = 0; j < query->array[i].counter; j++) {
-            labels[k].tkn = &(*query).array[i];
-            labels[k++].counter_val = j;
+            int r = c_random_uint_range(0, k+1);
+            if(r != k) {
+                labels[k].tkn = labels[r].tkn;
+                labels[k].counter_val = labels[r].counter_val;
+            }
 
+            labels[r].tkn = &(*query).array[i];
+            labels[r].counter_val = j;
+
+            k++;
             printf("apointer %p\n", labels[j]);
             printf("%p\n", labels[j].tkn);
             printf("%d\n", labels[j].counter_val);
@@ -256,10 +263,10 @@ static void get_docs_from_server(vec_token *query, const unsigned count_words, c
     }
 
     printf("############################\n");
-
+/*
     // shuffle requests (fisher yates)
     for(unsigned i = 0; i < total_labels - 1; i++) {
-        int r = c_random_uint_range(i, total_labels);
+
 
         iee_token * tmp_tkn = labels[r].tkn;
         unsigned tmp_ctr = labels[r].counter_val;
@@ -270,7 +277,7 @@ static void get_docs_from_server(vec_token *query, const unsigned count_words, c
         labels[i].tkn = tmp_tkn;
         labels[i].counter_val = tmp_ctr;
     }
-
+*/
     #ifdef VERBOSE
     ocall_strprint("Randomised positions!\n");
     #endif

@@ -32,8 +32,7 @@ common.a: $(COMMON_DIR)/*.cpp
 iee.a: $(IEE_DIR)/*.c
 	cd $(IEE_DIR) && gcc $(C_FLAGS) -c *.c
 	cd $(IEE_DIR)/util && gcc $(C_FLAGS) -c *.c
-	gcc $(C_FLAGS) -c commands.c
-	ar rcs iee.a $(IEE_DIR)/*.o $(IEE_DIR)/util/*.o commands.o
+	ar rcs iee.a $(IEE_DIR)/*.o $(IEE_DIR)/util/*.o
 
 client.a: $(CLIENT_DIR)/*.c $(CLIENT_DIR)/*.cpp
 	cd $(CLIENT_DIR) && gcc $(C_FLAGS) -c *.c

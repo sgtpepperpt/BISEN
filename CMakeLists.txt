@@ -10,20 +10,37 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
 find_package(sodium)
 
 # flags
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread -g -O0")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread -g -O0 -fPIC -Wall -Wno-unused-function -Wno-unused-variable")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g -O0 -fPIC -Wall -Wno-unused-function -Wno-unused-variable")
+set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 11)
 
-# libs to compile
-include_directories("${PROJECT_SOURCE_DIR}/src/Common")
+# lib common
+include_directories(${PROJECT_SOURCE_DIR}/src/Common)
 add_subdirectory(src/Common)
 
-file(GLOB SOURCES src/Server/*.cpp)
-add_executable(Server ${SOURCES})
+# lib untrusted
+add_library(Untrusted ${PROJECT_SOURCE_DIR}/src/tsgx/src/untrusted/untrusted_free_bytes.c)
+target_include_directories(Untrusted PRIVATE ${PROJECT_SOURCE_DIR}/src/tsgx/include)
 
-file(GLOB SOURCES src/Client/*.cpp src/Client/*.c)
-add_library(Client ${SOURCES}) # TODO executable?
+# lib iee
+file(GLOB IEE_SOURCES src/Iee/*.c src/Iee/util/*.c)
+add_library(Iee ${IEE_SOURCES})
+target_link_libraries(Iee sodium)
+add_custom_command(TARGET Iee POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy ../bin/libIee.a ../src/tsgx/test_bisen/f/iee.a
+)
 
-# linking
+# server module
+file(GLOB SERVER_SOURCES src/Server/*.cpp)
+add_executable(Server ${SERVER_SOURCES})
 target_link_libraries(Server Common)
-target_link_libraries(Client Common)
-target_link_libraries(Client sodium)
+
+# client module
+file(GLOB CLIENT_SOURCES src/Client/*.cpp src/Client/*.c)
+add_library(Client ${CLIENT_SOURCES})
+target_link_libraries(Client Common sodium)
+
+# test module
+add_executable(Test ${PROJECT_SOURCE_DIR}/src/Test/main.cpp)
+target_link_libraries(Test Common Iee Client Untrusted)

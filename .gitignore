@@ -1,7 +1,7 @@
-src/Data/enron/*
-!src/Data/enron/.gitkeep
-src/Data/parsed/*
-!src/Data/parsed/.gitkeep
+Data/enron/*
+!Data/enron/.gitkeep
+Data/parsed/*
+!data/parsed/.gitkeep
 
 src/tsgx/build/*
 !src/tsgx/build/.gitkeep

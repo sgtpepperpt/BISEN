@@ -1,12 +1,8 @@
+
+
 Data/enron/*
-!Data/enron/.gitkeep
 Data/parsed/*
-!data/parsed/.gitkeep
-
 src/tsgx/build/*
-!src/tsgx/build/.gitkeep
-
-Clusion/salt
 
 # generated test files
 src/Test/bisen_benchmark*
@@ -22,8 +18,6 @@ src/Iee/main
 src/Test/Test
 src/Test/main
 src/Test/server
-
-
 
 # Created by https://www.gitignore.io/api/c,vim,c++,xcode,clion,linux,macos,cmake,microsoftoffice
 
@@ -284,3 +278,5 @@ xcuserdata/
 
 # End of https://www.gitignore.io/api/c,vim,c++,xcode,clion,linux,macos,cmake,microsoftoffice
 
+# keep gitkeep files
+!/**/.gitkeep

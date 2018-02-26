@@ -5,6 +5,8 @@ To run BISEN, you will need to install libsodium-sgx, along with Intel SGX drive
 
 ## Compiling and running
 ```
+mkdir build && mkdir bin && mkdir src/tsgx/build
+
 export DATASET_DIR="Data/parsed/1000/"
 
 (cd build && cmake .. && make clean && make)

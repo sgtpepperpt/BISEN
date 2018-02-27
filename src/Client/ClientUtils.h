@@ -44,7 +44,10 @@
 #endif
 
 #include "../Common/Definitions.h"
+
+extern "C" {
 #include "../Common/Utils.h"
+}
 
 // CLIENT TOKEN DEFINITIONS
 // client tokens do not need the doc vector, as the iee ones do

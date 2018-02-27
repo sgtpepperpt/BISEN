@@ -9,23 +9,13 @@
 #define __BooleanSSE__Utils__
 
 #include <pthread.h>
-#include <iostream>
-#include <fstream>
 #include <dirent.h>
-#include <algorithm>
-#include <set>
-#include <map>
-#include <vector>
-#include <stack>
-#include <queue>
 #include <stdint.h>
 #include <math.h>
 #include <openssl/rand.h>
 #include <stdio.h>
 #include <limits.h>
 #include <string.h>
-#include <sstream>
-#include <iomanip>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -45,8 +35,6 @@
 #define  LOGI(...)  fprintf(stdout,__VA_ARGS__)
 
 long timeElapsed (struct timeval start, struct timeval end);
-
-std::string getHexRepresentation(const unsigned char * Bytes, size_t Length);
 
 void pee(const char *msg);
 

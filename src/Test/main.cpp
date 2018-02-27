@@ -12,10 +12,10 @@
 #include <assert.h>
 #include <string.h>
 
-#include "../Common/Utils.h"
 #include "../Client/SseClient.hpp"
 
 extern "C" {
+#include "../Common/Utils.h"
 #include "../Iee/SseIee.h"
 #include "../Iee/types.h"
 }

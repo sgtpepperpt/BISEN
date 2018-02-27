@@ -20,17 +20,6 @@ long timeElapsed (struct timeval start, struct timeval end) {
   return micros_used;
 }
 
-
-std::string getHexRepresentation(const unsigned char * Bytes, size_t Length)
-{
-    std::ostringstream os;
-    os.fill('0');
-    os<<std::hex;
-    for(const unsigned char * ptr=Bytes;ptr<Bytes+Length;ptr++)
-        os<<std::setw(2)<<(unsigned int)*ptr;
-    return os.str();
-}
-
 void pee(const char *msg)
 {
     perror(msg);
@@ -61,14 +50,14 @@ int sendAll(int s, unsigned char *buf, long len)
     long total = 0;       // how many bytes we've sent
     long bytesleft = len; // how many we have left to send
     long n = 0;
-    
+
     while(total < len) {
         n = write(s, buf+total, bytesleft);
         if (n == -1) { break; }
         total += n;
         bytesleft -= n;
     }
-    
+
     return n==-1||total!=len ? -1 : 0; // return -1 on failure, 0 on success
 }
 

@@ -19,6 +19,9 @@
 #include <string.h>
 
 #include "../Common/Definitions.h"
+
+extern "C" {
 #include "../Common/Utils.h"
+}
 
 #endif /* ServerUtils_hpp */

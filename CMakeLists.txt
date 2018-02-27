@@ -9,7 +9,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
 # external dependencies
 find_package(sodium)
 
-# flags
+# flags (-DLOCALTEST -DVERBOSE)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread -g -O0 -fPIC -Wall -Wno-unused-function -Wno-unused-variable")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g -O0 -fPIC -Wall -Wno-unused-function -Wno-unused-variable")
 set(CMAKE_C_STANDARD 11)
@@ -44,3 +44,10 @@ target_link_libraries(Client Common sodium)
 # test module
 add_executable(Test ${PROJECT_SOURCE_DIR}/src/Test/main.cpp)
 target_link_libraries(Test Common Iee Client Untrusted)
+
+# mpc module
+add_custom_target(
+   tsgx
+   COMMAND make
+   WORKING_DIRECTORY ../src/tsgx
+)

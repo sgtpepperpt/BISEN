@@ -1,7 +1,7 @@
 .PHONY : clean test_bisen
 
 test_bisen:
-	cp ../Test/bisen_benchmark build/bisen_benchmark
+	cp ../../bin/bisen_benchmark build/bisen_benchmark
 	$(MAKE) -C src/
 	$(MAKE) -C test_bisen/f
 	$(MAKE) -C test_bisen/enclave

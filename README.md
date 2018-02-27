@@ -25,8 +25,11 @@ export DATASET_DIR="Data/parsed/1000/"
 
 
 ## Tips
-**Note:** config flags may be set-up in the Test Makefile.
--DVERBOSE enables verbose output; -DLOCALTEST enables an SGX simulation by running the generated _./main_.
+**Note:** config flags may be set-up as cmake compiler flags.
+
+* -DVERBOSE enables verbose output
+
+* -DLOCALTEST enables a SGX simulation by running the Iee module outside of SGX (no SGX support required).
 
 
 # TODO Legacy README below, needs revising

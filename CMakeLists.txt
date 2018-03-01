@@ -30,6 +30,10 @@ target_link_libraries(Iee sodium)
 add_custom_command(TARGET Iee POST_BUILD
                     COMMAND ${CMAKE_COMMAND} -E copy ../bin/libIee.a ../src/tsgx/test_bisen/f/iee.a
 )
+# the following may not be needed in the future
+add_custom_command(TARGET Iee POST_BUILD
+                    COMMAND ${CMAKE_COMMAND} -E copy ../bin/libIee.a ../src/tsgx-client/test_bisen/f/iee.a
+)
 
 # server module
 file(GLOB SERVER_SOURCES src/Server/*.cpp)
@@ -45,9 +49,15 @@ target_link_libraries(Client Common sodium)
 add_executable(Test ${PROJECT_SOURCE_DIR}/src/Test/main.cpp)
 target_link_libraries(Test Common Iee Client Untrusted)
 
-# mpc module
+# mpc modules
 add_custom_target(
-   tsgx
+   mpc_server
    COMMAND make
    WORKING_DIRECTORY ../src/tsgx
+)
+
+add_custom_target(
+   mpc_client
+   COMMAND make
+   WORKING_DIRECTORY ../src/tsgx-client
 )

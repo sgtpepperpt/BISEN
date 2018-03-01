@@ -44,13 +44,13 @@ CXX = g++
 
 # define any compile-time flags
 # -DSGX_MPC_OUTSIDE
-CFLAGS = -c -Wall -Werror -fPIC -DSGX_MPC_TEST  $(SGX_FLAG)
+CFLAGS = -c -Wall -Werror -Wno-error=unused-variable -fPIC -DSGX_MPC_TEST  $(SGX_FLAG)
 
 ################################################################################
 
-LINKFLAGS =  -L../build -lsgx_mpc -lremote -lf -lsodium-sgx
+LINKFLAGS =  -L../build -lsgx_mpc -lremote -lf -lsodium-sgx /home/guilherme/BISEN/bin/libCommon.a
 INCLUDES = -I../include -I$(SGX_SDK)/include
-SRCS = test_fserver.c
+SRCS = remote_mpc_client.c
 
 SGX_COMMON_CFLAGS := -m64
 SGX_LIBRARY_PATH := $(SGX_SDK)/lib64
@@ -59,7 +59,7 @@ SGX_LIBRARY_PATH := $(SGX_SDK)/lib64
 OBJS = $(SRCS:.c=.o)
 
 # define the executable file
-MAIN = ../build/test_bisen
+MAIN = ../build/mpc_client
 
 # The following part of the makefile is generic; it can be used to
 # build any executable just by changing the definitions above and by

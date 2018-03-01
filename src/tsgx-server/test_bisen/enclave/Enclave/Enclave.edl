@@ -1,0 +1,42 @@
+enclave {
+
+  include "sgx_report.h"
+  include "sgx_mpc.h"
+
+  trusted {
+
+    public int sec_mpc_program(
+                 [out] byte **omsg, 
+                 [out] size *omsglen, 
+                 label l,
+                 [in, count = inmsglen] const byte *inmsg, 
+                 size   inmsglen
+               );
+
+    public void tmp_get_report(
+                  [in] sgx_target_info_t *tInfo,
+                  [out] sgx_report_t *report
+                );
+
+    public void check_initialization(
+                  [out] int *check_val
+                );
+    
+  };
+
+  untrusted {
+		void fserver(
+      [out]	bytes	*out,
+      [out]	size	*outlen,
+      [in, count=inlen] unsigned char *in,
+      size inlen
+    );
+
+    void untrusted_malloc_bytes([in,out] bytes *pointer, size length);
+    void untrusted_free_bytes([in,out] bytes *pointer);
+    int get_qe_tInfo([out] sgx_target_info_t *tInfo);
+    void print_msg([in,string] const char * msg);
+    void print_int(int val);    
+  };
+
+};

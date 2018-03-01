@@ -34,7 +34,7 @@ int get_qe_tInfo(sgx_target_info_t *tInfo)
   if (ret_sts != SGX_SUCCESS)
   { return -1; }
 
-  return 0;  
+  return 0;
 }
 #endif
 
@@ -51,10 +51,10 @@ void print_int(int val)
 int mach_load(void **handle, char *filename)
 {
   #ifdef  SGX_MPC_OUTSIDE
-   *handle = NULL; 
-   SGX_MPC_MACH_SIGLEN = 13; 
+   *handle = NULL;
+   SGX_MPC_MACH_SIGLEN = 13;
    return SGX_MPC_OK;
- 
+
   #else
    sgx_status_t ret;
    int  ret_v;
@@ -69,16 +69,16 @@ int mach_load(void **handle, char *filename)
    // initialize SGX_MPC_MACH_SIGLEN
    uint32_t quote_size = 0;
    // ret = sgx_get_quote_size(NULL, &quote_size); // this function is deprecated
-   ret = sgx_calc_quote_size(NULL, 0, &quote_size);  
+   ret = sgx_calc_quote_size(NULL, 0, &quote_size);
 
    if(ret != SGX_SUCCESS)
    { return SGX_MPC_ERROR; }
 
    SGX_MPC_MACH_SIGLEN = quote_size;
-    
+
    // initialize enclave
    memset(&launch_token, 0, sizeof(sgx_launch_token_t));
-    
+
    ret = sgx_create_enclave(
            filename,
            SGX_DEBUG_FLAG,
@@ -92,7 +92,7 @@ int mach_load(void **handle, char *filename)
      if(SGX_SUCCESS != ret)
      { printf("checking initialization failed\n");
        return SGX_MPC_ERROR;
-     } 
+     }
      tmp_eid = enclave_id;
      *handle = (void*) malloc(sizeof(enclave_id));
      memcpy(*handle, &enclave_id, sizeof(enclave_id));
@@ -101,9 +101,9 @@ int mach_load(void **handle, char *filename)
    else
    { *handle = NULL;
      ret_v = SGX_MPC_ERROR;
-   } 
-   
-   memcpy(&spid, sp_id_value, sizeof(sgx_spid_t)); 
+   }
+
+   memcpy(&spid, sp_id_value, sizeof(sgx_spid_t));
    return ret_v;
   #endif
 }
@@ -112,7 +112,7 @@ int mach_load(void **handle, char *filename)
 // is expecting to see. This should be guaraneeed by lac_attest
 
 int mach_run(
-  bytes *omsg, 
+  bytes *omsg,
   size *omsglen,
   const void *handle,
   const label l,
@@ -128,11 +128,11 @@ int mach_run(
    sgx_enclave_id_t eid;
    sgx_status_t sgx_rv;
    int rv;
- 
+
    memcpy(&eid, handle, sizeof(eid));
    sgx_rv = SGX_SUCCESS;
    rv = 0;
-    
+
    sgx_rv = sec_mpc_program(eid, &rv, omsg, omsglen, l, imsg, imsglen);
    return sgx_rv == SGX_SUCCESS ? SGX_MPC_OK : SGX_MPC_ERROR;
   #endif
@@ -200,7 +200,7 @@ void print_sgx_rv(sgx_status_t ret)
       printf("SGX_ERROR_SERVICE_UNAVAILABLE\n");
       break;
 
-    default:  
+    default:
       printf("unknown SGX F\n");
   }
 }
@@ -231,7 +231,7 @@ int mach_quote(
    // should produce whatever is verified by mach_verify
 
    // TODO : CHECKME : some comments and code were present (and later removed)
-   //                  at commit 281ae8e6df9e8314db582ce8eff30b350c17ddbe 
+   //                  at commit 281ae8e6df9e8314db582ce8eff30b350c17ddbe
 
    sgx_target_info_t qeTInf;
    sgx_status_t sgx_rv;
@@ -253,7 +253,7 @@ int mach_quote(
               SGX_UNLINKABLE_SIGNATURE,
               &spid,
               NULL, // p_nonce
-              NULL, // signatuer revoke list 
+              NULL, // signatuer revoke list
               0, // size of revoke list
               NULL, // sgx_report_t *p_qe_report,
               sgx_q,
@@ -264,7 +264,7 @@ int mach_quote(
    // TODO : CHECKME : DOES NOT RETURN ON NON SUCCESS
    if (sgx_rv != SGX_SUCCESS)
    { printf("quote could not be generated"); }
-   
+
    byte_copy(omsg,imsglen-SGX_MPC_MACH_REPLEN,imsg);
    return SGX_MPC_OK;
   #endif
@@ -300,4 +300,3 @@ void mach_finalize(const void *handle)
    printf("enclave destroyed\n");
   #endif
 }
-

@@ -34,14 +34,14 @@
 
 #define  LOGI(...)  fprintf(stdout,__VA_ARGS__)
 
-long timeElapsed (struct timeval start, struct timeval end);
+long util_time_elapsed (struct timeval start, struct timeval end);
 
 void pee(const char *msg);
 
 int sendAll(int s, unsigned char *buf, long len);
 int receiveAll (int s, unsigned char* buff, long len);
 
-int connectAndSend (unsigned char* buff, long size);
+//int connectAndSend (unsigned char* buff, long size);
 
 void socketSend (int sockfd, unsigned char* buff, long size);
 void socketReceive(int sockfd, unsigned char* buff, long size);

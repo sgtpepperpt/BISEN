@@ -12,7 +12,7 @@
 //    return round(val * size);
 //}
 
-long timeElapsed (struct timeval start, struct timeval end) {
+long util_time_elapsed(struct timeval start, struct timeval end) {
   long secs_used,micros_used;
 
   secs_used = (end.tv_sec - start.tv_sec); //avoid overflow by subtracting first
@@ -25,7 +25,7 @@ void pee(const char *msg)
     perror(msg);
     exit(0);
 }
-
+/*
 int connectAndSend (unsigned char* buff, long size) {
     int sockfd = socket(AF_INET, SOCK_STREAM, 0);
     struct hostent *server = gethostbyname(serverIP);
@@ -38,7 +38,7 @@ int connectAndSend (unsigned char* buff, long size) {
         pee("ERROR connecting");
     socketSend (sockfd, buff, size);
     return sockfd;
-}
+}*/
 
 void socketSend (int sockfd, unsigned char* buff, long size) {
     if (sendAll(sockfd, buff, size) < 0)

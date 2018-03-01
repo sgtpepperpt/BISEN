@@ -190,7 +190,7 @@ int main(int argc, const char * argv[]) {
         unsigned char* data;
         unsigned long long data_size = client.add_new_document(text, &data);
         gettimeofday(&end, NULL);
-        total_add_time += timeElapsed(start, end);
+        total_add_time += util_time_elapsed(start, end);
 
         #ifdef LOCALTEST
         gettimeofday(&start, NULL);
@@ -202,7 +202,7 @@ int main(int argc, const char * argv[]) {
         free(output);
 
         gettimeofday(&end, NULL);
-        total_sim_add_time += timeElapsed(start, end);
+        total_sim_add_time += util_time_elapsed(start, end);
         //print_buffer("Output", output, output_size);
         #endif
 
@@ -249,7 +249,7 @@ int main(int argc, const char * argv[]) {
             unsigned char* data;
             unsigned long long data_size = client.search(query, &data);
             gettimeofday(&end, NULL);
-            total_search_time += timeElapsed(start, end);
+            total_search_time += util_time_elapsed(start, end);
 
             #ifdef VERBOSE
             /*for(int i = 0; i < data_size; i++){
@@ -272,7 +272,7 @@ int main(int argc, const char * argv[]) {
             f(&output, &output_size, 0, (const bytes) data, data_size);
             gettimeofday(&end, NULL);
             //print_buffer("Output", output, output_size);
-            total_sim_search_time += timeElapsed(start, end);
+            total_sim_search_time += util_time_elapsed(start, end);
 
             //process results
             const int nDocs = output_size / sizeof(int);

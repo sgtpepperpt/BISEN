@@ -19,8 +19,8 @@
 
 //static const char* homePath = "/Users/tiago/";
 
-static const char* clientIP = "127.0.0.1";//"54.194.253.119";
-static const char* serverIP = "127.0.0.1";//"54.194.253.119";
+//static const char* clientIP = "127.0.0.1";//"54.194.253.119";
+//static const char* serverIP = "127.0.0.1";//"54.194.253.119";
 static const int serverPort = 9978;
 static const int clientPort = 9979;
 

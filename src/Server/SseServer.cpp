@@ -102,7 +102,7 @@ SseServer::SseServer() {
                 socketReceive(readIeePipe, d, d_size);
                 (*I)[l_vector] = d;
                 gettimeofday(&end, NULL);
-                total_add_time += timeElapsed(start, end);
+                total_add_time += util_time_elapsed(start, end);
 
                 #ifdef VERBOSE
                 printf("Finished Add!\n");
@@ -156,7 +156,7 @@ SseServer::SseServer() {
                 free(buffer);
 
                 gettimeofday(&end2, NULL);
-                total_search_time += timeElapsed(start2, end2);
+                total_search_time += util_time_elapsed(start2, end2);
 
                 nr_search_batches++;
 

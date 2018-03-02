@@ -41,7 +41,7 @@ int lac_attest(
     msgreplen = 0;
     msgrep = NULL;
 
-    if( mach_run(&msgrep, &msgreplen, handle, l, imsg, imsglen) != SGX_MPC_OK )
+    if( remote_mach_run(sock, &msgrep, &msgreplen, handle, l, imsg, imsglen) != SGX_MPC_OK )
     { *omsg = NULL;
       *omsglen = 0;
       return SGX_MPC_ERROR;
@@ -49,23 +49,24 @@ int lac_attest(
 
     // ensures that quoted outputs are msg || sig encoded
     // ensures fresh memory so repmsg can be freed
-    *omsglen = (msgreplen-SGX_MPC_MACH_REPLEN) + SGX_MPC_MACH_SIGLEN;
+    *omsglen = (msgreplen-SGX_MPC_MACH_REPLEN) + SGX_MPC_MACH_SIGLEN;//printf("the len %d\n", *omsglen);
     *omsg = (bytes) malloc(*omsglen);
-    if(*omsg == NULL)
-    { *omsglen = 0;
-      byte_zero(msgrep,msgreplen);
-      free(msgrep);
-      return SGX_MPC_ERROR;
+    if(*omsg == NULL) {
+        *omsglen = 0;
+        byte_zero(msgrep,msgreplen);
+        free(msgrep);
+        return SGX_MPC_ERROR;
     }
-
+    printf("will quote\n");
     res = remote_mach_quote(sock, *omsg, *omsglen, msgrep, msgreplen);
+    printf("%d\n", res);
     byte_zero(msgrep, msgreplen);
     free(msgrep);
     return res;
   }
   else
   {
-    if( mach_run(omsg, omsglen, handle, l, imsg, imsglen) != SGX_MPC_OK )
+    if( remote_mach_run(sock, omsg, omsglen, handle, l, imsg, imsglen) != SGX_MPC_OK )
     { return SGX_MPC_ERROR;
     }
     return SGX_MPC_OK;

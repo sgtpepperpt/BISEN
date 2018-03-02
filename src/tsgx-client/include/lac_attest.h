@@ -5,7 +5,8 @@
 #include "lac.h"
 
 int lac_attest(
-  bytes *omsg,  
+    int sock,
+  bytes *omsg,
   size *omsglen,
   const void *handle,
   const label l,

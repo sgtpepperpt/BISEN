@@ -12,8 +12,8 @@
 #define STAGE_Q 0x80
 
 static byte proc_stage;
-static byte counter_in_local[SGX_MPC_AEAD_NONCEBYTES]; 
-static byte counter_out_local[SGX_MPC_AEAD_NONCEBYTES]; 
+static byte counter_in_local[SGX_MPC_AEAD_NONCEBYTES];
+static byte counter_out_local[SGX_MPC_AEAD_NONCEBYTES];
 
 
 int inc_counter_local(
@@ -29,7 +29,7 @@ int inc_counter_local(
   for(i=1; i < SGX_MPC_AEAD_NONCEBYTES; i++)
   { sum = (int) counter[i] + carry;
     counter[i] = (byte) sum;
-    carry = sum >> 8;    
+    carry = sum >> 8;
   }
   return SGX_MPC_OK;
 }
@@ -43,9 +43,10 @@ static size lastmlen;
 
 // assumes code and prms refs can be kept
 int mpc_process_init(
+    int sock,
   const bytes code,
   const size codelen,
-  const bytes prms, 
+  const bytes prms,
   const label partyid,
   const bytes pk,
   attke_local_state* st
@@ -63,17 +64,18 @@ int mpc_process_init(
   attke_st=st;
   sigpk = pk;
 
-  return lac_verify_init(code, codelen, prms, partyid);
+  return lac_verify_init(sock, code, codelen, prms, partyid);
 }
 
 /* in the first stage, incoming messages are always expected to come
    from the server side in attested form
-   in second stage, inmsg is either an incoming msg for the server, 
+   in second stage, inmsg is either an incoming msg for the server,
    or the next input to be sent
    this is indicated by the newinput flag
    if it's and incoming message, then omsg is an output
    otherwise, omsg is the message to be sent */
 int mpc_process(
+    int sock,
   bytes *omsg,
   size *omsglen,
   const label l,
@@ -104,7 +106,7 @@ int mpc_process(
       return SGX_MPC_ERROR;
     }
 
-    res = lac_verify(&kemsgin, &kemsginlen, pid, lastm, lastmlen, inmsg, inmsglen);
+    res = lac_verify(sock, &kemsgin, &kemsginlen, pid, lastm, lastmlen, inmsg, inmsglen);
     if(res != SGX_MPC_OK)
     { *omsg = NULL;
       *omsglen = 0;
@@ -154,8 +156,8 @@ int mpc_process(
     }
 
     if(newinput) // input requested
-    { 
-      res = ae_enc(omsg, omsglen, inmsg, inmsglen, attke_st->key, counter_in_local); 
+    {
+      res = ae_enc(omsg, omsglen, inmsg, inmsglen, attke_st->key, counter_in_local);
       if(res != SGX_MPC_OK)
       { *omsg = NULL;
         *omsglen = 0;
@@ -213,4 +215,3 @@ int bypass_local_state_for_test(
   return SGX_MPC_OK;
 }
 #endif
-

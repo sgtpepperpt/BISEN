@@ -38,7 +38,7 @@ size_t send_and_receive(int sock, void* buffer, size_t buf_len, void** res_buffe
     sendAll(sock, buffer, buf_len);
 
     size_t res_len;
-    receiveAll(sock, (unsigned char *)&res_len, sizeof(size_t));printf("len %lu\n", res_len);
+    receiveAll(sock, (unsigned char *)&res_len, sizeof(size_t));
 
     *res_buffer = (unsigned char *)malloc(sizeof(unsigned char) * res_len);
     receiveAll(sock, *res_buffer, res_len);

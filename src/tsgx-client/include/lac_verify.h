@@ -5,6 +5,7 @@
 #include "lac.h"
 
 int lac_verify_init(
+    int sock,
   const bytes cde,
   const size cdelen,
   const bytes prms,
@@ -12,6 +13,7 @@ int lac_verify_init(
 );
 
 int lac_verify(
+    int sock,
   bytes *omsg,
   size *omsglen,
   const label l,

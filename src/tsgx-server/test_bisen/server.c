@@ -27,34 +27,109 @@ int listen_sock;
 
 void *handle = NULL;
 
+void printbuf(unsigned char* b, size_t len) {
+    for(unsigned i = 0; i < len; i++) {
+        printf("%02x ", b[i]);
+    }
+    printf("\n");
+}
+
 size_t process_message(void * recv_buffer, size_t recv_len, unsigned char ** res_buffer) {
     unsigned char op;
     memcpy(&op, recv_buffer, sizeof(unsigned char));
-    recv_buffer++;
+    //printf("op %c\n", op);
+    void* tmp = recv_buffer + 1;
 
     size_t res_len;
 
     if(op == 'l') {
-        char * filename = (char *)recv_buffer;
+        char * filename = (char *)tmp;
         int res = mach_load(&handle, filename);
+        printf("Loaded \"%s\" : %d\n", filename, res);
 
-        *res_buffer = malloc(sizeof(unsigned char) * sizeof(int));
-        memcpy(*res_buffer, &res, sizeof(int));
-
+        // allocate response buffer
         res_len = sizeof(int);
+        *res_buffer = malloc(sizeof(unsigned char) * res_len);
+
+        memcpy(*res_buffer, &res, sizeof(int));
     } else if(op == 'q') {
-        unsigned long long omsglen;
-        memcpy(&omsglen, recv_buffer, sizeof(unsigned long long));
+        size omsglen;
+        memcpy(&omsglen, tmp, sizeof(size));
+        tmp += sizeof(size);
 
-        unsigned long long imsglen;
-        memcpy(&imsglen, recv_buffer + sizeof(unsigned long long), sizeof(unsigned long long));
+        size imsglen;
+        memcpy(&imsglen, tmp, sizeof(size));
+        tmp += sizeof(size);
 
-        *res_buffer = malloc(sizeof(unsigned char) * (omsglen + sizeof(int)));
+        bytes imsg = tmp;
 
-        int res = mach_quote(*res_buffer + sizeof(int), omsglen, recv_buffer + 2 * sizeof(unsigned long long), imsglen);
+        // allocate response buffer
+        res_len = sizeof(int) + omsglen;
+        *res_buffer = malloc(sizeof(unsigned char) * res_len);
+
+        int res = mach_quote(*res_buffer + sizeof(int), omsglen, imsg, imsglen);
+        //printf("Quote : %d\n", res);
         memcpy(*res_buffer, &res, sizeof(int));
 
-        res_len = sizeof(int) + omsglen;
+    } else if(op == 'r') {
+        label l;
+        memcpy(&l, tmp, sizeof(label));
+        tmp += sizeof(label);
+
+        /*size omsglen;
+        memcpy(&omsglen, tmp, sizeof(size));
+        tmp += sizeof(size);*/
+
+        size imsglen;
+        memcpy(&imsglen, tmp, sizeof(size));
+        tmp += sizeof(size);
+
+        bytes imsg = tmp;
+        size omsglen;
+        bytes omsg = NULL;
+
+        int res = mach_run(&omsg, &omsglen, handle, l, imsg, imsglen);
+
+        // allocate response buffer
+        res_len = sizeof(int) + sizeof(size) + omsglen;
+        *res_buffer = malloc(sizeof(unsigned char) * res_len);
+
+        memcpy(*res_buffer, &res, sizeof(int));
+        memcpy(*res_buffer + sizeof(int), &omsglen, sizeof(size));
+        memcpy(*res_buffer + sizeof(int) + sizeof(size), omsg, omsglen);
+
+        //printbuf(*res_buffer, res_len);
+        //printf("Run : %d; len %llu; res_len %lu\n", res, omsglen, res_len);
+    } else if(op == 'v') {printf("v\n");
+        size imsglen;
+        memcpy(&imsglen, tmp, sizeof(size));
+        tmp += sizeof(size);
+
+        bytes imsg = tmp;
+
+        size codelen;
+        memcpy(&codelen, tmp, sizeof(size));
+        tmp += sizeof(size);
+
+        bytes code = tmp;
+
+        int res = mach_verify(imsg, imsglen, code, codelen);
+
+        // allocate response buffer
+        res_len = sizeof(int);
+        *res_buffer = malloc(sizeof(unsigned char) * res_len);
+
+        memcpy(*res_buffer, &res, sizeof(int));
+    } else if(op == 'f') {
+        printf("finalise\n");
+        mach_finalize(handle);
+
+        // allocate response buffer
+        res_len = sizeof(int);
+        *res_buffer = malloc(sizeof(unsigned char) * res_len);
+
+        int res = 0;
+        memcpy(*res_buffer, &res, sizeof(int));
     }
 
     return res_len;
@@ -71,17 +146,6 @@ int main(int argc, char *argv[]) {
 
 	// port to start the server on
 	int SERVER_PORT = 6969;
-
-    bytes msg_lr;
-    size msg_lr_len;
-    bytes msg_rl;
-    size msg_rl_len;
-
-    bytes sigpk_p1 = pubs[0];
-    attke_local_state local_st_p1 = lsts[0];
-
-    bytes sigpk_p2 = pubs[1];
-    attke_local_state local_st_p2 = lsts[1];
 
 	struct sockaddr_in server_addr;
 	memset(&server_addr, 0, sizeof(server_addr));
@@ -100,8 +164,6 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-	// bind it to listen to the incoming connections on the created server
-	// address, will return -1 on error
 	if ((bind(listen_sock, (struct sockaddr *)&server_addr, sizeof(server_addr))) < 0) {
 		printf("could not bind socket\n");
 		return 1;
@@ -112,7 +174,6 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	// socket address used to store client address
 	struct sockaddr_in client_addr;
 	socklen_t client_addr_len = 0;
 
@@ -126,24 +187,28 @@ int main(int argc, char *argv[]) {
 
 		printf("client connected with ip address: %s\n", inet_ntoa(client_addr.sin_addr));
 
-        // receive message from client
-        size_t recv_len;
-        receiveAll(sock, (unsigned char *)&recv_len, sizeof(size_t));
+        while (1) {
+            //printf("---------- new msg---\n");
+            // receive message from client
+            size_t recv_len;
+            receiveAll(sock, (unsigned char *)&recv_len, sizeof(size_t));
 
-        unsigned char * recv_buffer = (unsigned char *)malloc(sizeof(unsigned char) * recv_len);
-        receiveAll(sock, recv_buffer, recv_len);
-printf("gotall\n");
-        // prepare response
-        unsigned char * res_buffer;
-        size_t res_len = process_message(recv_buffer, recv_len, &res_buffer);
+            unsigned char * recv_buffer = (unsigned char *)malloc(sizeof(unsigned char) * recv_len);
+            receiveAll(sock, recv_buffer, recv_len);
+            //printf("gotall\n");
 
-        // send response
-        sendAll(sock, (unsigned char *)&res_len, sizeof(size_t));
-        sendAll(sock, res_buffer, res_len);
-printf("sentall\n");
-        free(recv_buffer);
-        free(res_buffer);
+            // prepare response
+            unsigned char * res_buffer;
+            size_t res_len = process_message(recv_buffer, recv_len, &res_buffer);
 
+            // send response
+            sendAll(sock, (unsigned char *)&res_len, sizeof(size_t));
+            sendAll(sock, res_buffer, res_len);
+            //printf("sentall\n");
+
+            free(recv_buffer);
+            free(res_buffer);
+        }
 		close(sock);
 	}
 

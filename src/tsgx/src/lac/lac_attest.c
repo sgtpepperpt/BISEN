@@ -8,8 +8,8 @@ extern int SGX_MPC_MACH_SIGLEN; //
 
 /* allocates output buffer that will be passed over to the enclave
    for filling, so it needs to get the expected size of the output.
-   the expected output length should _not_ include signature or 
-   report overhead, but on exit it will include the length of the 
+   the expected output length should _not_ include signature or
+   report overhead, but on exit it will include the length of the
    complete buffer, which will include the quoting signature in
    case of attested outputs. In the case of non-attested outputs
    it will be unchanged (it should therefore include the aead
@@ -48,7 +48,7 @@ int lac_attest(
 
     // ensures that quoted outputs are msg || sig encoded
     // ensures fresh memory so repmsg can be freed
-    *omsglen = (msgreplen-SGX_MPC_MACH_REPLEN) + SGX_MPC_MACH_SIGLEN;
+    *omsglen = (msgreplen-SGX_MPC_MACH_REPLEN) + SGX_MPC_MACH_SIGLEN;printf("the len %d\n", *omsglen);
     *omsg = (bytes) malloc(*omsglen);
     if(*omsg == NULL)
     { *omsglen = 0;

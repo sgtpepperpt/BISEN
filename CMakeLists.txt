@@ -28,7 +28,7 @@ file(GLOB IEE_SOURCES src/Iee/*.c src/Iee/util/*.c)
 add_library(Iee ${IEE_SOURCES})
 target_link_libraries(Iee sodium)
 add_custom_command(TARGET Iee POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy ../bin/libIee.a ../src/tsgx/test_bisen/f/iee.a
+                    COMMAND ${CMAKE_COMMAND} -E copy ../bin/libIee.a ../src/tsgx/test_bisen/f/iee.a#TODO check this for new client and server tsgx
 )
 # the following may not be needed in the future
 add_custom_command(TARGET Iee POST_BUILD

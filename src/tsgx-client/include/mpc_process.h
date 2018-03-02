@@ -5,15 +5,17 @@
 #include "mpc.h"
 
 int mpc_process_init(
+    int socket,
   const bytes code,
   const size codelen,
-  const bytes prms, 
+  const bytes prms,
   const label partyid,
   const bytes pk,
   attke_local_state* st
 );
 
 int mpc_process(
+    int sock,
   bytes *omsg,
   size *omsglen,
   const label l,

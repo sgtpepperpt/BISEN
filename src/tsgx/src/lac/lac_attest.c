@@ -44,11 +44,11 @@ int lac_attest(
     { *omsg = NULL;
       *omsglen = 0;
       return SGX_MPC_ERROR;
-    }
+  }printf("msgreplen %llu\n", msgreplen);
 
     // ensures that quoted outputs are msg || sig encoded
     // ensures fresh memory so repmsg can be freed
-    *omsglen = (msgreplen-SGX_MPC_MACH_REPLEN) + SGX_MPC_MACH_SIGLEN;printf("the len %d\n", *omsglen);
+    *omsglen = (msgreplen-SGX_MPC_MACH_REPLEN) + SGX_MPC_MACH_SIGLEN;
     *omsg = (bytes) malloc(*omsglen);
     if(*omsg == NULL)
     { *omsglen = 0;

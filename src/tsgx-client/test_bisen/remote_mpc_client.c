@@ -17,11 +17,24 @@
 #include "client.c"
 #include "mach.h"
 
+extern int SGX_MPC_MACH_SIGLEN;
+
 void printbuf(unsigned char* b, size_t len) {
     for(unsigned i = 0; i < len; i++) {
         printf("%02x ", b[i]);
     }
     printf("\n-----------------\n");
+}
+
+void read_arr(const void* val, int size, const unsigned char * arr, int* pos) {
+    memcpy((void*)val, &arr[*pos], size);
+    *pos += size;
+}
+
+int read_int(const unsigned char * arr, int* pos) {
+    int x;
+    read_arr(&x, sizeof(int), arr, pos);
+    return x;
 }
 
 int remote_mach_load(int sock, void **handle, char *filename) {
@@ -33,13 +46,15 @@ int remote_mach_load(int sock, void **handle, char *filename) {
     memcpy(buffer, &op, sizeof(unsigned char));
     memcpy(buffer + sizeof(unsigned char), filename, strlen(filename) + 1);
 
-    //unsigned char * recv_buffer;
+    void* recv_buffer;
     int res;
-    size_t recv_len = send_and_receive(sock, buffer, len, (void*)&res);
-    //memcpy(&res, recv_buffer, sizeof(int));
+
+    size_t recv_len = send_and_receive(sock, buffer, len, &recv_buffer);
+    memcpy(&res, recv_buffer, sizeof(int));
+    memcpy(&SGX_MPC_MACH_SIGLEN, recv_buffer + sizeof(int), sizeof(int));
 
     free(buffer);
-    //free(recv_buffer);
+    free(recv_buffer);
     return res;
 }
 
@@ -162,7 +177,6 @@ void remote_mach_finalize(int sock) {
 }
 
 int main(int argc,char **argv) {
-    //int res;
     generate_commands();
     int cmd_index;
 
@@ -187,13 +201,11 @@ int main(int argc,char **argv) {
     res = mpc_process_init(sock, NULL,0,NULL,1,sigpk_p1,&local_st_p1);
     printf("Initialized\n");
     printf("Status: %d\n",res);
-    printf("a\n");
 
     msg_rl_len = SGX_MPC_AKE_KEYBYTES+16;
     res |= lac_attest(sock, &msg_rl,&msg_rl_len,handle,0x01,NULL,0); /* attested pub params */
     printf("ATTKE PRMS R: Remote -> Local: %llu bytes\n",msg_rl_len);
     printf("Status: %d\n",res);
-    printf("b\n");
 
     res |= mpc_process(sock, &msg_lr,&msg_lr_len,0x01,msg_rl,msg_rl_len,0); /* signed pub params */
     printf("ATTKE PRMS L: Local -> Remote: %llu bytes\n",msg_lr_len);
@@ -292,12 +304,12 @@ int main(int argc,char **argv) {
             printf("MPC Search(%06lu) result: %d docs\n", search_counter, n_docs);
             printf("MPC time: iee total search = %6.3lf seconds!\n", elapsed/1000000.0 );
             elapsed = 0;
-            /*int pos = 0;
+            int pos = 0;
             for (int i = 0; i < n_docs; i++) {
                 int d = read_int(msg_lr, &pos);
                 printf("%d ", d);
             }
-            printf("\n");*/
+            printf("\n");
             search_counter++;
 
             /*if(search_counter == nr_searches) {

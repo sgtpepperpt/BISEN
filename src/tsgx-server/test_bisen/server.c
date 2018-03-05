@@ -23,8 +23,9 @@
 
 #include "../../Common/Utils.h"
 
-int listen_sock;
+extern int SGX_MPC_MACH_SIGLEN;
 
+int listen_sock;
 void *handle = NULL;
 
 void printbuf(unsigned char* b, size_t len) {
@@ -48,10 +49,11 @@ size_t process_message(void * recv_buffer, size_t recv_len, unsigned char ** res
         printf("Loaded \"%s\" : %d\n", filename, res);
 
         // allocate response buffer
-        res_len = sizeof(int);
+        res_len = 2 * sizeof(int);
         *res_buffer = malloc(sizeof(unsigned char) * res_len);
 
         memcpy(*res_buffer, &res, sizeof(int));
+        memcpy(*res_buffer + sizeof(int), &SGX_MPC_MACH_SIGLEN, sizeof(int));
     } else if(op == 'q') {
         size omsglen;
         memcpy(&omsglen, tmp, sizeof(size));

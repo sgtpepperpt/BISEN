@@ -17,7 +17,7 @@
 #include "client.c"
 #include "mach.h"
 
-extern int SGX_MPC_MACH_SIGLEN;
+int SGX_MPC_MACH_SIGLEN;
 
 void printbuf(unsigned char* b, size_t len) {
     for(unsigned i = 0; i < len; i++) {

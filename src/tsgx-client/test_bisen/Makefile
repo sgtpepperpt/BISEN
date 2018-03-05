@@ -1,42 +1,10 @@
-#
-# 'make'        build executable file 'mycc'
-# 'make clean'  removes all .o, executable and library files
-
-# SGX SDK Settings
-SGX_SDK ?= /opt/intel/sgxsdk
-
-SGX_MODE ?= HW
-
-USE_SGX = 1
-
-ifeq ($(USE_SGX), 1)
-	SGX_FLAG :=
-	SGX_OBJ  := enclave/Enclave/Enclave_u.o
-	FSRCS    :=
-	SGX_COMMON_CFLAGS := -m64
-	SGX_LIBRARY_PATH := $(SGX_SDK)/lib64
-	Urts_Library_Name := sgx_urts
-	SGX_Link_Flags := $(SGX_COMMON_CFLAGS) -L$(SGX_LIBRARY_PATH) -l$(Urts_Library_Name) -lsgx_uae_service
-
-	ifneq ($(SGX_MODE), HW)
-		Urts_Library_Name := sgx_urts_sim
-		SGX_Link_Flags := $(SGX_COMMON_CFLAGS) -L$(SGX_LIBRARY_PATH) -l$(Urts_Library_Name) -lsgx_uae_service_sim
-
-	else
-		Urts_Library_Name := sgx_urts
-		SGX_Link_Flags := $(SGX_COMMON_CFLAGS) -L$(SGX_LIBRARY_PATH) -l$(Urts_Library_Name) -lsgx_uae_service
-
-	endif
-
-else
-	SGX_FLAG := -DSGX_MPC_OUTSIDE
-	SGX_OBJ  :=
-	FSRCS    :=
-	SGX_COMMON_CFLAGS :=
-	SGX_LIBRARY_PATH :=
-	Urts_Library_Name :=
-	SGX_Link_Flags :=
-endif
+#SGX_FLAG := -DSGX_MPC_OUTSIDE
+SGX_OBJ  :=
+FSRCS    :=
+SGX_COMMON_CFLAGS :=
+SGX_LIBRARY_PATH :=
+Urts_Library_Name :=
+SGX_Link_Flags :=
 
 # define the C compiler to use
 CC = gcc

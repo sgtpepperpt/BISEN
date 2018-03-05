@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+#include <pthread.h>
 #include <sys/time.h>
 
 // mpc
@@ -35,7 +36,7 @@ void printbuf(unsigned char* b, size_t len) {
     printf("\n");
 }
 
-size_t process_message(void * recv_buffer, size_t recv_len, unsigned char ** res_buffer) {
+size_t process_message(int socket, void * recv_buffer, size_t recv_len, unsigned char ** res_buffer) {
     unsigned char op;
     memcpy(&op, recv_buffer, sizeof(unsigned char));
     //printf("op %c\n", op);
@@ -143,11 +144,39 @@ void close_all() {
     exit(0);
 }
 
+void * process_client(void * args) {
+    int sock = *((int *)args);
+
+    while (1) {
+        // receive message from client
+        size_t recv_len;
+        receiveAll(sock, (unsigned char *)&recv_len, sizeof(size_t));
+
+        unsigned char * recv_buffer = (unsigned char *)malloc(sizeof(unsigned char) * recv_len);
+        receiveAll(sock, recv_buffer, recv_len);
+        //printf("gotall\n");
+
+        // prepare response
+        unsigned char * res_buffer;
+        size_t res_len = process_message(sock, recv_buffer, recv_len, &res_buffer);
+
+        // send response
+        sendAll(sock, (unsigned char *)&res_len, sizeof(size_t));
+        sendAll(sock, res_buffer, res_len);
+        //printf("sentall\n");
+
+        free(recv_buffer);
+        free(res_buffer);
+    }
+
+    close(sock);
+}
+
 int main(int argc, char *argv[]) {
     signal(SIGINT, close_all);
 
 	// port to start the server on
-	int SERVER_PORT = 6969;
+	const int SERVER_PORT = 6969;
 
 	struct sockaddr_in server_addr;
 	memset(&server_addr, 0, sizeof(server_addr));
@@ -157,63 +186,41 @@ int main(int argc, char *argv[]) {
 
 	if ((listen_sock = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
 		printf("could not create listen socket\n");
-		return 1;
+		exit(1);
 	}
 
     int yes = 1;
     if (setsockopt(listen_sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1) {
-        perror("setsockopt");
-        return 1;
+        exit(1);
     }
 
 	if ((bind(listen_sock, (struct sockaddr *)&server_addr, sizeof(server_addr))) < 0) {
 		printf("could not bind socket\n");
-		return 1;
+		exit(1);
 	}
 
 	if (listen(listen_sock, 16) < 0) {
 		printf("could not open socket for listening\n");
-		return 1;
+		exit(1);
 	}
 
 	struct sockaddr_in client_addr;
 	socklen_t client_addr_len = 0;
 
-    printf("Starting server...\n");
+    printf("Listening for requests...\n");
 	while (1) {
         int sock;
 		if ((sock = accept(listen_sock, (struct sockaddr *)&client_addr, &client_addr_len)) < 0) {
-			printf("could not open a socket to accept data\n");
-			return 1;
+			printf("Client accept failed\n");
+			exit(1);
 		}
 
-		printf("client connected with ip address: %s\n", inet_ntoa(client_addr.sin_addr));
+        printf("Client connected with ip address: %s\n", inet_ntoa(client_addr.sin_addr));
 
-        while (1) {
-            //printf("---------- new msg---\n");
-            // receive message from client
-            size_t recv_len;
-            receiveAll(sock, (unsigned char *)&recv_len, sizeof(size_t));
-
-            unsigned char * recv_buffer = (unsigned char *)malloc(sizeof(unsigned char) * recv_len);
-            receiveAll(sock, recv_buffer, recv_len);
-            //printf("gotall\n");
-
-            // prepare response
-            unsigned char * res_buffer;
-            size_t res_len = process_message(recv_buffer, recv_len, &res_buffer);
-
-            // send response
-            sendAll(sock, (unsigned char *)&res_len, sizeof(size_t));
-            sendAll(sock, res_buffer, res_len);
-            //printf("sentall\n");
-
-            free(recv_buffer);
-            free(res_buffer);
-        }
-		close(sock);
+        pthread_t tid;
+        pthread_create(&tid, NULL, process_client, (void*)&sock);
 	}
 
-	//close(listen_sock);
+	close(listen_sock);
 	return 0;
 }

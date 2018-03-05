@@ -48,7 +48,7 @@ CFLAGS = -c -Wall -Werror -Wno-error=unused-variable -fPIC -DSGX_MPC_TEST  $(SGX
 
 ################################################################################
 
-LINKFLAGS =  -L../build -lsgx_mpc -lremote -lf -lsodium-sgx /home/guilherme/BISEN/bin/libCommon.a
+LINKFLAGS =  -L../build -lsgx_mpc -lremote -lf -lsodium-sgx -lpthread /home/guilherme/BISEN/bin/libCommon.a #TODO better this
 INCLUDES = -I../include -I$(SGX_SDK)/include
 SRCS = server.c
 

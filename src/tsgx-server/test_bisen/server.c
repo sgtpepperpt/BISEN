@@ -27,7 +27,6 @@
 extern int SGX_MPC_MACH_SIGLEN;
 
 int listen_sock;
-void *handle = NULL;
 
 void printbuf(unsigned char* b, size_t len) {
     for(unsigned i = 0; i < len; i++) {
@@ -42,15 +41,15 @@ void close_all() {
     exit(0);
 }
 
-void process_mach_load(int socket) {
+void process_mach_load(const int socket, void** handle) {
     size flen;
     receiveAll(socket, &flen, sizeof(size));
 
     char * filename = (char *)malloc(sizeof(char) * (flen + 1));
     receiveAll(socket, filename, flen);
-    filename[flen - 1] = '\0';
+    filename[flen] = '\0';
 
-    int res = mach_load(&handle, filename);
+    int res = mach_load(handle, filename);
     printf("Loaded \"%s\" %d\n", filename, res);
 
     sendAll(socket, &res, sizeof(int));
@@ -58,7 +57,7 @@ void process_mach_load(int socket) {
     free(filename);
 }
 
-void process_mach_quote(int socket) {
+void process_mach_quote(const int socket) {
     size omsglen;
     receiveAll(socket, &omsglen, sizeof(size));
 
@@ -79,7 +78,7 @@ void process_mach_quote(int socket) {
     free(omsg);
 }
 
-void process_mach_run(int socket) {
+void process_mach_run(const int socket, const void* handle) {
     label l;
     receiveAll(socket, &l, sizeof(label));
 
@@ -101,7 +100,7 @@ void process_mach_run(int socket) {
     free(omsg);
 }
 
-void process_mach_verify(int socket) {
+void process_mach_verify(const int socket) {
     size imsglen;
     receiveAll(socket, &imsglen, sizeof(size));
 
@@ -122,7 +121,7 @@ void process_mach_verify(int socket) {
     free(code);
 }
 
-void process_mach_finalize(int socket) {
+void process_mach_finalize(const int socket, const void* handle) {
     printf("finalise\n");
     mach_finalize(handle);
 
@@ -131,8 +130,9 @@ void process_mach_finalize(int socket) {
     sendAll(socket, &res, sizeof(int));
 }
 
-void * process_client(void * args) {
+void* process_client(void * args) {
     int sock = *((int *)args);
+    void* handle = NULL;
 
     while (1) {
         unsigned char op;
@@ -140,19 +140,19 @@ void * process_client(void * args) {
 
         switch (op) {
         case 'l':
-            process_mach_load(sock);
+            process_mach_load(sock, &handle);
             break;
         case 'q':
             process_mach_quote(sock);
             break;
         case 'r':
-            process_mach_run(sock);
+            process_mach_run(sock, handle);
             break;
         case 'v':
             process_mach_verify(sock);
             break;
         case 'f':
-            process_mach_finalize(sock);
+            process_mach_finalize(sock, handle);
             break;
         default:
             printf("Unrecognised op: %c\n", op);
@@ -160,6 +160,7 @@ void * process_client(void * args) {
         }
     }
 
+    printf("Client closed\n");
     close(sock);
 }
 

@@ -6,10 +6,7 @@
 #include <unistd.h>
 #include "../../Common/Utils.h"
 
-int create_socket() {
-	const char* server_name = "localhost";
-	const int server_port = 6969;
-
+int create_socket(const char* server_name, const int server_port) {
 	struct sockaddr_in server_addr;
 	memset(&server_addr, 0, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
@@ -32,7 +29,7 @@ int create_socket() {
 
     return sock;
 }
-
+/*
 size_t send_and_receive(int sock, void* buffer, size_t buf_len, void** res_buffer) {
     sendAll(sock, (unsigned char *)&buf_len, sizeof(size_t));
     sendAll(sock, buffer, buf_len);
@@ -44,4 +41,4 @@ size_t send_and_receive(int sock, void* buffer, size_t buf_len, void** res_buffe
     receiveAll(sock, *res_buffer, res_len);
 
     return res_len;
-}
+}*/

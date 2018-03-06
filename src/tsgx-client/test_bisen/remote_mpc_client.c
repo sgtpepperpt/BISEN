@@ -153,7 +153,7 @@ int main(int argc,char **argv) {
     void *handle = NULL;
     char *filename = "enclave.signed.a";
 
-    int sock = create_socket();
+    int sock = create_socket("localhost", 7901);
     int res = remote_mach_load(sock, handle, filename);
     printf("res %d\n", res);
 

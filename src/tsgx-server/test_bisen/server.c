@@ -14,8 +14,6 @@
 #include "f/public_key.h"
 #include "secret_key.h"
 
-#include "f/commands.h"
-
 // sockets
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -26,7 +24,7 @@
 
 extern int SGX_MPC_MACH_SIGLEN;
 
-int listen_sock;
+static int listen_socket;
 
 void printbuf(unsigned char* b, size_t len) {
     for(unsigned i = 0; i < len; i++) {
@@ -36,7 +34,7 @@ void printbuf(unsigned char* b, size_t len) {
 }
 
 void close_all() {
-    close(listen_sock);
+    close(listen_socket);
     fflush(NULL);
     exit(0);
 }
@@ -131,28 +129,28 @@ void process_mach_finalize(const int socket, const void* handle) {
 }
 
 void* process_client(void * args) {
-    int sock = *((int *)args);
+    int socket = *((int *)args);
     void* handle = NULL;
 
     while (1) {
         unsigned char op;
-        receiveAll(sock, &op, sizeof(unsigned char));
+        receiveAll(socket, &op, sizeof(unsigned char));
 
         switch (op) {
         case 'l':
-            process_mach_load(sock, &handle);
+            process_mach_load(socket, &handle);
             break;
         case 'q':
-            process_mach_quote(sock);
+            process_mach_quote(socket);
             break;
         case 'r':
-            process_mach_run(sock, handle);
+            process_mach_run(socket, handle);
             break;
         case 'v':
-            process_mach_verify(sock);
+            process_mach_verify(socket);
             break;
         case 'f':
-            process_mach_finalize(sock, handle);
+            process_mach_finalize(socket, handle);
             break;
         default:
             printf("Unrecognised op: %c\n", op);
@@ -161,37 +159,37 @@ void* process_client(void * args) {
     }
 
     printf("Client closed\n");
-    close(sock);
+    close(socket);
 }
 
 int main(int argc, char *argv[]) {
     signal(SIGINT, close_all);
 
 	// port to start the server on
-	const int SERVER_PORT = 6969;
+	const int server_port = 7901;
 
 	struct sockaddr_in server_addr;
 	memset(&server_addr, 0, sizeof(server_addr));
 	server_addr.sin_family = AF_INET;
-	server_addr.sin_port = htons(SERVER_PORT);
+	server_addr.sin_port = htons(server_port);
 	server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
-	if ((listen_sock = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
+	if ((listen_socket = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
 		printf("Could not create socket\n");
 		exit(1);
 	}
 
     int yes = 1;
-    if (setsockopt(listen_sock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1) {
+    if (setsockopt(listen_socket, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) == -1) {
         exit(1);
     }
 
-	if ((bind(listen_sock, (struct sockaddr *)&server_addr, sizeof(server_addr))) < 0) {
+	if ((bind(listen_socket, (struct sockaddr *)&server_addr, sizeof(server_addr))) < 0) {
 		printf("Could not bind\n");
 		exit(1);
 	}
 
-	if (listen(listen_sock, 16) < 0) {
+	if (listen(listen_socket, 16) < 0) {
 		printf("Could not open for listening\n");
 		exit(1);
 	}
@@ -201,8 +199,8 @@ int main(int argc, char *argv[]) {
 
     printf("Listening for requests...\n");
 	while (1) {
-        int sock;
-		if ((sock = accept(listen_sock, (struct sockaddr *)&client_addr, &client_addr_len)) < 0) {
+        int socket;
+		if ((socket = accept(listen_socket, (struct sockaddr *)&client_addr, &client_addr_len)) < 0) {
 			printf("Accept failed\n");
 			exit(1);
 		}
@@ -210,9 +208,9 @@ int main(int argc, char *argv[]) {
         printf("Client connected (%s)\n", inet_ntoa(client_addr.sin_addr));
 
         pthread_t tid;
-        pthread_create(&tid, NULL, process_client, (void*)&sock);
+        pthread_create(&tid, NULL, process_client, (void*)&socket);
 	}
 
-	close(listen_sock);
+	close(listen_socket);
 	return 0;
 }

@@ -46,8 +46,9 @@ void process_mach_load(int socket) {
     size flen;
     receiveAll(socket, &flen, sizeof(size));
 
-    char * filename = (char *)malloc(sizeof(char) * flen);
+    char * filename = (char *)malloc(sizeof(char) * (flen + 1));
     receiveAll(socket, filename, flen);
+    filename[flen - 1] = '\0';
 
     int res = mach_load(&handle, filename);
     printf("Loaded \"%s\" %d\n", filename, res);

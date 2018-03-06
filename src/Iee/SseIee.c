@@ -10,6 +10,9 @@
 
 const char* pipeDir = "/tmp/BooleanSSE/";
 
+static int last_ndocs;
+static unsigned char* aux_bool;
+
 void print_buffer(const char* name, const unsigned char * buf, const unsigned long long len) {
     /*ocall_printf("%s size: %llu\n", name, len);
     for(unsigned i = 0; i < len; i++)
@@ -53,10 +56,7 @@ static void benchmarking_print() {
     iee_socketSend(writeServerPipe, tmp_buff, sizeof(unsigned char));
 }
 
-unsigned char *count;
-
 static void init_pipes() {
-    count = (unsigned char*) malloc(550000);
     char pipeName[256];
 
     //start server-iee pipe
@@ -114,6 +114,10 @@ static void setup(bytes* out, size* out_len, const bytes in, const size in_len) 
     // tell server to init index I
     unsigned char op = '1';
     iee_socketSend(writeServerPipe, &op, sizeof(char));
+
+    // init aux_bool buffer
+    aux_bool = NULL;
+    last_ndocs = 0;
 
     // output message
     *out_len = 1;
@@ -455,8 +459,15 @@ static void search(bytes* out, size* out_len, const bytes in, const size in_len)
     ocall_strprint("\n\n");*/
     #endif
 
+    // ensure aux_bool has space for all docs
+    if(nDocs > last_ndocs) {
+        //ocall_strprint("Realloc aux bool buffer\n");
+        aux_bool = (unsigned char *)realloc(aux_bool, sizeof(unsigned char) * nDocs);
+        last_ndocs = nDocs;
+    }
+
     //calculate boolean formula
-    vec_int response_docs = evaluate(query, nDocs, count);
+    vec_int response_docs = evaluate(query, nDocs, aux_bool);
 
     #ifdef VERBOSE
     ocall_strprint("Query Evaluated in IEE!\n");

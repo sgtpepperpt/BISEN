@@ -41,8 +41,8 @@ int vi_contains(vec_int v, int e) {
     return 0;
 }
 
-vec_int vi_vec_union(vec_int a, vec_int b, unsigned char* count) {
-    memset(count, 0, sizeof(unsigned char) * 550000);
+vec_int vi_vec_union(vec_int a, vec_int b, unsigned char* count, unsigned ndocs) {
+    memset(count, 0, sizeof(unsigned char) * ndocs);
 
     unsigned ops = a.counter;
 
@@ -62,7 +62,7 @@ vec_int vi_vec_union(vec_int a, vec_int b, unsigned char* count) {
     vec_int v;
     vi_init(&v, ops);
 
-    for(int i = 0; i < 550000; i++) {
+    for(int i = 0; i < ndocs; i++) {
         if(count[i] > 0) {
             vi_push_back(&v, i);
         }
@@ -71,8 +71,8 @@ vec_int vi_vec_union(vec_int a, vec_int b, unsigned char* count) {
     return v;
 }
 
-vec_int vi_vec_intersection(vec_int a, vec_int b, unsigned char* count) {
-    memset(count, 0, sizeof(unsigned char) * 550000);
+vec_int vi_vec_intersection(vec_int a, vec_int b, unsigned char* count, unsigned ndocs) {
+    memset(count, 0, sizeof(unsigned char) * ndocs);
     unsigned int ops = 0;
 
     // add all elements from a
@@ -90,7 +90,7 @@ vec_int vi_vec_intersection(vec_int a, vec_int b, unsigned char* count) {
     vec_int v;
     vi_init(&v, ops);
 
-    for(int i = 0; i < 550000; i++) {
+    for(int i = 0; i < ndocs; i++) {
         if(count[i] == 2) {
             vi_push_back(&v, i);
         }

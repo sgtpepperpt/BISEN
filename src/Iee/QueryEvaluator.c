@@ -59,7 +59,7 @@ vec_int evaluate(vec_token rpn_expr, int nDocs, unsigned char* count) {
             vt_pop_back(&eval_stack);
 
             // intersection of the two sets of documents
-            vec_int set_inter = vi_vec_intersection(and1, and2, count);
+            vec_int set_inter = vi_vec_intersection(and1, and2, count, nDocs);
 
             /*ocall_strprint("intersection ");
             for(int i = 0; i < size(set_inter); i++)
@@ -89,7 +89,7 @@ vec_int evaluate(vec_token rpn_expr, int nDocs, unsigned char* count) {
             vt_pop_back(&eval_stack);
 
             // union of the two sets of documents
-            vec_int set_un = vi_vec_union(or1, or2, count);
+            vec_int set_un = vi_vec_union(or1, or2, count, nDocs);
             //set_union(or1.begin(), or1.end(), or2.begin(), or2.end(), back_inserter(set_un));
 
             /*ocall_strprint("union ");

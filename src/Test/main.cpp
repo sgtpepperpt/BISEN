@@ -91,6 +91,9 @@ int main(int argc, const char * argv[]) {
 //    queries.push_back("!(enron || time || inform || work || call || discuss || meet || week || receiv || dai)");
 
     queries.push_back("enron && time");
+    queries.push_back("enron && time");
+    queries.push_back("enron && time");
+    queries.push_back("enron && time");
     /*queries.push_back("enron && time && call && work && inform");
     queries.push_back("enron && time && inform && work && call && discuss && meet && week && receiv && dai");
     queries.push_back("enron || time");

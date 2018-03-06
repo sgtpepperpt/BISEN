@@ -45,7 +45,7 @@ void socketSend (int sockfd, unsigned char* buff, long size) {
         pee("ERROR writing to socket");
 }
 
-int sendAll(int s, unsigned char *buf, long len)
+int sendAll(int s, const void *buf, long len)
 {
     long total = 0;       // how many bytes we've sent
     long bytesleft = len; // how many we have left to send
@@ -66,7 +66,7 @@ void socketReceive(int sockfd, unsigned char* buff, long size) {
         pee("ERROR reading from socket");
 }
 
-int receiveAll (int socket, unsigned char* buff, long len) {
+int receiveAll (int socket, const void *buff, long len) {
     int r = 0;
     while (r < len) {
         ssize_t n = read(socket,&buff[r],len-r);

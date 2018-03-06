@@ -36,137 +36,127 @@ void printbuf(unsigned char* b, size_t len) {
     printf("\n");
 }
 
-size_t process_message(int socket, void * recv_buffer, size_t recv_len, unsigned char ** res_buffer) {
-    unsigned char op;
-    memcpy(&op, recv_buffer, sizeof(unsigned char));
-    //printf("op %c\n", op);
-    void* tmp = recv_buffer + 1;
-
-    size_t res_len;
-
-    if(op == 'l') {
-        char * filename = (char *)tmp;
-        int res = mach_load(&handle, filename);
-        printf("Loaded \"%s\" : %d\n", filename, res);
-
-        // allocate response buffer
-        res_len = 2 * sizeof(int);
-        *res_buffer = malloc(sizeof(unsigned char) * res_len);
-
-        memcpy(*res_buffer, &res, sizeof(int));
-        memcpy(*res_buffer + sizeof(int), &SGX_MPC_MACH_SIGLEN, sizeof(int));
-    } else if(op == 'q') {
-        size omsglen;
-        memcpy(&omsglen, tmp, sizeof(size));
-        tmp += sizeof(size);
-
-        size imsglen;
-        memcpy(&imsglen, tmp, sizeof(size));
-        tmp += sizeof(size);
-
-        bytes imsg = tmp;
-
-        // allocate response buffer
-        res_len = sizeof(int) + omsglen;
-        *res_buffer = malloc(sizeof(unsigned char) * res_len);
-
-        int res = mach_quote(*res_buffer + sizeof(int), omsglen, imsg, imsglen);
-        //printf("Quote : %d\n", res);
-        memcpy(*res_buffer, &res, sizeof(int));
-
-    } else if(op == 'r') {
-        label l;
-        memcpy(&l, tmp, sizeof(label));
-        tmp += sizeof(label);
-
-        /*size omsglen;
-        memcpy(&omsglen, tmp, sizeof(size));
-        tmp += sizeof(size);*/
-
-        size imsglen;
-        memcpy(&imsglen, tmp, sizeof(size));
-        tmp += sizeof(size);
-
-        bytes imsg = tmp;
-        size omsglen;
-        bytes omsg = NULL;
-
-        int res = mach_run(&omsg, &omsglen, handle, l, imsg, imsglen);
-
-        // allocate response buffer
-        res_len = sizeof(int) + sizeof(size) + omsglen;
-        *res_buffer = malloc(sizeof(unsigned char) * res_len);
-
-        memcpy(*res_buffer, &res, sizeof(int));
-        memcpy(*res_buffer + sizeof(int), &omsglen, sizeof(size));
-        memcpy(*res_buffer + sizeof(int) + sizeof(size), omsg, omsglen);
-
-        //printbuf(*res_buffer, res_len);
-        //printf("Run : %d; len %llu; res_len %lu\n", res, omsglen, res_len);
-    } else if(op == 'v') {printf("v\n");
-        size imsglen;
-        memcpy(&imsglen, tmp, sizeof(size));
-        tmp += sizeof(size);
-
-        bytes imsg = tmp;
-
-        size codelen;
-        memcpy(&codelen, tmp, sizeof(size));
-        tmp += sizeof(size);
-
-        bytes code = tmp;
-
-        int res = mach_verify(imsg, imsglen, code, codelen);
-
-        // allocate response buffer
-        res_len = sizeof(int);
-        *res_buffer = malloc(sizeof(unsigned char) * res_len);
-
-        memcpy(*res_buffer, &res, sizeof(int));
-    } else if(op == 'f') {
-        printf("finalise\n");
-        mach_finalize(handle);
-
-        // allocate response buffer
-        res_len = sizeof(int);
-        *res_buffer = malloc(sizeof(unsigned char) * res_len);
-
-        int res = 0;
-        memcpy(*res_buffer, &res, sizeof(int));
-    }
-
-    return res_len;
-}
-
 void close_all() {
     close(listen_sock);
     fflush(NULL);
     exit(0);
 }
 
+void process_mach_load(int socket) {
+    size flen;
+    receiveAll(socket, &flen, sizeof(size));
+
+    char * filename = (char *)malloc(sizeof(char) * flen);
+    receiveAll(socket, filename, flen);
+
+    int res = mach_load(&handle, filename);
+    printf("Loaded \"%s\" %d\n", filename, res);
+
+    sendAll(socket, &res, sizeof(int));
+    sendAll(socket, &SGX_MPC_MACH_SIGLEN, sizeof(int));
+    free(filename);
+}
+
+void process_mach_quote(int socket) {
+    size omsglen;
+    receiveAll(socket, &omsglen, sizeof(size));
+
+    size imsglen;
+    receiveAll(socket, &imsglen, sizeof(size));
+
+    unsigned char* imsg = (unsigned char*)malloc(sizeof(unsigned char) * imsglen);
+    receiveAll(socket, imsg, imsglen);
+
+    unsigned char* omsg = (unsigned char*)malloc(sizeof(unsigned char) * omsglen);
+
+    int res = mach_quote(omsg, omsglen, imsg, imsglen);
+    //printf("Quote : %d\n", res);
+
+    sendAll(socket, &res, sizeof(int));
+    sendAll(socket, omsg, omsglen);
+    free(imsg);
+    free(omsg);
+}
+
+void process_mach_run(int socket) {
+    label l;
+    receiveAll(socket, &l, sizeof(label));
+
+    size imsglen;
+    receiveAll(socket, &imsglen, sizeof(size));
+
+    unsigned char* imsg = (unsigned char*)malloc(sizeof(unsigned char) * imsglen);
+    receiveAll(socket, imsg, imsglen);
+
+    size omsglen;
+    bytes omsg = NULL;
+
+    int res = mach_run(&omsg, &omsglen, handle, l, imsg, imsglen);
+
+    sendAll(socket, &res, sizeof(int));
+    sendAll(socket, &omsglen, sizeof(size));
+    sendAll(socket, omsg, omsglen);
+    free(imsg);
+    free(omsg);
+}
+
+void process_mach_verify(int socket) {
+    size imsglen;
+    receiveAll(socket, &imsglen, sizeof(size));
+
+    unsigned char* imsg = (unsigned char*)malloc(sizeof(unsigned char) * imsglen);
+    receiveAll(socket, imsg, imsglen);
+
+    size codelen;
+    receiveAll(socket, &codelen, sizeof(size));
+
+    unsigned char* code = (unsigned char*)malloc(sizeof(unsigned char) * codelen);
+    receiveAll(socket, code, codelen);
+
+    int res = mach_verify(imsg, imsglen, code, codelen);
+
+    sendAll(socket, &res, sizeof(int));
+
+    free(imsg);
+    free(code);
+}
+
+void process_mach_finalize(int socket) {
+    printf("finalise\n");
+    mach_finalize(handle);
+
+    // always success
+    int res = 0;
+    sendAll(socket, &res, sizeof(int));
+}
+
 void * process_client(void * args) {
     int sock = *((int *)args);
 
     while (1) {
-        // receive message from client
-        size_t recv_len;
-        receiveAll(sock, (unsigned char *)&recv_len, sizeof(size_t));
+        unsigned char op;
+        receiveAll(sock, &op, sizeof(unsigned char));
 
-        unsigned char * recv_buffer = (unsigned char *)malloc(sizeof(unsigned char) * recv_len);
-        receiveAll(sock, recv_buffer, recv_len);
-        //printf("gotall\n");
-
-        // prepare response
-        unsigned char * res_buffer;
-        size_t res_len = process_message(sock, recv_buffer, recv_len, &res_buffer);
-
-        // send response
-        sendAll(sock, (unsigned char *)&res_len, sizeof(size_t));
-        sendAll(sock, res_buffer, res_len);
-        //printf("sentall\n");
-
-        free(recv_buffer);
-        free(res_buffer);
+        switch (op) {
+        case 'l':
+            process_mach_load(sock);
+            break;
+        case 'q':
+            process_mach_quote(sock);
+            break;
+        case 'r':
+            process_mach_run(sock);
+            break;
+        case 'v':
+            process_mach_verify(sock);
+            break;
+        case 'f':
+            process_mach_finalize(sock);
+            break;
+        default:
+            printf("Unrecognised op: %c\n", op);
+            break;
+        }
     }
 
     close(sock);
@@ -185,7 +175,7 @@ int main(int argc, char *argv[]) {
 	server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	if ((listen_sock = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
-		printf("could not create listen socket\n");
+		printf("Could not create socket\n");
 		exit(1);
 	}
 
@@ -195,12 +185,12 @@ int main(int argc, char *argv[]) {
     }
 
 	if ((bind(listen_sock, (struct sockaddr *)&server_addr, sizeof(server_addr))) < 0) {
-		printf("could not bind socket\n");
+		printf("Could not bind\n");
 		exit(1);
 	}
 
 	if (listen(listen_sock, 16) < 0) {
-		printf("could not open socket for listening\n");
+		printf("Could not open for listening\n");
 		exit(1);
 	}
 
@@ -211,11 +201,11 @@ int main(int argc, char *argv[]) {
 	while (1) {
         int sock;
 		if ((sock = accept(listen_sock, (struct sockaddr *)&client_addr, &client_addr_len)) < 0) {
-			printf("Client accept failed\n");
+			printf("Accept failed\n");
 			exit(1);
 		}
 
-        printf("Client connected with ip address: %s\n", inet_ntoa(client_addr.sin_addr));
+        printf("Client connected (%s)\n", inet_ntoa(client_addr.sin_addr));
 
         pthread_t tid;
         pthread_create(&tid, NULL, process_client, (void*)&sock);

@@ -39,141 +39,100 @@ int read_int(const unsigned char * arr, int* pos) {
 
 int remote_mach_load(int sock, void **handle, char *filename) {
     //printf("performing remote_mach_load\n");
-    size_t len = sizeof(unsigned char) + strlen(filename) + 1;
     const unsigned char op = 'l';
 
-    unsigned char * buffer = (unsigned char *)malloc(sizeof(unsigned char) * len);
-    memcpy(buffer, &op, sizeof(unsigned char));
-    memcpy(buffer + sizeof(unsigned char), filename, strlen(filename) + 1);
+    // send
+    // op + filename len + filename
+    sendAll(sock, &op, sizeof(unsigned char));
+    size flen = strlen(filename);
+    sendAll(sock, &flen, sizeof(size));
+    sendAll(sock, filename, flen);
 
-    void* recv_buffer;
+    // receive
+    // res + SGX_MPC_MACH_SIGLEN
     int res;
+    receiveAll(sock, &res, sizeof(int));
+    receiveAll(sock, &SGX_MPC_MACH_SIGLEN, sizeof(int));
 
-    size_t recv_len = send_and_receive(sock, buffer, len, &recv_buffer);
-    memcpy(&res, recv_buffer, sizeof(int));
-    memcpy(&SGX_MPC_MACH_SIGLEN, recv_buffer + sizeof(int), sizeof(int));
-
-    free(buffer);
-    free(recv_buffer);
     return res;
 }
 
 int remote_mach_quote(int sock, bytes omsg, size omsglen, const bytes imsg, const size imsglen) {
     //printf("performing remote_mach_quote\n");
-    // op + omsglen + imsglen + imsg
-    size_t len = sizeof(unsigned char) + 2 * sizeof(unsigned long long) + imsglen;
     const unsigned char op = 'q';
 
-    void* buffer = malloc(sizeof(unsigned char) * len);
-    memcpy(buffer, &op, sizeof(unsigned char));
-    memcpy(buffer + sizeof(unsigned char), &omsglen, sizeof(unsigned long long));
-    memcpy(buffer + sizeof(unsigned char) + sizeof(unsigned long long), &imsglen, sizeof(unsigned long long));
-    memcpy(buffer + sizeof(unsigned char) + 2 * sizeof(unsigned long long), imsg, imsglen);
+    // send
+    // op + omsglen + imsglen + imsg
+    sendAll(sock, &op, sizeof(unsigned char));
+    sendAll(sock, &omsglen, sizeof(size));
+    sendAll(sock, &imsglen, sizeof(size));
+    sendAll(sock, imsg, imsglen);
 
-    void* recv_buffer;
-    size_t recv_len = send_and_receive(sock, buffer, len, &recv_buffer);
-
+    // receive
+    // res + omsg
     int res;
-    memcpy(&res, recv_buffer, sizeof(int));
-    memcpy(omsg, recv_buffer + sizeof(int), omsglen);
+    receiveAll(sock, &res, sizeof(int));
+    receiveAll(sock, omsg, omsglen);
 
-    free(buffer);
-    free(recv_buffer);
     return res;
 }
 
 int remote_mach_run(int sock, bytes *omsg, size *omsglen, const void *handle, const label l, const bytes imsg, const size imsglen) {
     //printf("performing remote_mach_run\n");
-    // op + l + *omsglen + imsglen + imsg
-    size_t len = sizeof(unsigned char) + sizeof(label) + /*2 * */ sizeof(unsigned long long) + imsglen;
+    // op + l + imsglen + imsg
     const unsigned char op = 'r';
 
-    void* buffer = malloc(sizeof(unsigned char) * len);
-    void* tmp = buffer;
+    // send
+    // op + l + imsglen + imsg
+    sendAll(sock, &op, sizeof(unsigned char));
+    sendAll(sock, &l, sizeof(label));
+    sendAll(sock, &imsglen, sizeof(size));
+    sendAll(sock, imsg, imsglen);
 
-    memcpy(tmp, &op, sizeof(unsigned char));
-    tmp += sizeof(unsigned char);
-
-    memcpy(tmp, &l, sizeof(label));
-    tmp += sizeof(label);
-
-    //memcpy(tmp, omsglen, sizeof(unsigned long long));
-    //tmp += sizeof(unsigned long long);
-
-    memcpy(tmp, &imsglen, sizeof(unsigned long long));
-    tmp += sizeof(unsigned long long);
-
-    memcpy(tmp, imsg, imsglen);
-    //printf("created buffer\n");
-    void* recv_buffer;
-    size_t recv_len = send_and_receive(sock, buffer, len, &recv_buffer);
-    //printbuf(recv_buffer, recv_len);
-
-    //printf("sent and received\n");
+    // receive
+    // res + omsg
     int res;
-    memcpy(&res, recv_buffer, sizeof(int));
+    receiveAll(sock, &res, sizeof(int));
+    receiveAll(sock, omsglen, sizeof(size));
 
-    memcpy(omsglen, recv_buffer + sizeof(int), sizeof(size));
-    //printf("%llu\n", *omsglen);
     *omsg = (bytes)malloc(sizeof(unsigned char) * *omsglen);
-    memcpy(*omsg, recv_buffer + sizeof(int) + sizeof(size), *omsglen);
-
-    free(buffer);
-    free(recv_buffer);
+    receiveAll(sock, *omsg, *omsglen);
 
     return res;
 }
 
 int remote_mach_verify(int sock, const bytes imsg, const size imsglen, const bytes code, const size codelen) {
     //printf("performing remote_mach_verify\n");
-    // op + imsglen + imsg + codelen + code
-    size_t len = sizeof(unsigned char) + 2 * sizeof(unsigned long long) + imsglen + codelen;
     const unsigned char op = 'v';
 
-    void* buffer = malloc(sizeof(unsigned char) * len);
-    void* tmp = buffer;
+    // send
+    // op + imsglen + imsg + codelen + code
+    sendAll(sock, &op, sizeof(unsigned char));
+    sendAll(sock, &imsglen, sizeof(size));
+    sendAll(sock, imsg, imsglen);
+    sendAll(sock, &codelen, sizeof(size));
+    sendAll(sock, code, codelen);
 
-    memcpy(tmp, &op, sizeof(unsigned char));
-    tmp += sizeof(unsigned char);
-
-    memcpy(tmp, &imsglen, sizeof(unsigned long long));
-    tmp += sizeof(unsigned long long);
-
-    memcpy(tmp, imsg, imsglen);
-    tmp += imsglen;
-
-    memcpy(tmp, code, codelen);
-    tmp += codelen;
-
-    memcpy(tmp, &codelen, sizeof(unsigned long long));
-    tmp += sizeof(unsigned long long);
-
-    void* recv_buffer;
-    size_t recv_len = send_and_receive(sock, buffer, len, &recv_buffer);
-
+    // receive
+    // res
     int res;
-    memcpy(&res, recv_buffer, sizeof(int));
+    receiveAll(sock, &res, sizeof(int));
 
     return res;
 }
 
 void remote_mach_finalize(int sock) {
     printf("performing remote_mach_finalize\n");
-    // op
-    size_t len = sizeof(unsigned char);
     const unsigned char op = 'f';
 
-    void* buffer = malloc(sizeof(unsigned char) * len);
-    memcpy(buffer, &op, sizeof(unsigned char));
+    // send
+    // op
+    sendAll(sock, &op, sizeof(unsigned char));
 
-    void* recv_buffer;
-    /*size_t recv_len = */send_and_receive(sock, buffer, len, &recv_buffer);
-
+    // receive
+    // res
     int res;
-    memcpy(&res, recv_buffer, sizeof(int));
-
-    free(buffer);
-    free(recv_buffer);
+    receiveAll(sock, &res, sizeof(int));
 }
 
 int main(int argc,char **argv) {

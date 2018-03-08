@@ -18,26 +18,29 @@ const int d_size = 76;
 
 SseServer::SseServer() {
     //init pipe directory
-    if(mkdir(pipeDir, 0770) == -1)
+    if(mkdir(pipeDir, 0770) == -1) {
         if(errno != EEXIST)
             pee("Failed to mkdir");
+    }
 
     //create server-iee pipe
     char pipeName[256];
     bzero(pipeName,256);
     strcpy(pipeName, pipeDir);
     strcpy(pipeName+strlen(pipeName), "server_to_iee");
-    if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
+    if(mknod(pipeName, S_IFIFO | 0770, 0) == -1) {
         if(errno != EEXIST)
             pee("Fail to mknod");
+    }
 
     //create iee-server pipe
     char pipeName2[256];
     strcpy(pipeName2, pipeDir);
     strcpy(pipeName2+strlen(pipeName2), "iee_to_server");
-    if(mknod(pipeName2, S_IFIFO | 0770, 0) == -1)
+    if(mknod(pipeName2, S_IFIFO | 0770, 0) == -1) {
         if(errno != EEXIST)
             pee("Fail to mknod");
+    }
 
     printf("Opening write pipe!\n");
 	writeIeePipe = open(pipeName, O_ASYNC | O_WRONLY);
@@ -73,9 +76,9 @@ SseServer::SseServer() {
 
                     delete I;
 
-                    #ifdef VERBOSE
+                    //#ifdef VERBOSE
                     printf("Cleared map!\n");
-                    #endif
+                    //#endif
                 }
 
                 I = new map<vector<unsigned char>, unsigned char*>;
@@ -101,6 +104,7 @@ SseServer::SseServer() {
                 unsigned char* d = new unsigned char[d_size];
                 socketReceive(readIeePipe, d, d_size);
                 (*I)[l_vector] = d;
+
                 gettimeofday(&end, NULL);
                 total_add_time += util_time_elapsed(start, end);
 
@@ -135,7 +139,7 @@ SseServer::SseServer() {
                 }*/
 
                 // send the labels for each word occurence
-                for (int i = 0; i < counter; i++) {
+                for (unsigned i = 0; i < counter; i++) {
                     //cout << "xx" << endl;
                     vector<unsigned char> l = fillVector(label + i * l_size, l_size);
 

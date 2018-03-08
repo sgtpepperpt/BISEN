@@ -2,6 +2,7 @@
 #define vec_int_H
 
 #include <stdlib.h> // malloc / free
+#include <string.h> // memset
 
 typedef struct vec_int {
     int* array;

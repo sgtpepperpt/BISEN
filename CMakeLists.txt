@@ -36,7 +36,7 @@ add_custom_command(TARGET Iee POST_BUILD
 )
 
 # server module
-file(GLOB SERVER_SOURCES src/Server/*.cpp)
+file(GLOB SERVER_SOURCES src/Server/*.cpp src/Server/hash_map.c)
 add_executable(Server ${SERVER_SOURCES})
 target_link_libraries(Server Common)
 

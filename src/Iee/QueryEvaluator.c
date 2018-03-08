@@ -134,7 +134,7 @@ vec_int evaluate(vec_token rpn_expr, int nDocs, unsigned char* count) {
             // free memory
             vi_destroy(&negate);
         } else {
-            vi_print(tkn.docs);
+            //vi_print(tkn.docs);
             vt_push_back(&eval_stack, tkn);
         }
     }

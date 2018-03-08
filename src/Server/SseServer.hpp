@@ -28,7 +28,7 @@
 using namespace std;
 
 class SseServer {
-    
+
 private:
     static const char* pipeDir;
 
@@ -36,6 +36,7 @@ private:
     int writeIeePipe;
     static int clientSock;
     map<vector<unsigned char>,unsigned char*>* I;
+    //map_t I2;
 
     static void* bridgeClientIeeThread(void* threadData);
     vector<unsigned char> fillVector(unsigned char* array, int len);

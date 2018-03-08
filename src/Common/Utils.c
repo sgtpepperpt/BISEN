@@ -66,7 +66,7 @@ void socketReceive(int sockfd, unsigned char* buff, long size) {
         pee("ERROR reading from socket");
 }
 
-int receiveAll (int socket, const void *buff, long len) {
+int receiveAll (int socket, void *buff, long len) {
     int r = 0;
     while (r < len) {
         ssize_t n = read(socket,&buff[r],len-r);

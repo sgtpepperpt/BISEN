@@ -39,7 +39,7 @@ long util_time_elapsed (struct timeval start, struct timeval end);
 void pee(const char *msg);
 
 int sendAll(int s, const void *buf, long len);
-int receiveAll (int s, const void *buff, long len);
+int receiveAll (int s, void *buff, long len);
 
 //int connectAndSend (unsigned char* buff, long size);
 

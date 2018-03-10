@@ -9,12 +9,9 @@
 #include "SseServer.hpp"
 
 using namespace std;
-#include <iostream>
-const char* SseServer::pipeDir = "/tmp/BooleanSSE/";
-int SseServer::clientSock;
 
-const int l_size = 32;
-const int d_size = 76;
+const char* SseServer::pipeDir = "/tmp/BooleanSSE/";
+//int SseServer::clientSock;
 
 SseServer::SseServer() {
     //init pipe directory
@@ -69,19 +66,27 @@ SseServer::SseServer() {
             //setup
             case '1': {
                 // delete existing map, only useful for reruns while debugging
-                if(I) {
-                    map<vector<unsigned char>,unsigned char*>::iterator it;
-                    for(it = I->begin(); it != I->end(); ++it)
-                        free(it->second);
 
-                    delete I;
+                if(I.size()) {
+                    //#ifdef VERBOSE
+                    printf("Size before: %d\n", I.size());
+                    //#endif
+
+                    unordered_map<void *, void *, VoidHash, VoidEqual>::iterator it;
+                    for(it = I.begin(); it != I.end(); ++it) {
+                        free(it->first);
+                        free(it->second);
+                    }
+
+                    I.clear();
+
+                    //delete I;
 
                     //#ifdef VERBOSE
                     printf("Cleared map!\n");
+                    printf("Size now: %d\n", I.size());
                     //#endif
                 }
-
-                I = new map<vector<unsigned char>, unsigned char*>;
 
                 #ifdef VERBOSE
                 printf("Finished Setup!\n");
@@ -96,14 +101,13 @@ SseServer::SseServer() {
                 #endif
 
                 gettimeofday(&start, NULL);
-                unsigned char* l = new unsigned char[l_size];
-                socketReceive(readIeePipe, l, l_size);
-                vector<unsigned char> l_vector = fillVector(l, l_size);
-                delete[] l;
+                void* l = malloc(l_size);
+                socketReceive(readIeePipe, (unsigned char*)l, l_size);
 
-                unsigned char* d = new unsigned char[d_size];
-                socketReceive(readIeePipe, d, d_size);
-                (*I)[l_vector] = d;
+                void* d = malloc(d_size);
+                socketReceive(readIeePipe, (unsigned char*)d, d_size);
+
+                I[l] = d;
 
                 gettimeofday(&end, NULL);
                 total_add_time += util_time_elapsed(start, end);
@@ -140,10 +144,7 @@ SseServer::SseServer() {
 
                 // send the labels for each word occurence
                 for (unsigned i = 0; i < counter; i++) {
-                    //cout << "xx" << endl;
-                    vector<unsigned char> l = fillVector(label + i * l_size, l_size);
-
-                    if(!(*I)[l]) {
+                    if(!I[label + i * l_size]) {
                         printf("Label not found! Exit\n");
                         exit(1);
                     }
@@ -153,7 +154,7 @@ SseServer::SseServer() {
                         printf("%02x", (*I)[l][k]);
                     printf(" \n");*/
 
-                    memcpy(buffer + i * d_size, (*I)[l], d_size);
+                    memcpy(buffer + i * d_size, I[label + i * l_size], d_size);
                 }
 
                 socketSend(writeIeePipe, buffer, d_size * counter);
@@ -172,10 +173,10 @@ SseServer::SseServer() {
             case '4': {
                 // this instruction is for benchmarking only and can be safely
                 // removed if wanted
-                //printf("## STATS ##\n");
-                //printf("SERVER Seen search batches: %lu\n", nr_search_batches);
-                //printf("SERVER Size index: %lu\n", (*I).size());
-                //printf("SERVER time: total sv add = %6.3lf sec\n", total_add_time/1000000.0);
+                printf("## STATS ##\n");
+                printf("SERVER Seen search batches: %lu\n", nr_search_batches);
+                printf("SERVER Size index: %lu\n", I.size());
+                printf("SERVER time: total sv add = %6.3lf sec\n", total_add_time/1000000.0);
                 printf("SERVER time: total sv search = %6.3lf sec\n", total_search_time/1000000.0);
                 total_search_time = 0;
                 break;
@@ -186,74 +187,7 @@ SseServer::SseServer() {
     }
 }
 
-void* SseServer::bridgeClientIeeThread(void* threadData) {
-    //start listening socket
-    struct sockaddr_in serv_addr;
-    clientSock = socket(AF_INET, SOCK_STREAM, 0);
-    if (clientSock < 0)
-        pee("ERROR opening socket");
-    bzero((char *) &serv_addr, sizeof(serv_addr));
-    serv_addr.sin_family = AF_INET;
-    serv_addr.sin_addr.s_addr = INADDR_ANY;
-    serv_addr.sin_port = htons(serverPort);
-    if (bind(clientSock, (const struct sockaddr *) &serv_addr,(socklen_t)sizeof(serv_addr)) < 0)
-        pee("ERROR on binding");
-    listen(clientSock,5);
-
-    //start iee pipe
-    char pipeName[256];
-    strcpy(pipeName, pipeDir);
-    strcpy(pipeName+strlen(pipeName), "clientBridge");
-    if(mknod(pipeName, S_IFIFO | 0770, 0) == -1)
-        if(errno != EEXIST)
-            pee("SseServer::bridgeClientIeeThread: Fail to mknod");
-    int pipefd = open(pipeName, O_ASYNC | O_WRONLY);
-
-    printf("Finished Server-IEE bridge init! Gonna start listening for client requests!\n");
-    while (true) {
-        //start listening for client calls
-        struct sockaddr_in cli_addr;
-        socklen_t clilen = sizeof(cli_addr);
-        int newsockfd = accept(clientSock, (struct sockaddr *) &cli_addr, &clilen);
-        if (newsockfd < 0) {
-            perror("SseServer::bridgeClientIeeThread ERROR on accept");
-            continue;
-        }
-        //receive data
-        unsigned char* buf = new unsigned char[sizeof(int)];
-        if (receiveAll(newsockfd, buf, sizeof(int)) < 0) {
-            close(newsockfd);
-            perror("SseServer::bridgeClientIeeThread ERROR reading from socket");
-            continue;
-        }
-        int pos = 0;
-        int len = readIntFromArr(buf, &pos);
-
-        unsigned char* bufAll = new unsigned char[len];
-        if (receiveAll(newsockfd, bufAll, len) < 0) {
-            close(newsockfd);
-            pee("ERROR reading from tee pipe");
-        }
-        close(newsockfd);
-
-        //redirect to iee
-        socketSend(pipefd, buf, sizeof(int));
-        socketSend(pipefd, bufAll, len);
-
-        delete[] buf;
-        delete[] bufAll;
-    }
-//    pthread_exit(NULL);
-}
-
 SseServer::~SseServer() {
-    delete[] I;
-    close(clientSock);
-}
-
-vector<unsigned char> SseServer::fillVector(unsigned char* array, int len){
-    vector<unsigned char> v(len);
-    for (int i = 0; i < len; i++)
-        v[i] = array[i];
-    return v;
+    //delete[] I;
+    //close(clientSock);
 }

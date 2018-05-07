@@ -25,9 +25,10 @@
 
 #define RES_OK 0x90
 
-int readServerPipe;
-int writeServerPipe;
-//int clientBridgePipe;
+#define MAX_BATCH_UPDATE 1000
+#define MAX_BATCH_SEARCH 2000
+
+int server_socket;
 
 static void init_pipes();
 static void destroy_pipes();

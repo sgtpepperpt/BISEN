@@ -127,9 +127,6 @@ public:
 
 class SseServer {
 private:
-    static const char* pipeDir;
-    int readIeePipe;
-    int writeIeePipe;
     unordered_map<void*, void*, VoidHash, VoidEqual> I;
 public:
     SseServer();

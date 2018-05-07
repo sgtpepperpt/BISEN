@@ -1,5 +1,11 @@
 #include "fserver.h"
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+
 static void fs_strprint(bytes* out, size* outlen, const bytes in, const size inlen)
 {
     // read values from buffer
@@ -137,6 +143,51 @@ static void fs_exit(bytes* out, size* outlen, const bytes in, const size inlen)
     iee_addIntToArr(-1, *out, &pos);
 }
 
+static void fs_sock_open(bytes* out, size* outlen, const bytes in, const size inlen)
+{
+    //printf("Open ocall\n");
+
+    // read values from buffer
+    int pos = 1;
+    int port = iee_readIntFromArr(in, &pos);
+
+    char* hostname = (char*)malloc(sizeof(char) * (inlen - sizeof(int) - sizeof(char) + 1));
+    strncpy(hostname, (const char *)in + pos, inlen - sizeof(int) - sizeof(char));
+    hostname[inlen - sizeof(int) - sizeof(char)] = 0x00;
+
+    //printf("path %s %d %lu %02x\n", path, oflags, path_len,in[pos + path_len-2]);
+    // execute open syscall
+
+    struct sockaddr_in server_addr;
+    memset(&server_addr, 0x00, sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    inet_pton(AF_INET, hostname, &server_addr.sin_addr);
+    server_addr.sin_port = htons(port);
+
+    // open a stream socket
+    int sock = socket(PF_INET, SOCK_STREAM, 0);
+    if (sock < 0) {
+        printf("Could not create client socket!\n");
+        exit(1);
+    }
+
+    if (connect(sock, (struct sockaddr*)&server_addr, sizeof(server_addr)) < 0) {
+        printf("Could not connect to server!\n");
+        exit(1);
+    }
+
+    //printf("ret open: %d\n", res);
+
+    free(hostname);
+
+    // prepare response
+    pos = 0;
+    *outlen = sizeof(int);
+    *out = malloc(*outlen);
+
+    iee_addIntToArr(sock, *out, &pos);
+}
+
 void fserver(bytes* out, size* outlen, const bytes in, const size inlen)
 {
     // set out variables
@@ -160,4 +211,10 @@ void fserver(bytes* out, size* outlen, const bytes in, const size inlen)
 
     else if(in[0] == OCALL_EXIT)
         fs_exit(out, outlen, in, inlen);
+
+    else if(in[0] == OCALL_SOCK_OPEN)
+        fs_sock_open(out, outlen, in, inlen);
+
+    else
+        printf("op %02x not known!\n", in[0]);
 }

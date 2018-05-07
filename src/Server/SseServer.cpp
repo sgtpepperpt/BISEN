@@ -8,59 +8,68 @@
 
 #include "SseServer.hpp"
 
+#include <sys/socket.h>
+#include <arpa/inet.h>
+
 using namespace std;
 
-const char* SseServer::pipeDir = "/tmp/BooleanSSE/";
 //int SseServer::clientSock;
 
 SseServer::SseServer() {
-    //init pipe directory
-    if(mkdir(pipeDir, 0770) == -1) {
-        if(errno != EEXIST)
-            pee("Failed to mkdir");
+    const int server_port = 7899;
+
+    struct sockaddr_in server_addr;
+    memset(&server_addr, 0x00, sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(server_port);
+    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+    int listen_socket;
+    if ((listen_socket = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
+        printf("Could not create socket!\n");
+        exit(1);
     }
 
-    //create server-iee pipe
-    char pipeName[256];
-    bzero(pipeName,256);
-    strcpy(pipeName, pipeDir);
-    strcpy(pipeName+strlen(pipeName), "server_to_iee");
-    if(mknod(pipeName, S_IFIFO | 0770, 0) == -1) {
-        if(errno != EEXIST)
-            pee("Fail to mknod");
+    int res = 1;
+    if (setsockopt(listen_socket, SOL_SOCKET, SO_REUSEADDR, &res, sizeof(res)) == -1) {
+        printf("Could not set socket options!\n");
+        exit(1);
     }
 
-    //create iee-server pipe
-    char pipeName2[256];
-    strcpy(pipeName2, pipeDir);
-    strcpy(pipeName2+strlen(pipeName2), "iee_to_server");
-    if(mknod(pipeName2, S_IFIFO | 0770, 0) == -1) {
-        if(errno != EEXIST)
-            pee("Fail to mknod");
+    if ((bind(listen_socket, (struct sockaddr *) &server_addr, sizeof(server_addr))) < 0) {
+        printf("Could not bind socket!\n");
+        exit(1);
     }
 
-    printf("Opening write pipe!\n");
-	writeIeePipe = open(pipeName, O_ASYNC | O_WRONLY);
+    if (listen(listen_socket, 16) < 0) {
+        printf("Could not open socket for listening!\n");
+        exit(1);
+    }
 
-	//start listening on pipes; must open write first as read blocks
-	printf("Opening read pipe!\n");
-    readIeePipe = open(pipeName2, O_ASYNC | O_RDONLY);
-
-    //launch client-iee tunnel
-/*	//not being used anymore, client comunicates with iee directly for testing
-	pthread_t t;
-    if (pthread_create(&t, NULL, bridgeClientIeeThread, NULL) != 0)
-        pee("Error: unable to create bridgeClientTeeThread");
- */
     //start listening for iee calls
     printf("Finished Server init! Gonna start listening for IEE requests!\n");
+
+    struct sockaddr_in client_addr;
+    socklen_t client_addr_len = 0;
+
+    printf("Listening for requests...\n");
+
+
+    int client_socket;
+    if ((client_socket = accept(listen_socket, (struct sockaddr *)&client_addr, &client_addr_len)) < 0) {
+        printf("Accept failed!\n");
+        exit(1);
+    }
+
+    printf("Client connected (%s)\n", inet_ntoa(client_addr.sin_addr));
+
     long total_add_time = 0;
     long total_search_time = 0;
     size_t nr_search_batches = 0;
 
     while (true) {
         unsigned char cmd;
-        socketReceive(readIeePipe, &cmd, sizeof(unsigned char));
+        socketReceive(client_socket, &cmd, sizeof(unsigned char));
 
         switch (cmd) {
             //setup
@@ -69,7 +78,7 @@ SseServer::SseServer() {
 
                 if(I.size()) {
                     //#ifdef VERBOSE
-                    printf("Size before: %d\n", I.size());
+                    printf("Size before: %lu\n", I.size());
                     //#endif
 
                     unordered_map<void *, void *, VoidHash, VoidEqual>::iterator it;
@@ -84,7 +93,7 @@ SseServer::SseServer() {
 
                     //#ifdef VERBOSE
                     printf("Cleared map!\n");
-                    printf("Size now: %d\n", I.size());
+                    printf("Size now: %lu\n", I.size());
                     //#endif
                 }
 
@@ -96,25 +105,44 @@ SseServer::SseServer() {
             // add
             case '2': {
                 struct timeval start, end;
-                #ifdef VERBOSE
+#ifdef VERBOSE
                 printf("Started Add!\n");
-                #endif
+#endif
 
                 gettimeofday(&start, NULL);
-                void* l = malloc(l_size);
-                socketReceive(readIeePipe, (unsigned char*)l, l_size);
 
-                void* d = malloc(d_size);
-                socketReceive(readIeePipe, (unsigned char*)d, d_size);
+                size_t batch_size;
+                socketReceive(client_socket, (unsigned char*)&batch_size, sizeof(size_t));
 
-                I[l] = d;
+                for(size_t i = 0; i < batch_size; i++) {
+                    void* l = malloc(l_size);
+                    socketReceive(client_socket, (unsigned char*)l, l_size);
+
+                    /* for(unsigned i = 0; i < 32; i++)
+                         printf("%02x", ((char*)l)[i]);
+                     printf("\n");*/
+
+                    void* d = malloc(d_size);
+                    socketReceive(client_socket, (unsigned char*)d, d_size);
+
+/*
+                    for(unsigned i = 0; i < 32; i++)
+                        printf("%02x", ((unsigned char*)l)[i]);
+                    printf("\n");
+                    for(unsigned i = 0; i < 80; i++)
+                        printf("%02x", ((unsigned char*)d)[i]);
+                    printf("\n\n");*/
+
+
+                    I[l] = d;
+                }
 
                 gettimeofday(&end, NULL);
                 total_add_time += util_time_elapsed(start, end);
 
-                #ifdef VERBOSE
+#ifdef VERBOSE
                 printf("Finished Add!\n");
-                #endif
+#endif
                 break;
             }
             // search - get index positions
@@ -127,12 +155,12 @@ SseServer::SseServer() {
                 gettimeofday(&start2, NULL);
 
                 unsigned counter;
-                socketReceive(readIeePipe, (unsigned char*)&counter, sizeof(unsigned));
+                socketReceive(client_socket, (unsigned char*)&counter, sizeof(unsigned));
 
                 //cout << "counter size " << counter << endl;
 
                 unsigned char* label = new unsigned char[l_size * counter];
-                socketReceive(readIeePipe, label, l_size * counter * sizeof(unsigned char));
+                socketReceive(client_socket, label, l_size * counter * sizeof(unsigned char));
 
                 unsigned char* buffer = (unsigned char*)malloc(sizeof(unsigned char) * d_size * counter);
 
@@ -157,7 +185,7 @@ SseServer::SseServer() {
                     memcpy(buffer + i * d_size, I[label + i * l_size], d_size);
                 }
 
-                socketSend(writeIeePipe, buffer, d_size * counter);
+                socketSend(client_socket, buffer, d_size * counter);
                 free(buffer);
 
                 gettimeofday(&end2, NULL);

@@ -17,4 +17,6 @@ ssize_t ocall_read(int fildes, unsigned char* buf, size_t nbytes);
 // misc
 int ocall_exit(int status);
 
+int ocall_sock_open(const char* host, int port);
+
 #endif /* __OCALL_H_ */

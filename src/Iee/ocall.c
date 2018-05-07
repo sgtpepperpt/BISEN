@@ -179,3 +179,32 @@ int ocall_exit(int status)
 
     return ocall_ret;
 }
+
+int ocall_sock_open(const char* host, int port)
+{
+    size_t host_len = strlen(host) + 1;
+
+    size_t inlen = 1/*OPCODE*/ + sizeof(int) + (host_len * sizeof(char));
+
+    unsigned char* in = (unsigned char*)malloc(inlen);
+    in[0] = OCALL_SOCK_OPEN;
+    int pos = 1;
+    iee_addIntToArr(port, in, &pos);
+    iee_addToArr((const void *)host, host_len, in, &pos);
+
+    // execute ocall
+    unsigned char * out;
+    unsigned long long outlen;
+    fserver(&out, &outlen, in, inlen);
+    free(in);
+
+    // read ocall output
+    pos = 0;
+    int ocall_ret = iee_readIntFromArr(out, &pos);
+    untrusted_free_bytes(&out);
+
+    ocall_printf("ret ocall_sock_open: %d\n", ocall_ret);
+
+    return ocall_ret;
+}
+

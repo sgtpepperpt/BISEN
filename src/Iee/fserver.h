@@ -19,6 +19,8 @@
 #define OCALL_CLOSE 0x70
 #define OCALL_EXIT 0x71
 
+#define OCALL_SOCK_OPEN 0x75
+
 // printing
 static void fs_strprint(bytes* out, size* outlen, const bytes in, const size inlen);
 

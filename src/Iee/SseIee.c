@@ -13,7 +13,7 @@ const char* pipeDir = "/tmp/BooleanSSE/";
 static int last_ndocs;
 static unsigned char* aux_bool;
 
-void print_buffer(const char* name, const unsigned char * buf, const unsigned long long len) {
+void print_buffer(const char* name, const unsigned char* buf, const unsigned long long len) {
     /*ocall_printf("%s size: %llu\n", name, len);
     for(unsigned i = 0; i < len; i++)
         ocall_printf("%02x", buf[i]);
@@ -53,14 +53,14 @@ static void benchmarking_print() {
     int tmp_buff_len = sizeof(char);
     unsigned char* tmp_buff = (unsigned char*)malloc(sizeof(unsigned char));
     tmp_buff[0] = '4';
-    iee_socketSend(writeServerPipe, tmp_buff, sizeof(unsigned char));
+    iee_socketSend(server_socket, tmp_buff, sizeof(unsigned char));
 }
 
 static void init_pipes() {
-    char pipeName[256];
+    /*char pipeName[256];
 
     //start server-iee pipe
-    strncpy(pipeName, pipeDir, strlen(pipeDir)+1 /*copy \0*/);
+    strncpy(pipeName, pipeDir, strlen(pipeDir)+1);
     strncpy(pipeName + strlen(pipeName), "server_to_iee", strlen("server_to_iee"));
 
     ocall_strprint("Opening read pipe!\n");
@@ -76,14 +76,15 @@ static void init_pipes() {
     if(writeServerPipe < 0){
         ocall_strprint("Write pipe opening error! Terminating...\n");
         ocall_exit(-1);
-    }
+    }*/
+
+    server_socket = ocall_sock_open("localhost", 7899);
 
     ocall_strprint("Finished IEE init! Gonna start listening for client requests through bridge!\n");
 }
 
 static void destroy_pipes() {
-    ocall_close(readServerPipe);
-    ocall_close(writeServerPipe);
+    ocall_close(server_socket);
 }
 
 static void setup(bytes* out, size* out_len, const bytes in, const size in_len) {
@@ -113,7 +114,7 @@ static void setup(bytes* out, size* out_len, const bytes in, const size in_len) 
 
     // tell server to init index I
     unsigned char op = '1';
-    iee_socketSend(writeServerPipe, &op, sizeof(char));
+    iee_socketSend(server_socket, &op, sizeof(char));
 
     // init aux_bool buffer
     aux_bool = NULL;
@@ -130,65 +131,95 @@ static void setup(bytes* out, size* out_len, const bytes in, const size in_len) 
 }
 
 static void add(bytes* out, size* out_len, const bytes in, const size in_len) {
-    #ifdef VERBOSE
-    //ocall_strprint("IEE: Started add!\n");
-    #endif
+#ifdef VERBOSE
+    //ocall_print_string("IEE: Started add!\n");
+#endif
 
     // read buffer
-    int pos = 1;
-    while(pos < in_len) {
-        //get d,c,w from array
-        const int doc_id = iee_readIntFromArr(in, &pos);
-        const int c = iee_readIntFromArr(in, &pos);
+    void* tmp = in + 1; // exclude op
+    const size_t to_recv_len = in_len - sizeof(unsigned char);
 
-        // read kW
-        unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
-        iee_readFromArr(kW, H_BYTES, in, &pos);
+    // generate nonce
+    unsigned char* nonce = (unsigned char*)malloc(sizeof(unsigned char) * C_NONCESIZE);
+    for(int i = 0; i < C_NONCESIZE; i++)
+        nonce[i] = 0x00;
 
-        //calculate index position label
-        unsigned char* label = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
-        c_hmac(label, (unsigned char*)&c, sizeof(int), kW);
-        free(kW);
+    // size of single buffers
+    const size_t recv_len = H_BYTES + 2 * sizeof(int);
+    const size_t d_unenc_len = H_BYTES + sizeof(int);
+    const size_t d_enc_len = d_unenc_len + C_EXPBYTES;
 
-        /*for(unsigned xx = 0; xx < H_BYTES; xx++)
-            printf("%02x ", label[xx]);
-        printf(" : %d %d\n", d, c);*/
+    // size of batch requests to server
+    size_t to_recv = to_recv_len / recv_len;
 
-        // generate nonce
-        unsigned char* nonce = (unsigned char*)malloc(sizeof(unsigned char) * C_NONCESIZE);
-        for(int i = 0; i < C_NONCESIZE; i++)
-            nonce[i] = 0x00;
+    // op to server
+    const unsigned char op = '2';
 
-        //calculate index value - enc_data
-        const size_t unenc_size = H_BYTES + sizeof(int);
-        unsigned char* unenc_data = (unsigned char*)malloc(sizeof(unsigned char) * unenc_size);
-        iee_memcpy(unenc_data, label, H_BYTES);
-        iee_memcpy(unenc_data + H_BYTES, &doc_id, sizeof(int));
+    // buffers for reuse while receiving
+    unsigned char* unenc_data = (unsigned char*)malloc(sizeof(unsigned char) * d_unenc_len);
+    unsigned char* kW = (unsigned char*)malloc(sizeof(unsigned char) * H_BYTES);
 
-        const size_t enc_size = unenc_size + C_EXPBYTES;
-        unsigned char* enc_data = (unsigned char*)malloc(sizeof(unsigned char) * enc_size);
-        memset(enc_data, 0, sizeof(unsigned char) * enc_size); // fix syscall param write(buf) points to uninitialised byte(s)
-        c_encrypt(enc_data, unenc_data, unenc_size, nonce, get_kEnc());
-        free(nonce);
-        free(unenc_data);
+    // will contain at most max_batch_size (l,id*) pairs
+    const size_t pair_size = H_BYTES + d_enc_len;
+    void* batch_buffer = malloc(MAX_BATCH_UPDATE * pair_size);
 
-        //send label and enc_data to server
-        unsigned char op = '2';
-        //ocall_printf("add %d %d\n", H_BYTES, enc_data_size);
-        iee_socketSend(writeServerPipe, &op, sizeof(unsigned char));
-        iee_socketSend(writeServerPipe, (unsigned char*)label, H_BYTES);
-        iee_socketSend(writeServerPipe, (unsigned char*)enc_data, enc_size);
+    while(to_recv) {
+        memset(batch_buffer, 0, MAX_BATCH_UPDATE * (H_BYTES + d_enc_len)); // fix syscall param write(buf) points to uninitialised byte(s)
 
-        /*print_buffer("add label", label, H_BYTES);
-        print_buffer("add enc", enc_data, enc_data_size);
-        ocall_strprint("\n");*/
-        free(label);
-        free(enc_data);
+        // calculate size and get batch from client
+        size_t batch_size = min(to_recv, MAX_BATCH_UPDATE);
+        for (unsigned i = 0; i < batch_size; i++) {
+            void* label = batch_buffer + i * pair_size;
+            void* d = label + H_BYTES;
+
+            //get doc_id, counter, kW from array
+            int doc_id;
+            memcpy(&doc_id, tmp, sizeof(int));
+            tmp = (char*)tmp + sizeof(int);
+
+            int counter;
+            memcpy(&counter, tmp, sizeof(int));
+            tmp = (char*)tmp + sizeof(int);
+
+            // read kW
+            memcpy(kW, tmp, H_BYTES);
+            tmp = (char*)tmp + H_BYTES;
+
+            // calculate "label" (key) and add to batch_buffer
+            c_hmac(label, (unsigned char*)&counter, sizeof(int), kW);
+
+            // calculate "id*" (entry)
+            // hmac + doc_id
+            memcpy(unenc_data, label, H_BYTES);
+            memcpy(unenc_data + H_BYTES, &doc_id, sizeof(int));
+
+            // store in batch_buffer
+            c_encrypt(d, unenc_data, d_unenc_len, nonce, get_kEnc());
+/*
+            for(unsigned j = 0; j < 40; j++)
+                printf("%02x", ((unsigned char*)unenc_data)[j]);
+            printf(": dec\n")
+            for(unsigned k = 0; k < 80; k++)
+                printf("%02x", ((unsigned char*)d)[k]);
+            printf(": cif\n");*/
+        }
+
+        // send batch to server
+        iee_socketSend(server_socket, &op, sizeof(unsigned char));
+        iee_socketSend(server_socket, &batch_size, sizeof(size_t));
+        iee_socketSend(server_socket, batch_buffer, batch_size * pair_size);
+
+        to_recv -= batch_size;
     }
 
-    #ifdef VERBOSE
-    //ocall_strprint("Finished add in IEE!\n");
-    #endif
+    free(kW);
+    free(unenc_data);
+    free(batch_buffer);
+    free(nonce);
+
+#ifdef VERBOSE
+    //ocall_print_string("Finished update in IEE!\n");
+#endif
 
     // output message
     *out_len = 1;
@@ -333,8 +364,8 @@ static void get_docs_from_server(vec_token *query, const unsigned count_words, c
 
         // send message to server and receive response
         //ocall_strprint("aRequesting to server!\n");
-        iee_socketSend(writeServerPipe, req_buff, sizeof(char) + sizeof(unsigned) + req_len * batch_size);
-        iee_socketReceive(readServerPipe, res_buff, res_len * batch_size);
+        iee_socketSend(server_socket, req_buff, sizeof(char) + sizeof(unsigned) + req_len * batch_size);
+        iee_socketReceive(server_socket, res_buff, res_len * batch_size);
         //ocall_strprint("Got from server!\n");
 
         // decrypt and fill the destination data structs

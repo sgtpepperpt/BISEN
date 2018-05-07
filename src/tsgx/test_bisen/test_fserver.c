@@ -183,8 +183,10 @@ int main(int argc,char **argv)
             //printf("Update %lu/%lu\n", update_counter, nr_updates);
             update_counter++;
 
-            if(!(update_counter % 1000))
+            if(!(update_counter % 5000)){
                 printf("MPC update: (%lu/%lu)\n", update_counter, nr_updates);
+                printf("time: add = %6.3lf seconds!\n", elapsed/1000000.0);
+            }
 
             if(update_counter == nr_updates) {
                 printf("MPC time: total iee add = %6.3lf seconds!\n", elapsed/1000000.0 );

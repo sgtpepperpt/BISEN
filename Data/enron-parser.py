@@ -3,14 +3,14 @@ import sys, os, email, re, random
 def process_payload(payload):
     processed = ""
     isMetadata = False
-    
+
     for line in payload.splitlines():
         if isMetadata:
             if(not line):
                 isMetadata = False
 
             continue
-        
+
         # match emails, urls and dates
         match1 = re.match(r"[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2} [AM|PM]", line)
         match2 = re.match(r"[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2} [AM|PM]", line)
@@ -19,7 +19,7 @@ def process_payload(payload):
         match5 = re.match(r"[\w\.]*@\w*\.\w* on \d{2}/\d{2}/\d{4} \d{2}:\d{2} [AM|PM]", line)
         match6 = re.match(r"[\w\.]*@\w*\.\w* on \d{2}/\d{2}/\d{4} \d{2}:\d{2}:\d{2} [AM|PM]", line)
         match7 = re.match(r".*https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*).*", line)
-        
+
         if (match1 or match2 or match3 or match4 or match5 or match6 or match7):
             isMetadata = True
         else:
@@ -35,7 +35,7 @@ def process_payload(payload):
             # only inserts non-empty lines
             if (not hasStrangeHeaders and isValid):
                 processed += line + "\n"
-    
+
     return processed
 
 ###############################################################################
@@ -62,7 +62,7 @@ def iterate_folders(dir, max):
     while (counter < max):
         chosen = random.choice(files)
         mail = get_payload(chosen)
-        
+
         # write parsed file
         filename = "./parsed/" + str(max) + "/" + chosen[10:-1].replace("/", "_") + ".txt"
         nfile = open(filename, "w")

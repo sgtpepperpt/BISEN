@@ -6,11 +6,7 @@
 #include "types.h"
 
 // exported
-size_t nr_updates;
-size_t nr_searches;
-size test_len;
-bytes* commands;
-size* commands_sizes;
+
 
 long timeElapsed (struct timeval start, struct timeval end);
 

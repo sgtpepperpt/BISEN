@@ -113,27 +113,38 @@ int main(int argc, const char * argv[]) {
 
     // init client
     SseClient client;
-    unsigned char* data;
-    unsigned long long data_size;
-
-    // init output file
-    FILE *out_f = fopen("bisen_benchmark", "wb");
-    if (!out_f) {
-		printf("Error opening output file!\n");
-		exit(-1);
-	}
 
     const char* dataset_dir = getenv("DATASET_DIR");
+    if(!dataset_dir) {
+        printf("DATASET_DIR not defined!\n");
+        exit(1);
+    }
+
+    printf("DATASET_DIR: %s\n", dataset_dir);
 
     // get list of docs for test
     vector<string> doc_paths;
     client.listTxtFiles(dataset_dir, doc_paths);
 
     // write number of adds / updates and searches to benchmark file
-    size_t nr_updates = doc_paths.size();
-    size_t nr_searches = queries.size();//getenv("NUM_QUERIES")? atoi(getenv("NUM_QUERIES")) : 0;
+    const size_t nr_updates = doc_paths.size();
+    const size_t nr_searches = queries.size();//getenv("NUM_QUERIES")? atoi(getenv("NUM_QUERIES")) : 0;
+
+    // init output file
+    char filename[256];
+    sprintf(filename, "bisen_benchmark_enron_%06lu_%06lu", nr_updates, nr_searches);
+
+    FILE *out_f = fopen(filename, "wb");
+    if (!out_f) {
+		printf("Error opening output file!\n");
+		exit(-1);
+	}
+
     fwrite(&nr_updates, sizeof(size_t), 1, out_f);
     fwrite(&nr_searches, sizeof(size_t), 1, out_f);
+
+    unsigned char* data;
+    unsigned long long data_size;
 
     ////////////////////////////////////////////////////////////////////////////
     // SETUP ///////////////////////////////////////////////////////////////////

@@ -322,3 +322,24 @@ void SseClient::list_words() {
         printf("%s %d\n", el.first.c_str(), el.second);
 
 }
+
+const unsigned long SseClient::count_articles(string dataset_dir, vector<string> txt_files) {
+    unsigned long count = 0;
+    int i = 0;
+    for (const string filename : txt_files) {
+        std::ifstream file;
+        std::string word;
+
+        file.open(dataset_dir + filename);
+        if(i++ % 1000 == 0)
+            cout << i << endl;
+        while (file>>word) {
+            if(!strcmp("<doc", word.c_str()))
+                ++count;
+        }
+
+        file.close();
+    }
+
+    return count;
+}

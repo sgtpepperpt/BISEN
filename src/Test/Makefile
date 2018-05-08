@@ -1,3 +1,5 @@
+# DEPRECATED, use cmake instead
+
 IEE_DIR=../Iee
 CLIENT_DIR=../Client
 COMMON_DIR=../Common
@@ -17,7 +19,7 @@ LIBS= -lsodium
 
 ##
 
-main: main.cpp common.a iee.a client.a unstrusted.a
+main: generate_enron.cpp common.a iee.a client.a unstrusted.a
 	g++ $(CPP_FLAGS) -o main main.cpp common.a iee.a client.a unstrusted.a $(LIBS)
 	cp iee.a ../tsgx/test_bisen/f/
 

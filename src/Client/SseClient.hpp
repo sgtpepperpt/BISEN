@@ -46,9 +46,12 @@ public:
     set<string> extractUniqueKeywords(string fname);
 
     void list_words();
+
+    const unsigned long count_articles(string dataset_dir, vector<string> vector);
+
 private:
     int newDoc();
-    string get_random_segment(vector<string> segments);    
+    string get_random_segment(vector<string> segments);
 };
-    
+
 #endif /* SseClient_hpp */

@@ -39,6 +39,7 @@ char* EnglishAnalyzer::stemWord(string word) {
 
 set<string> EnglishAnalyzer::extractUniqueKeywords(string fname) {
     FILE* f = fopen(fname.c_str(),"r");
+    //printf("%s\n", fname.c_str());
     set<string> words;
     while(true) {
         int ch = getc(f);

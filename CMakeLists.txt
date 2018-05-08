@@ -27,13 +27,11 @@ target_include_directories(Untrusted PRIVATE ${PROJECT_SOURCE_DIR}/src/tsgx/incl
 file(GLOB IEE_SOURCES src/Iee/*.c src/Iee/util/*.c)
 add_library(Iee ${IEE_SOURCES})
 target_link_libraries(Iee sodium)
-add_custom_command(TARGET Iee POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy ../bin/libIee.a ../src/tsgx/test_bisen/f/iee.a#TODO check this for new client and server tsgx
+add_custom_command(TARGET Iee POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ../bin/libIee.a ../src/tsgx/test_bisen/f/iee.a#TODO check this for new client and server tsgx
 )
+
 # the following may not be needed in the future
-add_custom_command(TARGET Iee POST_BUILD
-                    COMMAND ${CMAKE_COMMAND} -E copy ../bin/libIee.a ../src/tsgx-client/test_bisen/f/iee.a
-)
+add_custom_command(TARGET Iee POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ../bin/libIee.a ../src/tsgx-client/test_bisen/f/iee.a)
 
 # server module
 file(GLOB SERVER_SOURCES src/Server/*.cpp)
@@ -46,7 +44,15 @@ add_library(Client ${CLIENT_SOURCES})
 target_link_libraries(Client Common sodium)
 
 # test module
-add_executable(Test ${PROJECT_SOURCE_DIR}/src/Test/main.cpp)
+set(USE_WIKI_TEST 1)
+
+if(USE_WIKI_TEST)
+    set(TEST_SRC ${PROJECT_SOURCE_DIR}/src/Test/generate_wiki.cpp)
+else()
+    set(TEST_SRC ${PROJECT_SOURCE_DIR}/src/Test/generate_enron.cpp)
+endif()
+
+add_executable(Test ${TEST_SRC})
 target_link_libraries(Test Common Iee Client Untrusted)
 
 # mpc modules

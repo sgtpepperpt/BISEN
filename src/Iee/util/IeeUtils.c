@@ -14,12 +14,12 @@ void iee_pee(const char *msg)
     ocall_exit(-1);
 }
 
-void iee_socketSend (int sockfd, unsigned char* buff, unsigned long size) {
+void iee_socketSend (int sockfd, const void* buff, unsigned long size) {
     if (iee_sendAll(sockfd, buff, size) < 0)
         iee_pee("ERROR writing to socket");
 }
 
-int iee_sendAll(int s, unsigned char *buf, unsigned long len)
+int iee_sendAll(int s, const void *buf, unsigned long len)
 {
     long total = 0;        // how many bytes we've sent
     long bytesleft = len; // how many we have left to send
@@ -31,7 +31,7 @@ int iee_sendAll(int s, unsigned char *buf, unsigned long len)
         total += n;
         bytesleft -= n;
     }
-    
+
     return n==-1||total!=len ? -1 : 0; // return -1 on failure, 0 on success
 }
 

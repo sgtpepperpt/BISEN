@@ -31,8 +31,10 @@ public:
     EnglishAnalyzer();
     ~EnglishAnalyzer();
     set<string> extractUniqueKeywords(string fname);
+    vector<set<string>> extractUniqueKeywords_wiki(string fname);
     char* stemWord(string word);
+    void stemWord_wiki(char* word);
     bool isStopWord(string word);
-    
+
 };
 #endif /* defined(__BooleanSSE__EnglishAnalyzer__) */

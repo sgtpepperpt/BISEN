@@ -25,16 +25,22 @@ void EnglishAnalyzer::increase_s() {
 }
 
 char* EnglishAnalyzer::stemWord(string word) {
-    char* original = (char*) word.c_str();
+    char* original = (char*)word.c_str();
     string response;
 
-    for(int i = 0; original[i] != '\0'; i++) {
+    for(int i = 0; original[i] != '\0'; i++)
         original[i] = tolower(original[i]); /* forces lower case */
-    }
 
     original[stem(original,0,strlen(original)-1)+1]  = 0; /* calls the stemmer and uses its result to zero-terminate the string in s */
 
     return original;
+}
+
+void EnglishAnalyzer::stemWord_wiki(char* word) {
+    //for(int i = 0; word[i] != '\0'; i++)
+     //   word[i] = tolower(word[i]); /* forces lower case */
+
+    word[stem(word,0,strlen(word)-1)+1]  = 0; /* calls the stemmer and uses its result to zero-terminate the string in s */
 }
 
 set<string> EnglishAnalyzer::extractUniqueKeywords(string fname) {
@@ -59,13 +65,56 @@ set<string> EnglishAnalyzer::extractUniqueKeywords(string fname) {
                     break;
                 }
             }
-            if (!isStopWord(s)) {
-                s[stem(s,0,i-1)+1] = 0;/* calls the stemmer and uses its result to zero-terminate the string in s */
-                words.insert(s);
-            }
-            memset(s,0,i);
+
+            if (!isStopWord(s))
+                words.insert(stemWord(s));
+
+            memset(s, 0x00, i);
         }
     }
+}
+
+vector<set<string>> EnglishAnalyzer::extractUniqueKeywords_wiki(string fname) {
+    vector<set<string>> docs;
+    docs.push_back(set<string>());
+
+    ifstream file(fname.c_str());
+    if (!file) {
+        cout << "unable to open file";
+        exit(1);
+    }
+
+    unsigned curr_article = 0;
+    string line;
+    while (getline(file, line)) {
+        const char* l = line.c_str();
+
+        if(!memcmp(l, "<doc ", 5))
+            continue;
+
+        if(!memcmp(l, "</doc>", 5)) {
+            curr_article++;
+            docs.push_back(set<string>());
+            continue;
+        }
+
+        char temp[strlen(l)];
+        memset(temp, 0x00, strlen(l));
+        unsigned pos = 0;
+        for (unsigned i = 0; i < strlen(l); ++i) {
+            if (isalnum(l[i])) {
+                temp[pos++] = (char)tolower(l[i]);
+            } else {
+                if (!isStopWord(string(temp))) {
+                    stemWord_wiki(temp);
+                    string t(temp);
+                    docs[curr_article].insert(t);
+                }
+            }
+        }
+    }
+
+    return docs;
 }
 
 bool EnglishAnalyzer::isStopWord(string word) {

@@ -30,8 +30,8 @@ typedef struct iee_token {
 
 void iee_pee(const char *msg);
 
-void iee_socketSend(int sockfd, unsigned char* buff, unsigned long size);
-int iee_sendAll(int s, unsigned char *buf, unsigned long len);
+void iee_socketSend(int sockfd, const void* buff, unsigned long size);
+int iee_sendAll(int s, const void* buf, unsigned long len);
 
 void iee_socketReceive(int sockfd, unsigned char* buff, unsigned long size);
 int iee_receiveAll (int s, unsigned char* buff, unsigned long len);

@@ -44,6 +44,7 @@ public:
     string generate_random_query(vector<string> all_words, const int size, const int not_prob, const int and_prob);
     void listTxtFiles (string path, vector<string>& docs);
     set<string> extractUniqueKeywords(string fname);
+    vector<set<string>> extractUniqueKeywords_wiki(string fname);
 
     void list_words();
 

@@ -65,6 +65,10 @@ set<string> SseClient::extractUniqueKeywords(string fname) {
     return analyzer->extractUniqueKeywords(fname);
 }
 
+vector<set<string>> SseClient::extractUniqueKeywords_wiki(string fname) {
+    return analyzer->extractUniqueKeywords_wiki(fname);
+}
+
 unsigned long long SseClient::add_new_document(set<string> text, unsigned char** data) {
     int id = newDoc();
 
@@ -322,7 +326,7 @@ void SseClient::list_words() {
         printf("%s %d\n", el.first.c_str(), el.second);
 
 }
-
+/*
 const unsigned long SseClient::count_articles(string dataset_dir, vector<string> txt_files) {
     unsigned long count = 0;
     int i = 0;
@@ -343,3 +347,4 @@ const unsigned long SseClient::count_articles(string dataset_dir, vector<string>
 
     return count;
 }
+*/

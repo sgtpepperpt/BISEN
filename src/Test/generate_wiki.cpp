@@ -20,34 +20,75 @@ extern "C" {
 #include "../Iee/types.h"
 }
 
-int main(int argc, const char* argv[]) {
-    vector<string> queries;
-//    queries.push_back("enron && time");
-//    queries.push_back("!enron && !time && !inform && !work && !call && !discuss && meet && week && receiv && dai");
-//    queries.push_back("!enron && !time && !inform && !work && !call && !discuss && !meet && !week && !receiv && !dai");
-//    queries.push_back("!(enron && time && inform && work && call && discuss && meet && week && receiv && dai)");
-//    queries.push_back("!enron || time || inform || work || call || discuss || meet || week || receiv || dai");
-//    queries.push_back("!enron || !time || !inform || !work || !call || discuss || meet || week || receiv || dai");
-//    queries.push_back("!enron || !time || !inform || !work || !call || !discuss || !meet || !week || !receiv || !dai");
-//    queries.push_back("!(enron || time || inform || work || call || discuss || meet || week || receiv || dai)");
+int main(int argc, char** argv) {
+    int modify_existing = 0;
+    char* filename = (char*)"bisen_benchmark_wiki";
 
-    queries.push_back("enron && time");
-    queries.push_back("enron && time");
-    queries.push_back("enron && time");
-    queries.push_back("enron && time");
-    /*queries.push_back("enron && time && call && work && inform");
-    queries.push_back("enron && time && inform && work && call && discuss && meet && week && receiv && dai");
-    queries.push_back("enron || time");
-    queries.push_back("enron || time || call || work || inform");
-    queries.push_back("enron || time || inform || work || call || discuss || meet || week || receiv || dai");
-    queries.push_back("(call || enron) && (time || attach)");
-    queries.push_back("(call || enron) && (time || attach) && (inform || work) && (meet || week)");
-    queries.push_back("(call && enron) || (time && attach)");
-    queries.push_back("(call && enron) || (time && attach) || (inform && work) || (meet && week)");
-    queries.push_back("!enron && !time");
-    queries.push_back("!(enron && time)");
-    queries.push_back("!enron || !time");
-    queries.push_back("!(enron || time)");*/
+    int use_cutoff = 0;
+    unsigned long cutoff_point = 0;
+
+    // parse terminal arguments
+    int c;
+    while ((c = getopt(argc, argv, "m:c:")) != -1) {
+        switch (c) {
+            case 'm':
+                modify_existing = 1;
+                filename = optarg;
+                break;
+            case 'c':
+                use_cutoff = 1;
+                cutoff_point = stoul(optarg);
+                break;
+            case '?':
+                if (optopt == 'c')
+                    fprintf(stderr, "Option -%c requires an argument.\n", optopt);
+                else if (isprint(optopt))
+                    fprintf(stderr, "Unknown option `-%c'.\n", optopt);
+                else
+                    fprintf(stderr, "Unknown option character `\\x%x'.\n", optopt);
+                exit(1);
+            default:
+                exit(-1);
+        }
+    }
+
+    if(use_cutoff)
+        printf("Updates cut off at %lu\n", cutoff_point);
+    else
+        printf("Full dataset updates\n");
+
+    // define queries for test
+    vector<string> queries;
+    queries.push_back("portugal");
+    queries.push_back("!portugal");
+
+    queries.push_back("time");
+    queries.push_back("person");
+    queries.push_back("year");
+    queries.push_back("way");
+    queries.push_back("day");
+    queries.push_back("thing");
+    queries.push_back("man");
+    queries.push_back("world");
+    queries.push_back("life");
+    queries.push_back("hand");
+
+    queries.push_back("time && person");
+    queries.push_back("time && person && year && way && day");
+    queries.push_back("time && person && year && way && day && thing && man && world && life && hand");
+
+    queries.push_back("time || person");
+    queries.push_back("time || person || year || way || day");
+    queries.push_back("time || person || year || way || day || thing || man || world || life || hand");
+
+    queries.push_back("!time && !person");
+    queries.push_back("!time && !person && !year && !way && !day");
+    queries.push_back("!time && !person && !year && !way && !day && !thing && !man && !world && !life && !hand");
+
+    queries.push_back("(time && person) || (year && way)");
+    queries.push_back("(time && person) || (year && way) || (day && thing) || (man && world)");
+    queries.push_back("(time || person) && (year || way)");
+    queries.push_back("(time || person) && (year || way) && (day || thing) && (man || world)");
 
     // init client
     SseClient client;
@@ -55,7 +96,14 @@ int main(int argc, const char* argv[]) {
     unsigned long long data_size;
 
     // init output file
-    FILE* out_f = fopen("bisen_benchmark", "wb");
+    FILE* out_f;
+
+    if(modify_existing) {
+        out_f = fopen(filename, "rb+");
+    } else {
+        out_f = fopen(filename, "wb");
+    }
+
     if (!out_f) {
         printf("Error opening output file!\n");
         exit(-1);
@@ -67,79 +115,86 @@ int main(int argc, const char* argv[]) {
         exit(1);
     }
 
-    // leave space in file for nr of updates
-    fseek(out_f, sizeof(size_t), SEEK_SET);
-
-    // write number of searches to benchmark file
+    struct timeval start, end;
+    size_t nr_updates = 0;
     size_t nr_searches = queries.size();//getenv("NUM_QUERIES")? atoi(getenv("NUM_QUERIES")) : 0;
-    fwrite(&nr_searches, sizeof(size_t), 1, out_f);
 
-    ////////////////////////////////////////////////////////////////////////////
-    // SETUP ///////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
+    // do setup and update
+    if(!modify_existing){
+        // leave space in file for nr of updates
+        fseek(out_f, sizeof(size_t), SEEK_SET);
 
-    data_size = client.setup(&data);
-    //print_buffer("Data", data, data_size);
+        // write number of searches to benchmark file
+        fwrite(&nr_searches, sizeof(size_t), 1, out_f);
 
-    // write to benchmark file
-    fwrite(&data_size, sizeof(unsigned long long), 1, out_f);
-    fwrite(data, sizeof(unsigned char), data_size, out_f);
+        ////////////////////////////////////////////////////////////////////////////
+        // SETUP ///////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////
+
+        data_size = client.setup(&data);
+        //print_buffer("Data", data, data_size);
+
+        // write to benchmark file
+        fwrite(&data_size, sizeof(unsigned long long), 1, out_f);
+        fwrite(data, sizeof(unsigned char), data_size, out_f);
 
 #ifdef VERBOSE
-    printf("GENCLI Starting IEE communication\n");
+        printf("GENCLI Starting IEE communication\n");
 #endif
 
 #ifdef LOCALTEST
-    unsigned char * output;
+        unsigned char * output;
     unsigned long long output_size;
     f(&output, &output_size, 0, (const bytes) data, data_size);
     //print_buffer("Output", output, output_size);
     free(output);
 #endif
 
-    free(data);
+        free(data);
 
-    ////////////////////////////////////////////////////////////////////////////
-    // UPDATE //////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////
+        // UPDATE //////////////////////////////////////////////////////////////////
+        ////////////////////////////////////////////////////////////////////////////
 
-    int count = 0;
+        int count = 0;
 
-    long total_add_time = 0;
-    long total_sim_add_time = 0;
+        long total_add_time = 0;
+        long total_sim_add_time = 0;
 
-    struct timeval start, end;
+        // get list of docs for test
+        vector<string> doc_paths;
+        client.listTxtFiles(dataset_dir, doc_paths);
 
-    // get list of docs for test
-    vector<string> doc_paths;
-    client.listTxtFiles(dataset_dir, doc_paths);
-
-    size_t nr_updates = 0;
-    for (const string doc : doc_paths) {
-        printf("%lu\n", nr_updates);
+        for (const string doc : doc_paths) {
+            //printf("%lu\n", nr_updates);
 #ifdef VERBOSE
-        if(!(i % 1000))
+            if(!(i % 1000))
             printf("GENCLI update: (%d/%d)\n",i,nr_updates);
 #endif
 
-        gettimeofday(&start, NULL);
+            // extract keywords from a 1M, multiple article, file
+            gettimeofday(&start, NULL);
 
-        vector<set<string>> docs = client.extractUniqueKeywords_wiki(dataset_dir + doc);
-        nr_updates += docs.size();
+            vector<set<string>> docs = client.extractUniqueKeywords_wiki(dataset_dir + doc);
+            nr_updates += docs.size();
 
-        /*set<string>::iterator iter;
-        for(iter=text.begin(); iter!=text.end();++iter){
-            cout<<(*iter)<< " ";
-        }*/
-
-        for (const set<string> text : docs) {
-            // generate the byte* to send to the server
-            data_size = client.add_new_document(text, &data);
             gettimeofday(&end, NULL);
             total_add_time += util_time_elapsed(start, end);
 
+            /*set<string>::iterator iter;
+            for(iter=text.begin(); iter!=text.end();++iter){
+                cout<<(*iter)<< " ";
+            }*/
+
+            for (const set<string> text : docs) {
+                // generate the byte* to send to the server
+                gettimeofday(&start, NULL);
+                data_size = client.add_new_document(text, &data);
+                gettimeofday(&end, NULL);
+                total_add_time += util_time_elapsed(start, end);
+
 #ifdef LOCALTEST
-            gettimeofday(&start, NULL);
+                gettimeofday(&start, NULL);
 
             //print_buffer("Data", data, data_size);
             output_size = 0;
@@ -152,11 +207,28 @@ int main(int argc, const char* argv[]) {
             //print_buffer("Output", output, output_size);
 #endif
 
-            // write to benchmark file
-            fwrite(&data_size, sizeof(unsigned long long), 1, out_f);
-            fwrite(data, sizeof(unsigned char), data_size, out_f);
+                // write to benchmark file
+                fwrite(&data_size, sizeof(unsigned long long), 1, out_f);
+                fwrite(data, sizeof(unsigned char), data_size, out_f);
 
-            free(data);
+                free(data);
+            }
+
+            if(use_cutoff && nr_updates > cutoff_point)
+                break;
+        }
+
+        printf("GENCLI time: total client add = %6.3lf s!\n", total_add_time / 1000000.0);
+    } else {
+        // read updates and jump over nr_searches
+        fread(&nr_updates, sizeof(size_t), 1, out_f);
+        fseek(out_f, sizeof(size_t), SEEK_SET);
+
+        // advance over all updates up to the search part
+        for (size_t i = 0; i < nr_updates; ++i) {
+            size_t len;
+            fread(&len, sizeof(size_t), 1, out_f);
+            fseek(out_f, len, SEEK_SET);
         }
     }
 
@@ -184,8 +256,7 @@ int main(int argc, const char* argv[]) {
         //#endif
 
         gettimeofday(&start, NULL);
-        unsigned char* data;
-        unsigned long long data_size = client.search(query, &data);
+        data_size = client.search(query, &data);
         gettimeofday(&end, NULL);
         total_search_time += util_time_elapsed(start, end);
 
@@ -236,25 +307,25 @@ int main(int argc, const char* argv[]) {
         total_search_time = 0;
     }
 
-    // add number of updates to beginning of file
-    fseek(out_f, 0, SEEK_SET);
-    fwrite(&nr_updates, sizeof(size_t), 1, out_f);
+    if(!modify_existing) {
+        // add number of updates to beginning of file
+        fseek(out_f, 0, SEEK_SET);
+        fwrite(&nr_updates, sizeof(size_t), 1, out_f);
 
-    printf("GENCLI add queries: %lu\n", nr_updates);
+        printf("GENCLI add queries: %lu\n", nr_updates);
+    } else {
+        // add number of searches to beginning of file
+        fseek(out_f, sizeof(size_t), SEEK_SET);
+        fwrite(&nr_searches, sizeof(size_t), 1, out_f);
+    }
+
     printf("GENCLI nr search queries: %lu\n", nr_searches);
-
-    printf("GENCLI time: total client add = %6.3lf s!\n", total_add_time / 1000000.0);
 
 
 #ifdef LOCALTEST
     printf("LTEST GENCLI time: client add = %6.3lf s!\n", total_sim_add_time/1000000.0);
     printf("LTEST GENCLI time: total search = %6.6lf s!\n", total_sim_search_time/1000000.0);
 #endif
-
-    //TODO hack just to compile, no idea why needed, doesn't affect sgx
-    unsigned char x[1];
-    int xx = 0;
-    int xy = readIntFromArr(x, &xx);
 
     //for (auto const& x : f)
     //    cout << x.first << ':' << x.second << endl;

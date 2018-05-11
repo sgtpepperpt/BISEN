@@ -73,8 +73,11 @@ set<string> EnglishAnalyzer::extractUniqueKeywords(string fname) {
         }
     }
 }
-
+//unsigned long portugal = 0;
+//int seen_pt = 0;
+//unsigned long seen = 0;
 vector<set<string>> EnglishAnalyzer::extractUniqueKeywords_wiki(string fname) {
+    //seen_pt = 0;
     vector<set<string>> docs;
     docs.push_back(set<string>());
 
@@ -93,6 +96,7 @@ vector<set<string>> EnglishAnalyzer::extractUniqueKeywords_wiki(string fname) {
             continue;
 
         if(!memcmp(l, "</doc>", 5)) {
+            //seen_pt = 0;
             curr_article++;
             docs.push_back(set<string>());
             continue;
@@ -105,15 +109,34 @@ vector<set<string>> EnglishAnalyzer::extractUniqueKeywords_wiki(string fname) {
             if (isalnum(l[i])) {
                 temp[pos++] = (char)tolower(l[i]);
             } else {
-                if (!isStopWord(string(temp))) {
+                if (!isStopWord(string(temp)) && strlen(temp)) {
+                    /*if(!seen_pt && !(string(temp).compare("portugal"))) {
+                        portugal++;
+                        seen_pt = 1;
+                    }
+
+                    seen++;*/
+                    //printf("$%s$\n", temp);
                     stemWord_wiki(temp);
                     string t(temp);
                     docs[curr_article].insert(t);
                 }
+
+                memset(temp, 0x00, strlen(l));
+                pos = 0;
             }
         }
     }
 
+    /*for(set<string> a : docs) {
+        set<string>::iterator iter;
+        for(iter=a.begin(); iter!=a.end();++iter){
+            cout<<(*iter)<< " ";
+        }
+
+        cout << endl;
+    }*/
+    //printf("seen %lu words (pt %lu)\n", seen, portugal);
     return docs;
 }
 

@@ -7,7 +7,7 @@ set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
 
 # external dependencies
-find_package(sodium)
+#find_package(sodium REQUIRED)
 
 # flags (-DLOCALTEST -DVERBOSE)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread -g -O0 -fPIC -Wall -Wno-unused-function -Wno-unused-variable")

@@ -14,6 +14,7 @@
 using namespace std;
 
 //int SseServer::clientSock;
+//unsigned long debug_i = 0;
 
 SseServer::SseServer() {
     const int server_port = 7899;
@@ -140,6 +141,8 @@ SseServer::SseServer() {
                 gettimeofday(&end, NULL);
                 total_add_time += util_time_elapsed(start, end);
 
+                //if(debug_i++ % 100000 == 0)
+                  //  printf("pairs: %lu\n", I.size());
 #ifdef VERBOSE
                 printf("Finished Add!\n");
 #endif

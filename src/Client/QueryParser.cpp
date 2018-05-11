@@ -34,7 +34,7 @@ vector<client_token> QueryParser::tokenize(string query) {
             // eliminate next character if it's the same (&& or ||)
             if((query[i] == '&' || query[i] == '|') && query[i+1] == query[i])
                 i++;
-            
+
             i++;
         } else {
             // it's a word
@@ -51,8 +51,7 @@ vector<client_token> QueryParser::tokenize(string query) {
             // NULL termination is added in serialization
             //tkn.word += '\0';
 
-            // we don't stem the word here, as in our tests the word supplied here is already stemmed
-            //tkn.word = analyzer.stemWord(tkn.word);
+            tkn.word = string(analyzer.stemWord(tkn.word));
             /*printf("parser word\n");
             for(int i = 0; i < 5; i++)
                 printf("%c", tkn.word[i]);
@@ -76,13 +75,13 @@ vector<client_token> QueryParser::shunting_yard(vector<client_token> infix_query
             output.push_back(tkn);
         } else if(tkn.type == '&' || tkn.type == '|' || tkn.type == '!') {
             int curr_precedence = operators.empty()? -1 : precedence(operators.top());
-            
+
             while (curr_precedence >= precedence(tkn.type)) {
                 client_token tkn2;
                 tkn2.type = operators.top();
                 operators.pop();
                 output.push_back(tkn2);
-                
+
                 curr_precedence = operators.empty()? -1 : precedence(operators.top());
             }
 
@@ -104,7 +103,7 @@ vector<client_token> QueryParser::shunting_yard(vector<client_token> infix_query
             operators.pop(); // pops the '('
         }
     }
-    
+
     while (!operators.empty()) {
         char top = operators.top();
         operators.pop();

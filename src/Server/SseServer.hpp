@@ -24,6 +24,7 @@
 #include <unordered_map>
 #include <map>
 #include <pthread.h>
+#include <sparsehash/sparse_hash_map>
 #include "ServerUtils.hpp"
 
 using namespace std;
@@ -124,10 +125,18 @@ public:
     }
 };
 
+/*
+struct cmp_str {
+    bool operator()(const void* a, const void* b) {
+        return memcmp(a, b, l_size) < 0;
+    }
+};
+*/
 
 class SseServer {
 private:
     unordered_map<void*, void*, VoidHash, VoidEqual> I;
+    //google::sparse_hash_map<void*, void*, VoidHash, VoidEqual> I2;
 public:
     SseServer();
     ~SseServer();

@@ -1,0 +1,99 @@
+GENCLI time: total client add = 3644.863 s!
+
+----------------------------
+Query 0: lincoln
+GENCLI time: client search = 0.001075 s!
+
+----------------------------
+Query 1: !lincoln
+GENCLI time: client search = 0.002899 s!
+
+----------------------------
+Query 2: kennedy
+GENCLI time: client search = 0.000011 s!
+
+----------------------------
+Query 3: !kennedy
+GENCLI time: client search = 0.000009 s!
+
+----------------------------
+Query 4: marcelo && rebelo && sousa
+GENCLI time: client search = 0.000032 s!
+
+----------------------------
+Query 5: time
+GENCLI time: client search = 0.000012 s!
+
+----------------------------
+Query 6: person
+GENCLI time: client search = 0.000011 s!
+
+----------------------------
+Query 7: year
+GENCLI time: client search = 0.000012 s!
+
+----------------------------
+Query 8: way
+GENCLI time: client search = 0.000011 s!
+
+----------------------------
+Query 9: day
+GENCLI time: client search = 0.000012 s!
+
+----------------------------
+Query 10: thing
+GENCLI time: client search = 0.000011 s!
+
+----------------------------
+Query 11: man
+GENCLI time: client search = 0.000011 s!
+
+----------------------------
+Query 12: world
+GENCLI time: client search = 0.000012 s!
+
+----------------------------
+Query 13: life
+GENCLI time: client search = 0.000013 s!
+
+----------------------------
+Query 14: hand
+GENCLI time: client search = 0.000011 s!
+
+----------------------------
+Query 15: time && person
+GENCLI time: client search = 0.000018 s!
+
+----------------------------
+Query 16: time && person && year && way && day
+GENCLI time: client search = 0.000042 s!
+
+----------------------------
+Query 17: time && person && year && way && day && thing && man && world && life && hand
+GENCLI time: client search = 0.000087 s!
+
+----------------------------
+Query 18: time || person
+GENCLI time: client search = 0.000020 s!
+
+----------------------------
+Query 19: time || person || year || way || day
+GENCLI time: client search = 0.000043 s!
+
+----------------------------
+Query 20: time || person || year || way || day || thing || man || world || life || hand
+GENCLI time: client search = 0.000083 s!
+
+----------------------------
+Query 21: !time && !person
+GENCLI time: client search = 0.000023 s!
+
+----------------------------
+Query 22: !time && !person && !year && !way && !day
+GENCLI time: client search = 0.000047 s!
+
+----------------------------
+Query 23: !time && !person && !year && !way && !day && !thing && !man && !world && !life && !hand
+GENCLI time: client search = 0.000090 s!
+GENCLI add queries: 3000250
+GENCLI nr search queries: 24

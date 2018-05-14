@@ -1,0 +1,162 @@
+Finished Server init! Gonna start listening for IEE requests!
+Listening for requests...
+------------------------------------------
+Client connected (36.127.0.0)
+Size of index: 677
+Size of index: 5166341
+Size of index: 10253478
+## STATS 0 ##
+SERVER Seen search batches: 1
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.003 sec
+## STATS 1 ##
+SERVER Seen search batches: 2
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.002 sec
+## STATS 2 ##
+SERVER Seen search batches: 14
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.101 sec
+## STATS 3 ##
+SERVER Seen search batches: 19
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.053 sec
+## STATS 4 ##
+SERVER Seen search batches: 33
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.110 sec
+## STATS 5 ##
+SERVER Seen search batches: 34
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.008 sec
+## STATS 6 ##
+SERVER Seen search batches: 40
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.057 sec
+## STATS 7 ##
+SERVER Seen search batches: 42
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.011 sec
+## STATS 8 ##
+SERVER Seen search batches: 45
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.029 sec
+## STATS 9 ##
+SERVER Seen search batches: 53
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.060 sec
+## STATS 10 ##
+SERVER Seen search batches: 60
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.053 sec
+## STATS 11 ##
+SERVER Seen search batches: 63
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.022 sec
+## STATS 12 ##
+SERVER Seen search batches: 72
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.074 sec
+## STATS 13 ##
+SERVER Seen search batches: 77
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.040 sec
+## STATS 14 ##
+SERVER Seen search batches: 88
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.107 sec
+## STATS 15 ##
+SERVER Seen search batches: 89
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.001 sec
+## STATS 16 ##
+SERVER Seen search batches: 93
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.024 sec
+## STATS 17 ##
+SERVER Seen search batches: 95
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.007 sec
+## STATS 18 ##
+SERVER Seen search batches: 111
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.139 sec
+## STATS 19 ##
+SERVER Seen search batches: 147
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.353 sec
+## STATS 20 ##
+SERVER Seen search batches: 203
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.503 sec
+## STATS 21 ##
+SERVER Seen search batches: 219
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.138 sec
+## STATS 22 ##
+SERVER Seen search batches: 255
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.323 sec
+## STATS 23 ##
+SERVER Seen search batches: 311
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.503 sec
+## STATS 24 ##
+SERVER Seen search batches: 327
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.158 sec
+## STATS 25 ##
+SERVER Seen search batches: 363
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.309 sec
+## STATS 26 ##
+SERVER Seen search batches: 419
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.464 sec
+## STATS 27 ##
+SERVER Seen search batches: 449
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.281 sec
+## STATS 28 ##
+SERVER Seen search batches: 496
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.436 sec
+## STATS 29 ##
+SERVER Seen search batches: 526
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.264 sec
+## STATS 30 ##
+SERVER Seen search batches: 573
+SERVER Size index: 10305667
+SERVER time: total sv add = 107.573 sec
+SERVER time: total sv search =  0.451 sec

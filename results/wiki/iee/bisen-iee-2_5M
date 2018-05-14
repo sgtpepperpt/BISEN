@@ -1,0 +1,1083 @@
+Initialized
+Status: 0
+msgreplen 480
+ATTKE PRMS R: Remote -> Local: 1164 bytes
+Status: 0
+ATTKE PRMS L: Local -> Remote: 144 bytes
+Status: 0
+msgreplen 451
+ATTKE OK R: Remote -> Local: 1135 bytes
+Status: 0
+OK Delivered Locally
+Status: 0
+msgreplen 480
+msgreplen 451
+DATASET_FILE: /home/guilherme/BISEN/wiki_2_5M
+nr updates: 2500432, nr searches: 31, test len: 2500464
+############### CALLING F ###############
+Finished IEE init! Gonna start listening for client requests through bridge!
+MPC Did setup
+MPC update: (5000/2500432)
+time: add =  3.924 seconds!
+MPC update: (10000/2500432)
+time: add =  8.627 seconds!
+MPC update: (15000/2500432)
+time: add = 13.601 seconds!
+MPC update: (20000/2500432)
+time: add = 17.763 seconds!
+MPC update: (25000/2500432)
+time: add = 23.153 seconds!
+MPC update: (30000/2500432)
+time: add = 27.593 seconds!
+MPC update: (35000/2500432)
+time: add = 32.523 seconds!
+MPC update: (40000/2500432)
+time: add = 38.343 seconds!
+MPC update: (45000/2500432)
+time: add = 46.025 seconds!
+MPC update: (50000/2500432)
+time: add = 51.363 seconds!
+MPC update: (55000/2500432)
+time: add = 56.653 seconds!
+MPC update: (60000/2500432)
+time: add = 61.435 seconds!
+MPC update: (65000/2500432)
+time: add = 66.383 seconds!
+MPC update: (70000/2500432)
+time: add = 71.611 seconds!
+MPC update: (75000/2500432)
+time: add = 75.875 seconds!
+MPC update: (80000/2500432)
+time: add = 79.686 seconds!
+MPC update: (85000/2500432)
+time: add = 90.684 seconds!
+MPC update: (90000/2500432)
+time: add = 94.901 seconds!
+MPC update: (95000/2500432)
+time: add = 99.157 seconds!
+MPC update: (100000/2500432)
+time: add = 104.568 seconds!
+MPC update: (105000/2500432)
+time: add = 109.364 seconds!
+MPC update: (110000/2500432)
+time: add = 113.920 seconds!
+MPC update: (115000/2500432)
+time: add = 118.887 seconds!
+MPC update: (120000/2500432)
+time: add = 123.458 seconds!
+MPC update: (125000/2500432)
+time: add = 127.999 seconds!
+MPC update: (130000/2500432)
+time: add = 133.629 seconds!
+MPC update: (135000/2500432)
+time: add = 138.612 seconds!
+MPC update: (140000/2500432)
+time: add = 144.156 seconds!
+MPC update: (145000/2500432)
+time: add = 148.924 seconds!
+MPC update: (150000/2500432)
+time: add = 153.142 seconds!
+MPC update: (155000/2500432)
+time: add = 158.501 seconds!
+MPC update: (160000/2500432)
+time: add = 164.491 seconds!
+MPC update: (165000/2500432)
+time: add = 182.835 seconds!
+MPC update: (170000/2500432)
+time: add = 188.174 seconds!
+MPC update: (175000/2500432)
+time: add = 192.937 seconds!
+MPC update: (180000/2500432)
+time: add = 199.174 seconds!
+MPC update: (185000/2500432)
+time: add = 203.980 seconds!
+MPC update: (190000/2500432)
+time: add = 208.733 seconds!
+MPC update: (195000/2500432)
+time: add = 213.458 seconds!
+MPC update: (200000/2500432)
+time: add = 218.822 seconds!
+MPC update: (205000/2500432)
+time: add = 224.771 seconds!
+MPC update: (210000/2500432)
+time: add = 229.858 seconds!
+MPC update: (215000/2500432)
+time: add = 235.333 seconds!
+MPC update: (220000/2500432)
+time: add = 239.714 seconds!
+MPC update: (225000/2500432)
+time: add = 244.263 seconds!
+MPC update: (230000/2500432)
+time: add = 249.525 seconds!
+MPC update: (235000/2500432)
+time: add = 254.687 seconds!
+MPC update: (240000/2500432)
+time: add = 260.271 seconds!
+MPC update: (245000/2500432)
+time: add = 264.342 seconds!
+MPC update: (250000/2500432)
+time: add = 269.837 seconds!
+MPC update: (255000/2500432)
+time: add = 273.290 seconds!
+MPC update: (260000/2500432)
+time: add = 278.657 seconds!
+MPC update: (265000/2500432)
+time: add = 283.176 seconds!
+MPC update: (270000/2500432)
+time: add = 287.701 seconds!
+MPC update: (275000/2500432)
+time: add = 292.247 seconds!
+MPC update: (280000/2500432)
+time: add = 297.585 seconds!
+MPC update: (285000/2500432)
+time: add = 303.234 seconds!
+MPC update: (290000/2500432)
+time: add = 307.444 seconds!
+MPC update: (295000/2500432)
+time: add = 312.435 seconds!
+MPC update: (300000/2500432)
+time: add = 318.689 seconds!
+MPC update: (305000/2500432)
+time: add = 323.300 seconds!
+MPC update: (310000/2500432)
+time: add = 327.630 seconds!
+MPC update: (315000/2500432)
+time: add = 332.543 seconds!
+MPC update: (320000/2500432)
+time: add = 365.896 seconds!
+MPC update: (325000/2500432)
+time: add = 369.633 seconds!
+MPC update: (330000/2500432)
+time: add = 374.482 seconds!
+MPC update: (335000/2500432)
+time: add = 378.867 seconds!
+MPC update: (340000/2500432)
+time: add = 383.430 seconds!
+MPC update: (345000/2500432)
+time: add = 387.687 seconds!
+MPC update: (350000/2500432)
+time: add = 392.835 seconds!
+MPC update: (355000/2500432)
+time: add = 398.060 seconds!
+MPC update: (360000/2500432)
+time: add = 402.877 seconds!
+MPC update: (365000/2500432)
+time: add = 408.039 seconds!
+MPC update: (370000/2500432)
+time: add = 413.847 seconds!
+MPC update: (375000/2500432)
+time: add = 417.601 seconds!
+MPC update: (380000/2500432)
+time: add = 421.777 seconds!
+MPC update: (385000/2500432)
+time: add = 426.453 seconds!
+MPC update: (390000/2500432)
+time: add = 430.535 seconds!
+MPC update: (395000/2500432)
+time: add = 435.221 seconds!
+MPC update: (400000/2500432)
+time: add = 441.003 seconds!
+MPC update: (405000/2500432)
+time: add = 446.109 seconds!
+MPC update: (410000/2500432)
+time: add = 451.204 seconds!
+MPC update: (415000/2500432)
+time: add = 456.555 seconds!
+MPC update: (420000/2500432)
+time: add = 461.533 seconds!
+MPC update: (425000/2500432)
+time: add = 466.687 seconds!
+MPC update: (430000/2500432)
+time: add = 471.991 seconds!
+MPC update: (435000/2500432)
+time: add = 476.231 seconds!
+MPC update: (440000/2500432)
+time: add = 481.383 seconds!
+MPC update: (445000/2500432)
+time: add = 486.906 seconds!
+MPC update: (450000/2500432)
+time: add = 492.419 seconds!
+MPC update: (455000/2500432)
+time: add = 497.155 seconds!
+MPC update: (460000/2500432)
+time: add = 501.988 seconds!
+MPC update: (465000/2500432)
+time: add = 506.541 seconds!
+MPC update: (470000/2500432)
+time: add = 512.251 seconds!
+MPC update: (475000/2500432)
+time: add = 516.756 seconds!
+MPC update: (480000/2500432)
+time: add = 521.796 seconds!
+MPC update: (485000/2500432)
+time: add = 526.448 seconds!
+MPC update: (490000/2500432)
+time: add = 531.358 seconds!
+MPC update: (495000/2500432)
+time: add = 536.412 seconds!
+MPC update: (500000/2500432)
+time: add = 541.125 seconds!
+MPC update: (505000/2500432)
+time: add = 546.168 seconds!
+MPC update: (510000/2500432)
+time: add = 549.897 seconds!
+MPC update: (515000/2500432)
+time: add = 554.557 seconds!
+MPC update: (520000/2500432)
+time: add = 559.522 seconds!
+MPC update: (525000/2500432)
+time: add = 564.345 seconds!
+MPC update: (530000/2500432)
+time: add = 569.093 seconds!
+MPC update: (535000/2500432)
+time: add = 574.383 seconds!
+MPC update: (540000/2500432)
+time: add = 580.428 seconds!
+MPC update: (545000/2500432)
+time: add = 585.505 seconds!
+MPC update: (550000/2500432)
+time: add = 589.044 seconds!
+MPC update: (555000/2500432)
+time: add = 593.785 seconds!
+MPC update: (560000/2500432)
+time: add = 598.445 seconds!
+MPC update: (565000/2500432)
+time: add = 603.934 seconds!
+MPC update: (570000/2500432)
+time: add = 608.620 seconds!
+MPC update: (575000/2500432)
+time: add = 614.364 seconds!
+MPC update: (580000/2500432)
+time: add = 619.128 seconds!
+MPC update: (585000/2500432)
+time: add = 623.567 seconds!
+MPC update: (590000/2500432)
+time: add = 628.653 seconds!
+MPC update: (595000/2500432)
+time: add = 634.519 seconds!
+MPC update: (600000/2500432)
+time: add = 640.233 seconds!
+MPC update: (605000/2500432)
+time: add = 644.976 seconds!
+MPC update: (610000/2500432)
+time: add = 649.431 seconds!
+MPC update: (615000/2500432)
+time: add = 655.346 seconds!
+MPC update: (620000/2500432)
+time: add = 661.107 seconds!
+MPC update: (625000/2500432)
+time: add = 665.128 seconds!
+MPC update: (630000/2500432)
+time: add = 730.112 seconds!
+MPC update: (635000/2500432)
+time: add = 734.796 seconds!
+MPC update: (640000/2500432)
+time: add = 739.740 seconds!
+MPC update: (645000/2500432)
+time: add = 745.776 seconds!
+MPC update: (650000/2500432)
+time: add = 751.326 seconds!
+MPC update: (655000/2500432)
+time: add = 755.662 seconds!
+MPC update: (660000/2500432)
+time: add = 760.340 seconds!
+MPC update: (665000/2500432)
+time: add = 764.867 seconds!
+MPC update: (670000/2500432)
+time: add = 770.374 seconds!
+MPC update: (675000/2500432)
+time: add = 775.247 seconds!
+MPC update: (680000/2500432)
+time: add = 781.108 seconds!
+MPC update: (685000/2500432)
+time: add = 786.532 seconds!
+MPC update: (690000/2500432)
+time: add = 792.605 seconds!
+MPC update: (695000/2500432)
+time: add = 797.059 seconds!
+MPC update: (700000/2500432)
+time: add = 803.063 seconds!
+MPC update: (705000/2500432)
+time: add = 808.644 seconds!
+MPC update: (710000/2500432)
+time: add = 813.446 seconds!
+MPC update: (715000/2500432)
+time: add = 818.136 seconds!
+MPC update: (720000/2500432)
+time: add = 823.060 seconds!
+MPC update: (725000/2500432)
+time: add = 826.815 seconds!
+MPC update: (730000/2500432)
+time: add = 831.823 seconds!
+MPC update: (735000/2500432)
+time: add = 836.878 seconds!
+MPC update: (740000/2500432)
+time: add = 841.264 seconds!
+MPC update: (745000/2500432)
+time: add = 846.107 seconds!
+MPC update: (750000/2500432)
+time: add = 851.521 seconds!
+MPC update: (755000/2500432)
+time: add = 856.207 seconds!
+MPC update: (760000/2500432)
+time: add = 861.117 seconds!
+MPC update: (765000/2500432)
+time: add = 867.962 seconds!
+MPC update: (770000/2500432)
+time: add = 873.137 seconds!
+MPC update: (775000/2500432)
+time: add = 878.074 seconds!
+MPC update: (780000/2500432)
+time: add = 883.078 seconds!
+MPC update: (785000/2500432)
+time: add = 887.461 seconds!
+MPC update: (790000/2500432)
+time: add = 891.015 seconds!
+MPC update: (795000/2500432)
+time: add = 896.309 seconds!
+MPC update: (800000/2500432)
+time: add = 900.469 seconds!
+MPC update: (805000/2500432)
+time: add = 905.647 seconds!
+MPC update: (810000/2500432)
+time: add = 911.211 seconds!
+MPC update: (815000/2500432)
+time: add = 916.158 seconds!
+MPC update: (820000/2500432)
+time: add = 920.933 seconds!
+MPC update: (825000/2500432)
+time: add = 925.706 seconds!
+MPC update: (830000/2500432)
+time: add = 930.302 seconds!
+MPC update: (835000/2500432)
+time: add = 936.038 seconds!
+MPC update: (840000/2500432)
+time: add = 940.363 seconds!
+MPC update: (845000/2500432)
+time: add = 944.539 seconds!
+MPC update: (850000/2500432)
+time: add = 949.272 seconds!
+MPC update: (855000/2500432)
+time: add = 954.362 seconds!
+MPC update: (860000/2500432)
+time: add = 959.108 seconds!
+MPC update: (865000/2500432)
+time: add = 965.545 seconds!
+MPC update: (870000/2500432)
+time: add = 970.378 seconds!
+MPC update: (875000/2500432)
+time: add = 975.460 seconds!
+MPC update: (880000/2500432)
+time: add = 981.361 seconds!
+MPC update: (885000/2500432)
+time: add = 986.305 seconds!
+MPC update: (890000/2500432)
+time: add = 990.361 seconds!
+MPC update: (895000/2500432)
+time: add = 994.991 seconds!
+MPC update: (900000/2500432)
+time: add = 1000.680 seconds!
+MPC update: (905000/2500432)
+time: add = 1005.369 seconds!
+MPC update: (910000/2500432)
+time: add = 1010.237 seconds!
+MPC update: (915000/2500432)
+time: add = 1014.936 seconds!
+MPC update: (920000/2500432)
+time: add = 1020.073 seconds!
+MPC update: (925000/2500432)
+time: add = 1025.584 seconds!
+MPC update: (930000/2500432)
+time: add = 1030.586 seconds!
+MPC update: (935000/2500432)
+time: add = 1036.093 seconds!
+MPC update: (940000/2500432)
+time: add = 1039.995 seconds!
+MPC update: (945000/2500432)
+time: add = 1044.680 seconds!
+MPC update: (950000/2500432)
+time: add = 1050.834 seconds!
+MPC update: (955000/2500432)
+time: add = 1055.854 seconds!
+MPC update: (960000/2500432)
+time: add = 1060.917 seconds!
+MPC update: (965000/2500432)
+time: add = 1066.008 seconds!
+MPC update: (970000/2500432)
+time: add = 1070.088 seconds!
+MPC update: (975000/2500432)
+time: add = 1074.189 seconds!
+MPC update: (980000/2500432)
+time: add = 1078.013 seconds!
+MPC update: (985000/2500432)
+time: add = 1081.823 seconds!
+MPC update: (990000/2500432)
+time: add = 1086.524 seconds!
+MPC update: (995000/2500432)
+time: add = 1091.447 seconds!
+MPC update: (1000000/2500432)
+time: add = 1095.228 seconds!
+MPC update: (1005000/2500432)
+time: add = 1099.816 seconds!
+MPC update: (1010000/2500432)
+time: add = 1104.821 seconds!
+MPC update: (1015000/2500432)
+time: add = 1109.238 seconds!
+MPC update: (1020000/2500432)
+time: add = 1114.979 seconds!
+MPC update: (1025000/2500432)
+time: add = 1120.425 seconds!
+MPC update: (1030000/2500432)
+time: add = 1125.770 seconds!
+MPC update: (1035000/2500432)
+time: add = 1131.631 seconds!
+MPC update: (1040000/2500432)
+time: add = 1135.986 seconds!
+MPC update: (1045000/2500432)
+time: add = 1140.486 seconds!
+MPC update: (1050000/2500432)
+time: add = 1145.406 seconds!
+MPC update: (1055000/2500432)
+time: add = 1149.987 seconds!
+MPC update: (1060000/2500432)
+time: add = 1155.073 seconds!
+MPC update: (1065000/2500432)
+time: add = 1161.348 seconds!
+MPC update: (1070000/2500432)
+time: add = 1166.346 seconds!
+MPC update: (1075000/2500432)
+time: add = 1171.055 seconds!
+MPC update: (1080000/2500432)
+time: add = 1175.555 seconds!
+MPC update: (1085000/2500432)
+time: add = 1181.135 seconds!
+MPC update: (1090000/2500432)
+time: add = 1186.327 seconds!
+MPC update: (1095000/2500432)
+time: add = 1192.085 seconds!
+MPC update: (1100000/2500432)
+time: add = 1197.378 seconds!
+MPC update: (1105000/2500432)
+time: add = 1201.494 seconds!
+MPC update: (1110000/2500432)
+time: add = 1206.797 seconds!
+MPC update: (1115000/2500432)
+time: add = 1213.141 seconds!
+MPC update: (1120000/2500432)
+time: add = 1218.239 seconds!
+MPC update: (1125000/2500432)
+time: add = 1223.146 seconds!
+MPC update: (1130000/2500432)
+time: add = 1227.345 seconds!
+MPC update: (1135000/2500432)
+time: add = 1232.842 seconds!
+MPC update: (1140000/2500432)
+time: add = 1237.789 seconds!
+MPC update: (1145000/2500432)
+time: add = 1242.790 seconds!
+MPC update: (1150000/2500432)
+time: add = 1247.428 seconds!
+MPC update: (1155000/2500432)
+time: add = 1251.884 seconds!
+MPC update: (1160000/2500432)
+time: add = 1256.506 seconds!
+MPC update: (1165000/2500432)
+time: add = 1262.308 seconds!
+MPC update: (1170000/2500432)
+time: add = 1267.625 seconds!
+MPC update: (1175000/2500432)
+time: add = 1272.674 seconds!
+MPC update: (1180000/2500432)
+time: add = 1277.602 seconds!
+MPC update: (1185000/2500432)
+time: add = 1282.471 seconds!
+MPC update: (1190000/2500432)
+time: add = 1288.149 seconds!
+MPC update: (1195000/2500432)
+time: add = 1292.618 seconds!
+MPC update: (1200000/2500432)
+time: add = 1297.525 seconds!
+MPC update: (1205000/2500432)
+time: add = 1301.941 seconds!
+MPC update: (1210000/2500432)
+time: add = 1306.860 seconds!
+MPC update: (1215000/2500432)
+time: add = 1312.141 seconds!
+MPC update: (1220000/2500432)
+time: add = 1317.624 seconds!
+MPC update: (1225000/2500432)
+time: add = 1322.514 seconds!
+MPC update: (1230000/2500432)
+time: add = 1327.666 seconds!
+MPC update: (1235000/2500432)
+time: add = 1332.377 seconds!
+MPC update: (1240000/2500432)
+time: add = 1337.924 seconds!
+MPC update: (1245000/2500432)
+time: add = 1484.421 seconds!
+MPC update: (1250000/2500432)
+time: add = 1489.069 seconds!
+MPC update: (1255000/2500432)
+time: add = 1494.692 seconds!
+MPC update: (1260000/2500432)
+time: add = 1500.258 seconds!
+MPC update: (1265000/2500432)
+time: add = 1505.044 seconds!
+MPC update: (1270000/2500432)
+time: add = 1510.162 seconds!
+MPC update: (1275000/2500432)
+time: add = 1514.686 seconds!
+MPC update: (1280000/2500432)
+time: add = 1519.450 seconds!
+MPC update: (1285000/2500432)
+time: add = 1524.890 seconds!
+MPC update: (1290000/2500432)
+time: add = 1530.405 seconds!
+MPC update: (1295000/2500432)
+time: add = 1536.220 seconds!
+MPC update: (1300000/2500432)
+time: add = 1541.474 seconds!
+MPC update: (1305000/2500432)
+time: add = 1546.501 seconds!
+MPC update: (1310000/2500432)
+time: add = 1552.557 seconds!
+MPC update: (1315000/2500432)
+time: add = 1557.428 seconds!
+MPC update: (1320000/2500432)
+time: add = 1562.380 seconds!
+MPC update: (1325000/2500432)
+time: add = 1566.829 seconds!
+MPC update: (1330000/2500432)
+time: add = 1570.444 seconds!
+MPC update: (1335000/2500432)
+time: add = 1575.305 seconds!
+MPC update: (1340000/2500432)
+time: add = 1580.685 seconds!
+MPC update: (1345000/2500432)
+time: add = 1585.542 seconds!
+MPC update: (1350000/2500432)
+time: add = 1591.554 seconds!
+MPC update: (1355000/2500432)
+time: add = 1597.357 seconds!
+MPC update: (1360000/2500432)
+time: add = 1603.002 seconds!
+MPC update: (1365000/2500432)
+time: add = 1609.039 seconds!
+MPC update: (1370000/2500432)
+time: add = 1615.099 seconds!
+MPC update: (1375000/2500432)
+time: add = 1619.165 seconds!
+MPC update: (1380000/2500432)
+time: add = 1623.619 seconds!
+MPC update: (1385000/2500432)
+time: add = 1627.980 seconds!
+MPC update: (1390000/2500432)
+time: add = 1634.020 seconds!
+MPC update: (1395000/2500432)
+time: add = 1638.719 seconds!
+MPC update: (1400000/2500432)
+time: add = 1644.020 seconds!
+MPC update: (1405000/2500432)
+time: add = 1649.520 seconds!
+MPC update: (1410000/2500432)
+time: add = 1655.257 seconds!
+MPC update: (1415000/2500432)
+time: add = 1659.937 seconds!
+MPC update: (1420000/2500432)
+time: add = 1666.180 seconds!
+MPC update: (1425000/2500432)
+time: add = 1670.782 seconds!
+MPC update: (1430000/2500432)
+time: add = 1676.341 seconds!
+MPC update: (1435000/2500432)
+time: add = 1681.068 seconds!
+MPC update: (1440000/2500432)
+time: add = 1686.128 seconds!
+MPC update: (1445000/2500432)
+time: add = 1691.284 seconds!
+MPC update: (1450000/2500432)
+time: add = 1695.212 seconds!
+MPC update: (1455000/2500432)
+time: add = 1700.549 seconds!
+MPC update: (1460000/2500432)
+time: add = 1706.360 seconds!
+MPC update: (1465000/2500432)
+time: add = 1710.973 seconds!
+MPC update: (1470000/2500432)
+time: add = 1716.247 seconds!
+MPC update: (1475000/2500432)
+time: add = 1722.259 seconds!
+MPC update: (1480000/2500432)
+time: add = 1727.272 seconds!
+MPC update: (1485000/2500432)
+time: add = 1732.502 seconds!
+MPC update: (1490000/2500432)
+time: add = 1737.599 seconds!
+MPC update: (1495000/2500432)
+time: add = 1741.776 seconds!
+MPC update: (1500000/2500432)
+time: add = 1746.948 seconds!
+MPC update: (1505000/2500432)
+time: add = 1751.653 seconds!
+MPC update: (1510000/2500432)
+time: add = 1756.777 seconds!
+MPC update: (1515000/2500432)
+time: add = 1761.605 seconds!
+MPC update: (1520000/2500432)
+time: add = 1766.438 seconds!
+MPC update: (1525000/2500432)
+time: add = 1772.759 seconds!
+MPC update: (1530000/2500432)
+time: add = 1776.073 seconds!
+MPC update: (1535000/2500432)
+time: add = 1782.755 seconds!
+MPC update: (1540000/2500432)
+time: add = 1788.138 seconds!
+MPC update: (1545000/2500432)
+time: add = 1794.318 seconds!
+MPC update: (1550000/2500432)
+time: add = 1799.531 seconds!
+MPC update: (1555000/2500432)
+time: add = 1803.739 seconds!
+MPC update: (1560000/2500432)
+time: add = 1807.777 seconds!
+MPC update: (1565000/2500432)
+time: add = 1812.957 seconds!
+MPC update: (1570000/2500432)
+time: add = 1818.227 seconds!
+MPC update: (1575000/2500432)
+time: add = 1822.960 seconds!
+MPC update: (1580000/2500432)
+time: add = 1828.263 seconds!
+MPC update: (1585000/2500432)
+time: add = 1832.664 seconds!
+MPC update: (1590000/2500432)
+time: add = 1837.579 seconds!
+MPC update: (1595000/2500432)
+time: add = 1842.329 seconds!
+MPC update: (1600000/2500432)
+time: add = 1847.658 seconds!
+MPC update: (1605000/2500432)
+time: add = 1852.358 seconds!
+MPC update: (1610000/2500432)
+time: add = 1859.037 seconds!
+MPC update: (1615000/2500432)
+time: add = 1864.821 seconds!
+MPC update: (1620000/2500432)
+time: add = 1869.075 seconds!
+MPC update: (1625000/2500432)
+time: add = 1875.245 seconds!
+MPC update: (1630000/2500432)
+time: add = 1879.727 seconds!
+MPC update: (1635000/2500432)
+time: add = 1884.752 seconds!
+MPC update: (1640000/2500432)
+time: add = 1890.292 seconds!
+MPC update: (1645000/2500432)
+time: add = 1895.054 seconds!
+MPC update: (1650000/2500432)
+time: add = 1900.445 seconds!
+MPC update: (1655000/2500432)
+time: add = 1905.283 seconds!
+MPC update: (1660000/2500432)
+time: add = 1909.803 seconds!
+MPC update: (1665000/2500432)
+time: add = 1915.678 seconds!
+MPC update: (1670000/2500432)
+time: add = 1920.124 seconds!
+MPC update: (1675000/2500432)
+time: add = 1925.476 seconds!
+MPC update: (1680000/2500432)
+time: add = 1928.921 seconds!
+MPC update: (1685000/2500432)
+time: add = 1932.632 seconds!
+MPC update: (1690000/2500432)
+time: add = 1937.499 seconds!
+MPC update: (1695000/2500432)
+time: add = 1941.492 seconds!
+MPC update: (1700000/2500432)
+time: add = 1945.790 seconds!
+MPC update: (1705000/2500432)
+time: add = 1950.397 seconds!
+MPC update: (1710000/2500432)
+time: add = 1955.159 seconds!
+MPC update: (1715000/2500432)
+time: add = 1959.905 seconds!
+MPC update: (1720000/2500432)
+time: add = 1964.645 seconds!
+MPC update: (1725000/2500432)
+time: add = 1969.839 seconds!
+MPC update: (1730000/2500432)
+time: add = 1974.940 seconds!
+MPC update: (1735000/2500432)
+time: add = 1979.821 seconds!
+MPC update: (1740000/2500432)
+time: add = 1984.457 seconds!
+MPC update: (1745000/2500432)
+time: add = 1989.104 seconds!
+MPC update: (1750000/2500432)
+time: add = 1995.352 seconds!
+MPC update: (1755000/2500432)
+time: add = 2000.500 seconds!
+MPC update: (1760000/2500432)
+time: add = 2006.851 seconds!
+MPC update: (1765000/2500432)
+time: add = 2012.390 seconds!
+MPC update: (1770000/2500432)
+time: add = 2017.643 seconds!
+MPC update: (1775000/2500432)
+time: add = 2022.028 seconds!
+MPC update: (1780000/2500432)
+time: add = 2026.958 seconds!
+MPC update: (1785000/2500432)
+time: add = 2031.833 seconds!
+MPC update: (1790000/2500432)
+time: add = 2036.782 seconds!
+MPC update: (1795000/2500432)
+time: add = 2041.124 seconds!
+MPC update: (1800000/2500432)
+time: add = 2045.639 seconds!
+MPC update: (1805000/2500432)
+time: add = 2050.213 seconds!
+MPC update: (1810000/2500432)
+time: add = 2056.913 seconds!
+MPC update: (1815000/2500432)
+time: add = 2062.071 seconds!
+MPC update: (1820000/2500432)
+time: add = 2067.116 seconds!
+MPC update: (1825000/2500432)
+time: add = 2072.102 seconds!
+MPC update: (1830000/2500432)
+time: add = 2078.727 seconds!
+MPC update: (1835000/2500432)
+time: add = 2084.064 seconds!
+MPC update: (1840000/2500432)
+time: add = 2089.108 seconds!
+MPC update: (1845000/2500432)
+time: add = 2093.109 seconds!
+MPC update: (1850000/2500432)
+time: add = 2096.477 seconds!
+MPC update: (1855000/2500432)
+time: add = 2101.265 seconds!
+MPC update: (1860000/2500432)
+time: add = 2105.824 seconds!
+MPC update: (1865000/2500432)
+time: add = 2111.184 seconds!
+MPC update: (1870000/2500432)
+time: add = 2117.244 seconds!
+MPC update: (1875000/2500432)
+time: add = 2122.333 seconds!
+MPC update: (1880000/2500432)
+time: add = 2126.276 seconds!
+MPC update: (1885000/2500432)
+time: add = 2130.028 seconds!
+MPC update: (1890000/2500432)
+time: add = 2135.666 seconds!
+MPC update: (1895000/2500432)
+time: add = 2140.240 seconds!
+MPC update: (1900000/2500432)
+time: add = 2145.471 seconds!
+MPC update: (1905000/2500432)
+time: add = 2150.289 seconds!
+MPC update: (1910000/2500432)
+time: add = 2156.291 seconds!
+MPC update: (1915000/2500432)
+time: add = 2160.030 seconds!
+MPC update: (1920000/2500432)
+time: add = 2163.799 seconds!
+MPC update: (1925000/2500432)
+time: add = 2168.428 seconds!
+MPC update: (1930000/2500432)
+time: add = 2172.994 seconds!
+MPC update: (1935000/2500432)
+time: add = 2178.931 seconds!
+MPC update: (1940000/2500432)
+time: add = 2185.102 seconds!
+MPC update: (1945000/2500432)
+time: add = 2189.860 seconds!
+MPC update: (1950000/2500432)
+time: add = 2195.764 seconds!
+MPC update: (1955000/2500432)
+time: add = 2200.777 seconds!
+MPC update: (1960000/2500432)
+time: add = 2205.092 seconds!
+MPC update: (1965000/2500432)
+time: add = 2211.140 seconds!
+MPC update: (1970000/2500432)
+time: add = 2216.461 seconds!
+MPC update: (1975000/2500432)
+time: add = 2220.635 seconds!
+MPC update: (1980000/2500432)
+time: add = 2225.542 seconds!
+MPC update: (1985000/2500432)
+time: add = 2231.270 seconds!
+MPC update: (1990000/2500432)
+time: add = 2236.797 seconds!
+MPC update: (1995000/2500432)
+time: add = 2242.977 seconds!
+MPC update: (2000000/2500432)
+time: add = 2247.746 seconds!
+MPC update: (2005000/2500432)
+time: add = 2252.565 seconds!
+MPC update: (2010000/2500432)
+time: add = 2256.734 seconds!
+MPC update: (2015000/2500432)
+time: add = 2260.677 seconds!
+MPC update: (2020000/2500432)
+time: add = 2266.166 seconds!
+MPC update: (2025000/2500432)
+time: add = 2271.907 seconds!
+MPC update: (2030000/2500432)
+time: add = 2276.630 seconds!
+MPC update: (2035000/2500432)
+time: add = 2282.694 seconds!
+MPC update: (2040000/2500432)
+time: add = 2287.291 seconds!
+MPC update: (2045000/2500432)
+time: add = 2292.747 seconds!
+MPC update: (2050000/2500432)
+time: add = 2298.395 seconds!
+MPC update: (2055000/2500432)
+time: add = 2304.190 seconds!
+MPC update: (2060000/2500432)
+time: add = 2308.926 seconds!
+MPC update: (2065000/2500432)
+time: add = 2314.155 seconds!
+MPC update: (2070000/2500432)
+time: add = 2318.843 seconds!
+MPC update: (2075000/2500432)
+time: add = 2323.021 seconds!
+MPC update: (2080000/2500432)
+time: add = 2328.194 seconds!
+MPC update: (2085000/2500432)
+time: add = 2333.742 seconds!
+MPC update: (2090000/2500432)
+time: add = 2339.985 seconds!
+MPC update: (2095000/2500432)
+time: add = 2344.733 seconds!
+MPC update: (2100000/2500432)
+time: add = 2349.491 seconds!
+MPC update: (2105000/2500432)
+time: add = 2354.931 seconds!
+MPC update: (2110000/2500432)
+time: add = 2360.839 seconds!
+MPC update: (2115000/2500432)
+time: add = 2365.650 seconds!
+MPC update: (2120000/2500432)
+time: add = 2369.739 seconds!
+MPC update: (2125000/2500432)
+time: add = 2374.819 seconds!
+MPC update: (2130000/2500432)
+time: add = 2379.445 seconds!
+MPC update: (2135000/2500432)
+time: add = 2384.321 seconds!
+MPC update: (2140000/2500432)
+time: add = 2389.320 seconds!
+MPC update: (2145000/2500432)
+time: add = 2394.295 seconds!
+MPC update: (2150000/2500432)
+time: add = 2399.895 seconds!
+MPC update: (2155000/2500432)
+time: add = 2404.341 seconds!
+MPC update: (2160000/2500432)
+time: add = 2408.566 seconds!
+MPC update: (2165000/2500432)
+time: add = 2414.076 seconds!
+MPC update: (2170000/2500432)
+time: add = 2420.157 seconds!
+MPC update: (2175000/2500432)
+time: add = 2424.679 seconds!
+MPC update: (2180000/2500432)
+time: add = 2429.425 seconds!
+MPC update: (2185000/2500432)
+time: add = 2434.720 seconds!
+MPC update: (2190000/2500432)
+time: add = 2440.005 seconds!
+MPC update: (2195000/2500432)
+time: add = 2445.296 seconds!
+MPC update: (2200000/2500432)
+time: add = 2451.415 seconds!
+MPC update: (2205000/2500432)
+time: add = 2456.292 seconds!
+MPC update: (2210000/2500432)
+time: add = 2461.450 seconds!
+MPC update: (2215000/2500432)
+time: add = 2466.768 seconds!
+MPC update: (2220000/2500432)
+time: add = 2471.793 seconds!
+MPC update: (2225000/2500432)
+time: add = 2476.038 seconds!
+MPC update: (2230000/2500432)
+time: add = 2480.529 seconds!
+MPC update: (2235000/2500432)
+time: add = 2484.960 seconds!
+MPC update: (2240000/2500432)
+time: add = 2489.412 seconds!
+MPC update: (2245000/2500432)
+time: add = 2495.546 seconds!
+MPC update: (2250000/2500432)
+time: add = 2500.315 seconds!
+MPC update: (2255000/2500432)
+time: add = 2505.787 seconds!
+MPC update: (2260000/2500432)
+time: add = 2512.249 seconds!
+MPC update: (2265000/2500432)
+time: add = 2517.471 seconds!
+MPC update: (2270000/2500432)
+time: add = 2522.672 seconds!
+MPC update: (2275000/2500432)
+time: add = 2527.454 seconds!
+MPC update: (2280000/2500432)
+time: add = 2532.139 seconds!
+MPC update: (2285000/2500432)
+time: add = 2536.298 seconds!
+MPC update: (2290000/2500432)
+time: add = 2540.687 seconds!
+MPC update: (2295000/2500432)
+time: add = 2545.354 seconds!
+MPC update: (2300000/2500432)
+time: add = 2550.267 seconds!
+MPC update: (2305000/2500432)
+time: add = 2555.583 seconds!
+MPC update: (2310000/2500432)
+time: add = 2560.538 seconds!
+MPC update: (2315000/2500432)
+time: add = 2565.263 seconds!
+MPC update: (2320000/2500432)
+time: add = 2570.157 seconds!
+MPC update: (2325000/2500432)
+time: add = 2575.062 seconds!
+MPC update: (2330000/2500432)
+time: add = 2579.288 seconds!
+MPC update: (2335000/2500432)
+time: add = 2585.677 seconds!
+MPC update: (2340000/2500432)
+time: add = 2591.522 seconds!
+MPC update: (2345000/2500432)
+time: add = 2595.656 seconds!
+MPC update: (2350000/2500432)
+time: add = 2600.313 seconds!
+MPC update: (2355000/2500432)
+time: add = 2606.316 seconds!
+MPC update: (2360000/2500432)
+time: add = 2611.350 seconds!
+MPC update: (2365000/2500432)
+time: add = 2615.963 seconds!
+MPC update: (2370000/2500432)
+time: add = 2621.797 seconds!
+MPC update: (2375000/2500432)
+time: add = 2626.445 seconds!
+MPC update: (2380000/2500432)
+time: add = 2631.571 seconds!
+MPC update: (2385000/2500432)
+time: add = 2636.686 seconds!
+MPC update: (2390000/2500432)
+time: add = 2641.713 seconds!
+MPC update: (2395000/2500432)
+time: add = 2646.570 seconds!
+MPC update: (2400000/2500432)
+time: add = 2651.750 seconds!
+MPC update: (2405000/2500432)
+time: add = 2656.309 seconds!
+MPC update: (2410000/2500432)
+time: add = 2662.164 seconds!
+MPC update: (2415000/2500432)
+time: add = 2666.972 seconds!
+MPC update: (2420000/2500432)
+time: add = 2673.368 seconds!
+MPC update: (2425000/2500432)
+time: add = 2678.353 seconds!
+MPC update: (2430000/2500432)
+time: add = 2683.305 seconds!
+MPC update: (2435000/2500432)
+time: add = 2689.098 seconds!
+MPC update: (2440000/2500432)
+time: add = 2693.521 seconds!
+MPC update: (2445000/2500432)
+time: add = 2698.462 seconds!
+MPC update: (2450000/2500432)
+time: add = 2703.996 seconds!
+MPC update: (2455000/2500432)
+time: add = 2709.262 seconds!
+MPC update: (2460000/2500432)
+time: add = 3108.914 seconds!
+MPC update: (2465000/2500432)
+time: add = 3115.019 seconds!
+MPC update: (2470000/2500432)
+time: add = 3120.212 seconds!
+MPC update: (2475000/2500432)
+time: add = 3125.068 seconds!
+MPC update: (2480000/2500432)
+time: add = 3129.942 seconds!
+MPC update: (2485000/2500432)
+time: add = 3136.196 seconds!
+MPC update: (2490000/2500432)
+time: add = 3140.455 seconds!
+MPC update: (2495000/2500432)
+time: add = 3145.731 seconds!
+MPC update: (2500000/2500432)
+time: add = 3150.674 seconds!
+MPC time: total iee add = 3151.135 seconds!
+MPC Search(000000) result: 16696 docs
+MPC time: iee total search =  1.444 seconds!
+MPC Search(000001) result: 2483736 docs
+MPC time: iee total search =  0.789 seconds!
+MPC Search(000002) result: 597788 docs
+MPC time: iee total search = 17.407 seconds!
+MPC Search(000003) result: 227968 docs
+MPC time: iee total search =  6.598 seconds!
+MPC Search(000004) result: 698906 docs
+MPC time: iee total search = 19.361 seconds!
+MPC Search(000005) result: 42427 docs
+MPC time: iee total search =  1.135 seconds!
+MPC Search(000006) result: 316859 docs
+MPC time: iee total search =  8.579 seconds!
+MPC Search(000007) result: 66919 docs
+MPC time: iee total search =  1.775 seconds!
+MPC Search(000008) result: 145139 docs
+MPC time: iee total search =  4.009 seconds!
+MPC Search(000009) result: 388656 docs
+MPC time: iee total search = 10.358 seconds!
+MPC Search(000010) result: 332246 docs
+MPC time: iee total search =  8.934 seconds!
+MPC Search(000011) result: 135937 docs
+MPC time: iee total search =  3.829 seconds!
+MPC Search(000012) result: 427165 docs
+MPC time: iee total search = 12.531 seconds!
+MPC Search(000013) result: 217687 docs
+MPC time: iee total search =  6.008 seconds!
+MPC Search(000014) result: 537939 docs
+MPC time: iee total search = 14.698 seconds!
+MPC Search(000015) result: 5198 docs
+MPC time: iee total search =  0.157 seconds!
+MPC Search(000016) result: 170543 docs
+MPC time: iee total search =  4.591 seconds!
+MPC Search(000017) result: 59241 docs
+MPC time: iee total search =  1.570 seconds!
+MPC Search(000018) result: 139305 docs
+MPC time: iee total search = 22.414 seconds!
+MPC Search(000019) result: 8260 docs
+MPC time: iee total search = 59.338 seconds!
+MPC Search(000020) result: 1387 docs
+MPC time: iee total search = 81.666 seconds!
+MPC Search(000021) result: 686451 docs
+MPC time: iee total search = 20.893 seconds!
+MPC Search(000022) result: 1048855 docs
+MPC time: iee total search = 51.539 seconds!
+MPC Search(000023) result: 1221079 docs
+MPC time: iee total search = 85.389 seconds!
+MPC Search(000024) result: 1813981 docs
+MPC time: iee total search = 22.853 seconds!
+MPC Search(000025) result: 1451577 docs
+MPC time: iee total search = 51.915 seconds!
+MPC Search(000026) result: 1279353 docs
+MPC time: iee total search = 84.645 seconds!
+MPC Search(000027) result: 154591 docs
+MPC time: iee total search = 44.393 seconds!
+MPC Search(000028) result: 200779 docs
+MPC time: iee total search = 72.531 seconds!
+MPC Search(000029) result: 408619 docs
+MPC time: iee total search = 45.136 seconds!
+MPC Search(000030) result: 108329 docs
+MPC time: iee total search = 66.940 seconds!
+enclave destroyed

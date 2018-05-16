@@ -1,0 +1,168 @@
+Finished Server init! Gonna start listening for IEE requests!
+Listening for requests...
+------------------------------------------
+Client connected (248.127.0.0)
+Cleared map!
+------------------------
+SERVER time: total sv add = 35.364 sec
+SERVER time: total sv add network = 69.105 sec
+## STATS 0 ##
+SERVER Seen search batches: 1
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.002 sec
+SERVER time: total sv search network =  0.000 sec
+## STATS 1 ##
+SERVER Seen search batches: 2
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.002 sec
+SERVER time: total sv search network =  0.001 sec
+## STATS 2 ##
+SERVER Seen search batches: 14
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.057 sec
+SERVER time: total sv search network =  0.047 sec
+## STATS 3 ##
+SERVER Seen search batches: 19
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.020 sec
+SERVER time: total sv search network =  0.063 sec
+## STATS 4 ##
+SERVER Seen search batches: 33
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.065 sec
+SERVER time: total sv search network =  0.117 sec
+## STATS 5 ##
+SERVER Seen search batches: 34
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.004 sec
+SERVER time: total sv search network =  0.120 sec
+## STATS 6 ##
+SERVER Seen search batches: 40
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.030 sec
+SERVER time: total sv search network =  0.144 sec
+## STATS 7 ##
+SERVER Seen search batches: 42
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.006 sec
+SERVER time: total sv search network =  0.148 sec
+## STATS 8 ##
+SERVER Seen search batches: 45
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.014 sec
+SERVER time: total sv search network =  0.158 sec
+## STATS 9 ##
+SERVER Seen search batches: 53
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.036 sec
+SERVER time: total sv search network =  0.187 sec
+## STATS 10 ##
+SERVER Seen search batches: 60
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.032 sec
+SERVER time: total sv search network =  0.212 sec
+## STATS 11 ##
+SERVER Seen search batches: 63
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.013 sec
+SERVER time: total sv search network =  0.222 sec
+## STATS 12 ##
+SERVER Seen search batches: 72
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.041 sec
+SERVER time: total sv search network =  0.255 sec
+## STATS 13 ##
+SERVER Seen search batches: 77
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.020 sec
+SERVER time: total sv search network =  0.271 sec
+## STATS 14 ##
+SERVER Seen search batches: 88
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.045 sec
+SERVER time: total sv search network =  0.313 sec
+## STATS 15 ##
+SERVER Seen search batches: 89
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.001 sec
+SERVER time: total sv search network =  0.313 sec
+## STATS 16 ##
+SERVER Seen search batches: 93
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.017 sec
+SERVER time: total sv search network =  0.325 sec
+## STATS 17 ##
+SERVER Seen search batches: 95
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.006 sec
+SERVER time: total sv search network =  0.330 sec
+## STATS 18 ##
+SERVER Seen search batches: 111
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.078 sec
+SERVER time: total sv search network =  0.394 sec
+## STATS 19 ##
+SERVER Seen search batches: 147
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.171 sec
+SERVER time: total sv search network =  0.544 sec
+## STATS 20 ##
+SERVER Seen search batches: 203
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.257 sec
+SERVER time: total sv search network =  0.773 sec
+## STATS 21 ##
+SERVER Seen search batches: 219
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.074 sec
+SERVER time: total sv search network =  0.835 sec
+## STATS 22 ##
+SERVER Seen search batches: 255
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.155 sec
+SERVER time: total sv search network =  0.977 sec
+## STATS 23 ##
+SERVER Seen search batches: 311
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.265 sec
+SERVER time: total sv search network =  1.208 sec
+## STATS 24 ##
+SERVER Seen search batches: 327
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.078 sec
+SERVER time: total sv search network =  1.271 sec
+## STATS 25 ##
+SERVER Seen search batches: 363
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.164 sec
+SERVER time: total sv search network =  1.416 sec
+## STATS 26 ##
+SERVER Seen search batches: 419
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.248 sec
+SERVER time: total sv search network =  1.645 sec
+## STATS 27 ##
+SERVER Seen search batches: 475
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.253 sec
+SERVER time: total sv search network =  1.876 sec
+## STATS 28 ##
+SERVER Seen search batches: 505
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.135 sec
+SERVER time: total sv search network =  1.997 sec
+## STATS 29 ##
+SERVER Seen search batches: 552
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.219 sec
+SERVER time: total sv search network =  2.191 sec
+## STATS 30 ##
+SERVER Seen search batches: 582
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.140 sec
+SERVER time: total sv search network =  2.306 sec
+## STATS 31 ##
+SERVER Seen search batches: 629
+SERVER Size index: 10305667
+SERVER time: total sv search =  0.224 sec
+SERVER time: total sv search network =  2.503 sec

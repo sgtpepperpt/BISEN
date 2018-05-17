@@ -12,15 +12,17 @@ OK Delivered Locally
 Status: 0
 msgreplen 480
 msgreplen 451
-Init time = 40418.997 seconds
+Init time = 40381.800 seconds
 DATASET_FILE: /home/guilherme/BISEN/wiki_not2M
-nr updates: 2000076, nr searches: 4, test len: 2000081
+nr updates: 2000076, nr searches: 6, test len: 2000083
 ############### CALLING F ###############
 Finished IEE init! Gonna start listening for client requests through bridge!
 Init done
-MPC time: total iee add = 2248.082 seconds!
-MPC Search(000000) time: 58.046 seconds (8 docs)
-MPC Search(000001) time: 52.948 seconds (4 docs)
-MPC Search(000002) time: 52.557 seconds (1027147 docs)
-MPC Search(000003) time: 47.826 seconds (1998959 docs)
+MPC time: total iee add = 2283.690 seconds!
+MPC Search(000000) time: 60.847 seconds (8 docs)
+MPC Search(000001) time: 55.489 seconds (8 docs)
+MPC Search(000002) time: 48.788 seconds (8 docs)
+MPC Search(000003) time: 47.427 seconds (4 docs)
+MPC Search(000004) time: 48.119 seconds (1027147 docs)
+MPC Search(000005) time: 47.975 seconds (1998959 docs)
 enclave destroyed

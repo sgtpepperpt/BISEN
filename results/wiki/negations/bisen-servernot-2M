@@ -1,28 +1,38 @@
 Finished Server init! Gonna start listening for IEE requests!
 Listening for requests...
 ------------------------------------------
-Client connected (85.127.0.0)
+Client connected (240.127.0.0)
 Cleared map!
 ------------------------
-SERVER time: total sv add = 874.344 sec
-SERVER time: total sv add network = 1360.508 sec
+SERVER time: total sv add = 976.434 sec
+SERVER time: total sv add network = 1293.970 sec
 ## STATS 0 ##
 SERVER Seen search batches: 1176
 SERVER Size index: 217892563
-SERVER time: total sv search =  8.720 sec
-SERVER time: total sv search network =  4.890 sec
+SERVER time: total sv search =  9.283 sec
+SERVER time: total sv search network =  4.697 sec
 ## STATS 1 ##
 SERVER Seen search batches: 2352
 SERVER Size index: 217892563
-SERVER time: total sv search =  7.402 sec
-SERVER time: total sv search network =  9.765 sec
+SERVER time: total sv search =  8.420 sec
+SERVER time: total sv search network =  9.543 sec
 ## STATS 2 ##
 SERVER Seen search batches: 3528
 SERVER Size index: 217892563
-SERVER time: total sv search =  7.324 sec
-SERVER time: total sv search network = 14.619 sec
+SERVER time: total sv search =  8.162 sec
+SERVER time: total sv search network = 14.278 sec
 ## STATS 3 ##
 SERVER Seen search batches: 4704
 SERVER Size index: 217892563
-SERVER time: total sv search =  7.192 sec
-SERVER time: total sv search network = 19.494 sec
+SERVER time: total sv search =  7.768 sec
+SERVER time: total sv search network = 19.070 sec
+## STATS 4 ##
+SERVER Seen search batches: 5880
+SERVER Size index: 217892563
+SERVER time: total sv search =  7.725 sec
+SERVER time: total sv search network = 23.793 sec
+## STATS 5 ##
+SERVER Seen search batches: 7056
+SERVER Size index: 217892563
+SERVER time: total sv search =  7.761 sec
+SERVER time: total sv search network = 28.455 sec

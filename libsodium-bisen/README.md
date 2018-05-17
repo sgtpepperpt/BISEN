@@ -1,0 +1,1 @@
+Clone (libsodium)[https://github.com/jedisct1/libsodium] (tested with version 1.0.15) into this directory. Check readmes in subdirectories for compilation and installation instructions on libsodium-sgx.

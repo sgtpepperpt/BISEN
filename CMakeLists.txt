@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 3.1)
 project(bisen)
 
+# variables
+set(USE_WIKI_TEST 1)
+set(SPARSEPP_DIR ${CMAKE_SOURCE_DIR}/sparsepp)
+
+########################################################################################################################
 # paths for binaries
 set(EXECUTABLE_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
 set(LIBRARY_OUTPUT_PATH ${CMAKE_SOURCE_DIR}/bin)
@@ -36,7 +41,7 @@ add_custom_command(TARGET Iee POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ../bin
 # server module
 file(GLOB SERVER_SOURCES src/Server/*.cpp)
 add_executable(Server ${SERVER_SOURCES})
-target_include_directories(Server PRIVATE ${CMAKE_SOURCE_DIR}/sparsepp)
+target_include_directories(Server PRIVATE ${SPARSEPP_DIR})
 target_link_libraries(Server Common pthread)
 
 # client module
@@ -45,8 +50,6 @@ add_library(Client ${CLIENT_SOURCES})
 target_link_libraries(Client Common sodium)
 
 # test module
-set(USE_WIKI_TEST 1)
-
 if(USE_WIKI_TEST)
     set(TEST_SRC ${PROJECT_SOURCE_DIR}/src/Test/generate_wiki.cpp)
 else()

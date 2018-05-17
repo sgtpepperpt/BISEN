@@ -1,0 +1,26 @@
+Initialized
+Status: 0
+msgreplen 480
+ATTKE PRMS R: Remote -> Local: 1164 bytes
+Status: 0
+ATTKE PRMS L: Local -> Remote: 144 bytes
+Status: 0
+msgreplen 451
+ATTKE OK R: Remote -> Local: 1135 bytes
+Status: 0
+OK Delivered Locally
+Status: 0
+msgreplen 480
+msgreplen 451
+Init time = 40363.025 seconds
+DATASET_FILE: /home/guilherme/BISEN/wiki_not1M
+nr updates: 1000390, nr searches: 4, test len: 1000395
+############### CALLING F ###############
+Finished IEE init! Gonna start listening for client requests through bridge!
+Init done
+MPC time: total iee add = 1092.064 seconds!
+MPC Search(000000) time: 20.124 seconds (6 docs)
+MPC Search(000001) time: 19.526 seconds (2 docs)
+MPC Search(000002) time: 19.678 seconds (516819 docs)
+MPC Search(000003) time: 19.449 seconds (999879 docs)
+enclave destroyed

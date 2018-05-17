@@ -1,0 +1,28 @@
+Finished Server init! Gonna start listening for IEE requests!
+Listening for requests...
+------------------------------------------
+Client connected (145.127.0.0)
+Cleared map!
+------------------------
+SERVER time: total sv add = 674.317 sec
+SERVER time: total sv add network = 1059.729 sec
+## STATS 0 ##
+SERVER Seen search batches: 882
+SERVER Size index: 163217947
+SERVER time: total sv search =  6.184 sec
+SERVER time: total sv search network =  3.639 sec
+## STATS 1 ##
+SERVER Seen search batches: 1764
+SERVER Size index: 163217947
+SERVER time: total sv search =  5.069 sec
+SERVER time: total sv search network =  7.278 sec
+## STATS 2 ##
+SERVER Seen search batches: 2646
+SERVER Size index: 163217947
+SERVER time: total sv search =  5.410 sec
+SERVER time: total sv search network = 10.895 sec
+## STATS 3 ##
+SERVER Seen search batches: 3528
+SERVER Size index: 163217947
+SERVER time: total sv search =  5.108 sec
+SERVER time: total sv search network = 14.529 sec

@@ -12,44 +12,43 @@ OK Delivered Locally
 Status: 0
 msgreplen 480
 msgreplen 451
-Init time = 40316.118 seconds
+Init time = 40895.281 seconds
 DATASET_FILE: /home/guilherme/BISEN/wiki_2_5M
 nr updates: 2500432, nr searches: 32, test len: 2500465
 ############### CALLING F ###############
 Finished IEE init! Gonna start listening for client requests through bridge!
 Init done
-time of file io:  9.877
-MPC time: total iee add = 3149.433 seconds!
-MPC Search(000000) time:  1.353 seconds (16696 docs)
-MPC Search(000001) time:  0.658 seconds (2483736 docs)
-MPC Search(000002) time: 17.620 seconds (597788 docs)
-MPC Search(000003) time:  6.888 seconds (227968 docs)
-MPC Search(000004) time: 20.512 seconds (698906 docs)
-MPC Search(000005) time:  1.176 seconds (42427 docs)
-MPC Search(000006) time:  9.888 seconds (316859 docs)
-MPC Search(000007) time:  2.033 seconds (66919 docs)
-MPC Search(000008) time:  4.353 seconds (145139 docs)
-MPC Search(000009) time: 11.387 seconds (388656 docs)
-MPC Search(000010) time: 10.073 seconds (332246 docs)
-MPC Search(000011) time:  4.111 seconds (135937 docs)
-MPC Search(000012) time: 12.876 seconds (427165 docs)
-MPC Search(000013) time:  6.575 seconds (217687 docs)
-MPC Search(000014) time: 16.459 seconds (537939 docs)
-MPC Search(000015) time:  0.148 seconds (5198 docs)
-MPC Search(000016) time:  5.261 seconds (170543 docs)
-MPC Search(000017) time:  1.823 seconds (59241 docs)
-MPC Search(000018) time: 24.757 seconds (139305 docs)
-MPC Search(000019) time: 55.377 seconds (8260 docs)
-MPC Search(000020) time: 71.923 seconds (1387 docs)
-MPC Search(000021) time: 20.337 seconds (686451 docs)
-MPC Search(000022) time: 45.124 seconds (1048855 docs)
-MPC Search(000023) time: 72.603 seconds (1221079 docs)
-MPC Search(000024) time: 20.078 seconds (1813981 docs)
-MPC Search(000025) time: 45.497 seconds (1451577 docs)
-MPC Search(000026) time: 72.464 seconds (1279353 docs)
-MPC Search(000027) time: 72.924 seconds (2499045 docs)
-MPC Search(000028) time: 37.471 seconds (154591 docs)
-MPC Search(000029) time: 64.430 seconds (200779 docs)
-MPC Search(000030) time: 36.093 seconds (408619 docs)
-MPC Search(000031) time: 62.165 seconds (108329 docs)
+MPC time: total iee add = 3137.270 seconds!
+MPC Search(000000) time:  1.319 seconds (16696 docs)
+MPC Search(000001) time:  0.635 seconds (2483736 docs)
+MPC Search(000002) time: 14.535 seconds (597788 docs)
+MPC Search(000003) time:  6.739 seconds (227968 docs)
+MPC Search(000004) time: 20.100 seconds (698906 docs)
+MPC Search(000005) time:  1.169 seconds (42427 docs)
+MPC Search(000006) time:  9.516 seconds (316859 docs)
+MPC Search(000007) time:  2.021 seconds (66919 docs)
+MPC Search(000008) time:  4.391 seconds (145139 docs)
+MPC Search(000009) time: 11.344 seconds (388656 docs)
+MPC Search(000010) time:  9.789 seconds (332246 docs)
+MPC Search(000011) time:  4.076 seconds (135937 docs)
+MPC Search(000012) time: 11.404 seconds (427165 docs)
+MPC Search(000013) time:  5.238 seconds (217687 docs)
+MPC Search(000014) time: 13.127 seconds (537939 docs)
+MPC Search(000015) time:  0.132 seconds (5198 docs)
+MPC Search(000016) time:  4.453 seconds (170543 docs)
+MPC Search(000017) time:  1.792 seconds (59241 docs)
+MPC Search(000018) time: 24.553 seconds (139305 docs)
+MPC Search(000019) time: 54.522 seconds (8260 docs)
+MPC Search(000020) time: 82.324 seconds (1387 docs)
+MPC Search(000021) time: 19.621 seconds (686451 docs)
+MPC Search(000022) time: 44.372 seconds (1048855 docs)
+MPC Search(000023) time: 71.885 seconds (1221079 docs)
+MPC Search(000024) time: 19.578 seconds (1813981 docs)
+MPC Search(000025) time: 44.589 seconds (1451577 docs)
+MPC Search(000026) time: 77.452 seconds (1279353 docs)
+MPC Search(000027) time: 78.625 seconds (2499045 docs)
+MPC Search(000028) time: 45.107 seconds (154591 docs)
+MPC Search(000029) time: 67.521 seconds (200779 docs)
+MPC Search(000030) time: 39.250 seconds (408619 docs)
+MPC Search(000031) time: 62.632 seconds (108329 docs)
 enclave destroyed

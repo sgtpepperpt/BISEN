@@ -16,5 +16,5 @@ set xtics rotate by 45 right
 
 set grid
 
-set output 'update.png'
-plot inputfile using 1:2 title columnheader(2) ps 1.5 lw 2, for [i=3:5] '' using 1:i title columnheader(i) ps 1.5 lw 2
+set output outputfile
+plot inputfile using 1:2 title columnheader(2) ps 1.5 lw 2, for [i=3:cols] '' using 1:i title columnheader(i) ps 1.5 lw 2

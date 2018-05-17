@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 
     // define queries for test
     vector<string> queries;
-    queries.push_back("portugal");
+    /*queries.push_back("portugal");
     queries.push_back("!portugal");
 
     queries.push_back("time");
@@ -73,6 +73,13 @@ int main(int argc, char** argv) {
     queries.push_back("life");
     queries.push_back("hand");
 
+    queries.push_back("history");
+    queries.push_back("country");
+    queries.push_back("born");
+    queries.push_back("lisbon");
+    queries.push_back("york");
+    queries.push_back("paris");
+
     queries.push_back("time && person");
     queries.push_back("time && person && year && way && day");
     queries.push_back("time && person && year && way && day && thing && man && world && life && hand");
@@ -80,16 +87,20 @@ int main(int argc, char** argv) {
     queries.push_back("time || person");
     queries.push_back("time || person || year || way || day");
     queries.push_back("time || person || year || way || day || thing || man || world || life || hand");
-
-    queries.push_back("!time && !person");
-    queries.push_back("!time && !person && !year && !way && !day");
+    */
+    queries.push_back("!time && person && year && way && day && thing && man && world && life && hand");
+    queries.push_back("!time && person && year && way && day && thing && man && world && life && hand");
+    
+    queries.push_back("!time && person && year && way && day && thing && man && world && life && hand");
+    queries.push_back("!time && !person && !year && !way && !day && thing && man && world && life && hand");
     queries.push_back("!time && !person && !year && !way && !day && !thing && !man && !world && !life && !hand");
+    queries.push_back("!(time && person && year && way && day && thing && man && world && life && hand)");
 
-    queries.push_back("(time && person) || (year && way)");
+    /*queries.push_back("(time && person) || (year && way)");
     queries.push_back("(time && person) || (year && way) || (day && thing) || (man && world)");
     queries.push_back("(time || person) && (year || way)");
     queries.push_back("(time || person) && (year || way) && (day || thing) && (man || world)");
-
+*/
     // init client
     SseClient client;
     unsigned char* data;

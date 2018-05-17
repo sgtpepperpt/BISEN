@@ -21,11 +21,23 @@
 #include <err.h>
 #include <assert.h>
 #include <vector>
+#include <pthread.h>
+#include "ServerUtils.hpp"
+
 #include <unordered_map>
 #include <map>
-#include <pthread.h>
-#include <sparsehash/sparse_hash_map>
-#include "ServerUtils.hpp"
+
+//#include <sparsehash/sparse_hash_map>
+
+#define SPARSE_MAP 1
+#if SPARSE_MAP
+    #include <sparsepp/spp.h>
+#endif
+
+#define REDIS 0
+#if REDIS
+    #include <hiredis/hiredis.h>
+#endif
 
 using namespace std;
 
@@ -133,10 +145,15 @@ struct cmp_str {
 };
 */
 
+//typedef unordered_map<void*, void*, VoidHash, VoidEqual> uee_map;
+//typedef google::sparse_hash_map<void*, void*, VoidHash, VoidEqual> uee_map;
+
+#if SPARSE_MAP
+typedef spp::sparse_hash_map<void*, void*, VoidHash, VoidEqual> uee_map;
+#endif
+
+
 class SseServer {
-private:
-    unordered_map<void*, void*, VoidHash, VoidEqual> I;
-    //google::sparse_hash_map<void*, void*, VoidHash, VoidEqual> I2;
 public:
     SseServer();
     ~SseServer();

@@ -5,6 +5,24 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <time.h>
+#include <sys/time.h>
+
+double time_diff(struct timespec start, struct timespec end) {
+    struct timespec temp;
+    if ((end.tv_nsec-start.tv_nsec)<0) {
+        temp.tv_sec = end.tv_sec-start.tv_sec-1;
+        temp.tv_nsec = 1000000000+end.tv_nsec-start.tv_nsec;
+    } else {
+        temp.tv_sec = end.tv_sec-start.tv_sec;
+        temp.tv_nsec = end.tv_nsec-start.tv_nsec;
+    }
+
+    return ((double)temp.tv_sec * 1000000000.0 + (double)temp.tv_nsec) / 1000.0;
+}
+
+double total_update_time = 0;
+size_t update_count = 0;
 
 static void fs_strprint(bytes* out, size* outlen, const bytes in, const size inlen)
 {
@@ -97,6 +115,9 @@ static void fs_read(bytes* out, size* outlen, const bytes in, const size inlen)
     printf("\n");*/
 }
 
+int state_type = -1;
+int state_phase = 0;
+
 static void fs_write(bytes* out, size* outlen, const bytes in, const size inlen)
 {
     //printf("Write ocall\n");
@@ -109,8 +130,31 @@ static void fs_write(bytes* out, size* outlen, const bytes in, const size inlen)
     void *buf = (void *)malloc(sizeof(unsigned char) * nbytes);
     iee_readFromArr(buf, nbytes, in, &pos);
 
+    //struct timespec start, end;
+    //clock_gettime(CLOCK_REALTIME, &start);
+
     // execute write syscall
     ssize_t res = write(fildes, buf, nbytes);
+
+    //clock_gettime(CLOCK_REALTIME, &end);
+    /*for (int i = 0; i < nbytes; ++i) {
+        printf("%02x ", ((unsigned char*)buf)[i]);
+    }
+    printf("\n");
+*/
+    /*if(nbytes == 1) {
+        state_type++;
+    } else {
+        if(state_type == 1) {
+            total_update_time += time_diff(start, end);
+            update_count++;
+        }
+
+        if(state_type >= 3) {
+            printf("FSERV %lu %f\n", update_count, total_update_time);
+        }
+    }*/
+
     //printf("ret: %lu\n", res);
     free(buf);
 

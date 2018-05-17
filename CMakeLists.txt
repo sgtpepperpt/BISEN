@@ -10,8 +10,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
 #find_package(sodium REQUIRED)
 
 # flags (-DLOCALTEST -DVERBOSE)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread -g -O0 -fPIC -Wall -Wno-unused-function -Wno-unused-variable")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -g -O0 -fPIC -Wall -Wno-unused-function -Wno-unused-variable")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread -fPIC -Wall -Wno-unused-function -Wno-unused-variable")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -fPIC -Wall -Wno-unused-function -Wno-unused-variable")
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 11)
 
@@ -36,7 +36,8 @@ add_custom_command(TARGET Iee POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ../bin
 # server module
 file(GLOB SERVER_SOURCES src/Server/*.cpp)
 add_executable(Server ${SERVER_SOURCES})
-target_link_libraries(Server Common)
+target_include_directories(Server PRIVATE ${CMAKE_SOURCE_DIR}/sparsepp)
+target_link_libraries(Server Common pthread)
 
 # client module
 file(GLOB CLIENT_SOURCES src/Client/*.cpp src/Client/*.c)

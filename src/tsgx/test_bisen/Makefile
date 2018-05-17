@@ -44,7 +44,7 @@ CXX = g++
 
 # define any compile-time flags
 # -DSGX_MPC_OUTSIDE
-CFLAGS = -c -Wall -Werror -fPIC -DSGX_MPC_TEST  $(SGX_FLAG)
+CFLAGS = -c -Wall -Werror -fPIC -DSGX_MPC_TEST $(SGX_FLAG)
 
 ################################################################################
 

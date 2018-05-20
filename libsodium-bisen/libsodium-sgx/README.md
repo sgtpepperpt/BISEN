@@ -1,24 +1,15 @@
-# Compilation Overview 
+# Compiling libsodium-sgx
 
-cd ../libsodium
-./configure --enable-static --disable-libtool-lock --without-pthreads --enable-minimal
-make && make check
+```
+wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz
 
-cd ../libsodium-sgx
-mkdir build
+tar -xvzf libsodium-1.0.15.tar.gz
 
-find . -name *.o ../libsodium | grep crypto_scalarmult | while read fn ; do cp $fn ../build/; done
-find . -name *.o ../libsodium | grep sha | while read fn ; do cp $fn ../build/; done
-find . -name *.o ../libsodium | grep secretbox | while read fn ; do cp $fn ../build/; done
-find . -name *.o ../libsodium | grep crypto_stream | while read fn ; do cp $fn ../build/; done
-find . -name *.o ../libsodium | grep crypto_onetimeauth | while read fn ; do cp $fn ../build/; done
-find . -name *.o ../libsodium | grep crypto_core/hsalsa20 | while read fn ; do cp $fn ../build/; done
-find . -name *.o ../libsodium | grep crypto_verify | while read fn ; do cp $fn ../build/; done
-find . -name *.o ../libsodium | grep crypto_sign | while read fn ; do cp $fn ../build/; done
-find . -name *.o ../libsodium | grep crypto_core/curve25519 | while read fn ; do cp $fn ../build/; done
+mv libsodium-1.0.15 libsodium
 
-gcc -Wall -c src/utils.c -o build/utils.o
+cd libsodium-sgx
 
-ar rcs libsodium.a build/*.o
+make
 
-
+sudo make install-libsodium-sgx.a
+```

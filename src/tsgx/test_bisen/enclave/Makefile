@@ -45,11 +45,11 @@ endif
 ifneq ($(SGX_MODE), HW)
 	Trts_Library_Name := sgx_trts_sim
 	Service_Library_Name := sgx_tservice_sim
-	
+
 else
 	Trts_Library_Name := sgx_trts
 	Service_Library_Name := sgx_tservice
-	
+
 endif
 
 TEST_LD = -L../../build -lremote -lf -lsodium-sgx
@@ -60,7 +60,7 @@ Enclave_Cpp_Files := Enclave/Enclave.cpp
 Enclave_Include_Paths := -IEnclave -I$(SGX_SDK)/include -I$(SGX_SDK)/include/tlibc -I$(SGX_SDK)/include/stlport -Ilib $(TEST_INC)
 
 Enclave_C_Flags := $(SGX_COMMON_CFLAGS) -nostdinc -fvisibility=hidden -fpie -fstack-protector $(Enclave_Include_Paths)
-Enclave_Cpp_Flags := $(Enclave_C_Flags) -std=c++11 
+Enclave_Cpp_Flags := $(Enclave_C_Flags) -std=c++11
 Enclave_Link_Flags := $(SGX_COMMON_CFLAGS) -Wl,--allow-multiple-definition -Wl,--no-undefined -nostdlib -nodefaultlibs -nostartfiles -L$(SGX_LIBRARY_PATH) -Wl,-rpath=$(CURDIR) \
     -Wl,--whole-archive -l$(Trts_Library_Name) -Wl,--no-whole-archive\
     $(TEST_LD)\
@@ -97,7 +97,7 @@ all: $(Signed_Enclave_Name) Enclave/Enclave_u.o
 	@echo "To build the project in simulation mode set SGX_MODE=SIM. To build the project in prerelease mode set SGX_PRERELEASE=1 and SGX_MODE=HW."
 else
 all: $(Signed_Enclave_Name) Enclave/Enclave_u.o
-	
+
 endif
 
 run: all
@@ -112,7 +112,7 @@ Enclave/Enclave_t.c: $(SGX_EDGER8R) Enclave/Enclave.edl
 Enclave/Enclave_t.o: Enclave/Enclave_t.c
 	@$(CC) $(Enclave_C_Flags) -c $< -o $@
 	@echo "CC   <=  $<"ls
-	
+
 
 Enclave/Enclave_u.c: $(SGX_EDGER8R) Enclave/Enclave.edl
 	@cd Enclave && $(SGX_EDGER8R) --untrusted ../Enclave/Enclave.edl --search-path ../Enclave --search-path $(SGX_SDK)/include
@@ -129,7 +129,7 @@ Enclave/%.o: Enclave/%.cpp
 
 
 $(Enclave_Name): Enclave/Enclave_t.o  $(Enclave_Cpp_Objects)
-	$(CXX) $^  -o $@  $(Enclave_Link_Flags)  
+	$(CXX) $^  -o $@  $(Enclave_Link_Flags)
 	echo "LINK =>  $@"
 
 $(Signed_Enclave_Name): $(Enclave_Name)

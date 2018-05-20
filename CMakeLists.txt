@@ -15,8 +15,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
 #find_package(sodium REQUIRED)
 
 # flags (-DLOCALTEST -DVERBOSE)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread -fPIC -Wall -Wno-unused-function -Wno-unused-variable")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -fPIC -Wall -Wno-unused-function -Wno-unused-variable")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread -fPIC -Wall -Wno-unused-function -Wno-unused-variable -Wno-misleading-indentation")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -fPIC -Wall -Wno-unused-function -Wno-unused-variable -Wno-misleading-indentation")
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 11)
 

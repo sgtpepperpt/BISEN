@@ -1,8 +1,8 @@
-to build test_mpc: (libsodium-sgx should be installed)
+to build test_bisen: (libsodium-sgx should be installed)
 
 ```
-$ make test_mpc
-$ (cd build/ && ./test_mpc)
+$ make test_bisen
+$ (cd build/ && ./test_bisen)
 ```
 
 to update secret_key and public keys:

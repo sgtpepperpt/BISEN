@@ -1,5 +1,7 @@
 # BISEN source code
 
+The technical report for BISEN can be found [here](http://asc.di.fct.unl.pt/~bf/BISEN-TRep).
+
 ## Dependencies
 To run BISEN, you will need to install libsodium-sgx, along with Intel SGX drivers and SDK.
 

@@ -90,7 +90,7 @@ int main(int argc, char** argv) {
     */
     queries.push_back("!time && person && year && way && day && thing && man && world && life && hand");
     queries.push_back("!time && person && year && way && day && thing && man && world && life && hand");
-    
+
     queries.push_back("!time && person && year && way && day && thing && man && world && life && hand");
     queries.push_back("!time && !person && !year && !way && !day && thing && man && world && life && hand");
     queries.push_back("!time && !person && !year && !way && !day && !thing && !man && !world && !life && !hand");
@@ -105,6 +105,10 @@ int main(int argc, char** argv) {
     SseClient client;
     unsigned char* data;
     unsigned long long data_size;
+
+    size output_size;
+    uint8_t* output;
+    float total_sim_add_time = 0;
 
     // init output file
     FILE* out_f;

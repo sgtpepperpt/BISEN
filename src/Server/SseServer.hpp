@@ -42,7 +42,7 @@
 using namespace std;
 
 const int l_size = 32;
-const int d_size = 76;
+const int d_size = 32 + 2 * sizeof(int);
 
 static unsigned long crc32_tab[] = {
       0x00000000L, 0x77073096L, 0xee0e612cL, 0x990951baL, 0x076dc419L,

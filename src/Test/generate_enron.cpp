@@ -90,10 +90,10 @@ int main(int argc, const char * argv[]) {
 //    queries.push_back("!enron || !time || !inform || !work || !call || !discuss || !meet || !week || !receiv || !dai");
 //    queries.push_back("!(enron || time || inform || work || call || discuss || meet || week || receiv || dai)");
 
-    queries.push_back("enron && time");
-    queries.push_back("enron && time");
-    queries.push_back("enron && time");
-    queries.push_back("enron && time");
+   // queries.push_back("enron && time");
+   // queries.push_back("enron && time");
+   // queries.push_back("enron && time");
+   // queries.push_back("enron && time");
     /*queries.push_back("enron && time && call && work && inform");
     queries.push_back("enron && time && inform && work && call && discuss && meet && week && receiv && dai");
     queries.push_back("enron || time");
@@ -107,6 +107,9 @@ int main(int argc, const char * argv[]) {
     queries.push_back("!(enron && time)");
     queries.push_back("!enron || !time");
     queries.push_back("!(enron || time)");*/
+
+    queries.push_back("(call || enron) && (time || attach) && (inform || work) && (meet || week)");
+    queries.push_back("(call && enron) || (time && attach) || (inform && work) || (meet && week)");
 
     // init iee
     // init_pipes();
@@ -241,7 +244,6 @@ int main(int argc, const char * argv[]) {
     copy(all_words_set.begin(), all_words_set.end(), all_words.begin());
 
     int total_search_time = 0;
-    int total_sim_search_time = 0;
 
     for(unsigned k = 0; k < queries.size(); k++) {
         string query = queries[k];
@@ -286,14 +288,15 @@ int main(int argc, const char * argv[]) {
             f(&output, &output_size, 0, (const bytes) data, data_size);
             gettimeofday(&end, NULL);
             //print_buffer("Output", output, output_size);
-            total_sim_search_time += util_time_elapsed(start, end);
+            printf("LTEST GENCLI time: search = %6.6lf s!\n", util_time_elapsed(start, end)/1000000.0);
+
 
             //process results
             const int nDocs = output_size / sizeof(int);
 
-            #ifdef VERBOSE
+            //#ifdef VERBOSE
             printf("GENCLI Number of docs: %d\n", nDocs);
-            #endif
+            //#endif
 
             /*vector<int> results(nDocs);
             int pos = 0;
@@ -320,7 +323,6 @@ int main(int argc, const char * argv[]) {
 
     #ifdef LOCALTEST
     printf("LTEST GENCLI time: client add = %6.3lf s!\n", total_sim_add_time/1000000.0);
-    printf("LTEST GENCLI time: total search = %6.6lf s!\n", total_sim_search_time/1000000.0);
     #endif
 
     //TODO hack just to compile, no idea why needed, doesn't affect sgx

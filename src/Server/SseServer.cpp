@@ -43,7 +43,7 @@ void* process_client(void* args) {
 #endif
 
 #if REDIS
-    redisContext *c = redisConnect("10.171.239.95", 6379);
+    redisContext *c = redisConnect("127.0.0.1", 6379);
     if (c == NULL || c->err) {
         if (c) {
             printf("Error: %s\n", c->errstr);
@@ -143,19 +143,23 @@ void* process_client(void* args) {
 
 #if REDIS
                     redisAppendCommand(c, "SET %b %b", l, (size_t)l_size, d, (size_t)d_size);
-
-                    free(l);
-                    free(d);
 #endif
                 }
-
+#if REDIS
+                free(buffer);
+#endif
                 clock_gettime(CLOCK_REALTIME, &end);
                 total_add_time += server_diff(start, end);
 
 #if REDIS
+                redisReply* reply;
                 for (size_t i = 0; i < batch_size; i++) {
-                    redisReply* reply;
-                    redisGetReply(c,(void**)&reply);
+                    redisGetReply(c, (void**)&reply);
+
+                    if(!reply) {
+                        printf("reply error %d\n", c->err);
+                        exit(1);
+                    }
 
                     freeReplyObject(reply);
                 }
@@ -231,12 +235,18 @@ void* process_client(void* args) {
                     }
 
                     memcpy(buffer + i * d_size, I[label + i * l_size], d_size);
+                }
 #endif
 #if REDIS
-                    redisReply* reply = (redisReply*)redisCommand(c, "GET %b", label + i * l_size, l_size);
-                     if (!reply) {
-                         printf("error redis get!\n");
-                     }
+                    redisAppendCommand(c, "GET %b", label + i * l_size, l_size);
+                }
+
+                redisReply* reply;
+                for (unsigned i = 0; i < counter; i++) {
+                    redisGetReply(c, (void**)&reply);
+                    if (!reply) {
+                        printf("error redis get!\n");
+                    }
                     //printf("%d %p\n", i, (*I)[l]);
                     /*for(unsigned k = 0; k < d_size; k++)
                         printf("%02x", reply->str[k]);
@@ -244,8 +254,8 @@ void* process_client(void* args) {
 
                     memcpy(buffer + i * d_size, reply->str, d_size);
                     freeReplyObject(reply);
-#endif
                 }
+#endif
 
                 clock_gettime(CLOCK_REALTIME, &end);
                 total_search_time += server_diff(start, end);

@@ -4,6 +4,7 @@ project(bisen)
 # variables
 set(USE_WIKI_TEST 1)
 set(SPARSEPP_DIR ${CMAKE_SOURCE_DIR}/sparsepp)
+set(MACRO_FLAGS ) # flags (-DLOCALTEST -DVERBOSE)
 
 ########################################################################################################################
 # paths for binaries
@@ -14,9 +15,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR})
 # external dependencies
 #find_package(sodium REQUIRED)
 
-# flags (-DLOCALTEST -DVERBOSE)
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread -fPIC -Wall -Wno-unused-function -Wno-unused-variable -Wno-misleading-indentation")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -fPIC -Wall -Wno-unused-function -Wno-unused-variable -Wno-misleading-indentation")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${MACRO_FLAGS} -pthread -fPIC -Wall -Wno-unused-function -Wno-unused-variable -Wno-misleading-indentation")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MACRO_FLAGS} -pthread -fPIC -Wall -Wno-unused-function -Wno-unused-variable -Wno-misleading-indentation")
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_CXX_STANDARD 11)
 
@@ -42,7 +42,7 @@ add_custom_command(TARGET Iee POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ../bin
 file(GLOB SERVER_SOURCES src/Server/*.cpp)
 add_executable(Server ${SERVER_SOURCES})
 target_include_directories(Server PRIVATE ${SPARSEPP_DIR})
-target_link_libraries(Server Common pthread)
+target_link_libraries(Server Common pthread hiredis)
 
 # client module
 file(GLOB CLIENT_SOURCES src/Client/*.cpp src/Client/*.c)

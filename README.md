@@ -10,7 +10,7 @@ To install libsodium-sgx:
 ```
 cd libsodium-bisen
 
-wget https://download.libsodium.org/libsodium/releases/libsodium-1.0.15.tar.gz
+wget https://download.libsodium.org/libsodium/releases/old/libsodium-1.0.15.tar.gz
 
 tar -xvzf libsodium-1.0.15.tar.gz
 
@@ -21,12 +21,12 @@ mv libsodium-1.0.15 libsodium
 cd .. # return to main directory
 ```
 
-The Storage module also depends on having the [Sparsepp](https://github.com/greg7mdp/sparsepp) headers in a known directory (specified in CMakeLists.txt). You can simply execute ```git clone git@github.com:greg7mdp/sparsepp.git``` on this directory.
+The Storage module also depends on having the [Sparsepp](https://github.com/greg7mdp/sparsepp) headers in a known directory (specified in CMakeLists.txt). You can simply execute ```git clone https://github.com/greg7mdp/sparsepp.git``` on this directory.
 
 
 ## Compiling and running BISEN
 
-First of all, generate and parse a text dataset, like Enron or Wikipedia. Also, specify the address of the storage/server module in SseIee.cpp:81.
+First of all, generate and parse a text dataset, like Enron or Wikipedia. Also, specify the address of the storage/server module in SseIee.c:81.
 
 To test BISEN, you need to start by generating an execution trace of your dataset, consisting of update and search operations. This trace is saved into a file, which is later fed to the IEE as operations are executed on it. Before compiling and running, check the search operations on _generate\_wiki.cpp_ or _generate\_enron.cpp_, and change the _USE\_WIKI\_TEST_ variable accordingly on CMakeLists.txt.
 
